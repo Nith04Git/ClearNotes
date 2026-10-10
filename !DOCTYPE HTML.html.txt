@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+
+<HEAD>
+<link href="https://fonts.googleapis.com/css2?family=Gravitas+One&display=swap" rel="stylesheet">
+<link rel="icon" href="Notes360-MiniLogo.png">
+<STYLE>
+h2, h3, p, ul, ol, button {
+  font-family: "Segoe UI", "Segoe UI Light", sans-serif;
+  margin: 10px;
+}
+h1 {
+  font-family: "Gravitas One", "Noto Serif", serif;
+  margin: 10px;
+}
+.custom-button {
+  background-color: cyan;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 10px;
+}
+
+.custom-button:hover {
+  background-color: orange;
+}
+
+body {
+  background-image: linear-gradient(to bottom, #fcead4, #fad4a5);
+  margin: 0px;
+}
+
+.stickynote {
+  width: 600px;
+  height: auto;
+  background-color: #87f8fa;
+  display: grid;
+  padding: 10px;
+  color: black;
+  border-radius: 15px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  margin: 10px;
+}
+
+.stickynotes-grid {
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  background-color: grey;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.video-container {
+  width: 640px;
+  height: 360px;
+  border-radius: 15px; /* This adds the rounded corners */
+  overflow: clip;      /* This hides the sharp corners of the video inside the container */
+  margin: 10px;
+}
+
+.topshape {
+  width: 100%;
+  height: auto;
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  margin-left: 0px;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.2);
+}
+
+.fixed-container {
+   width: 200px;
+   height: 200px;
+  margin: 10px;
+}
+.fixed-container img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+img {
+  border-radius: 10px;
+}
+
+.grid-container {
+  display: flex;
+  overflow: scroll;
+  white-space: nowrap;
+  gap: 10px;
+}
+
+.grid-item {
+  background-color: lightblue;
+  padding: 5px;
+  border-radius: 10px;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+.centered-text {
+  text-align: center;
+}
+</STYLE>
+
+<TITLE>Notes360 - Landing Page</TITLE>
+</HEAD>
+
+<BODY>
+
+<img src="C:\Users\ADMN\OneDrive\Projects\Notes360\Testing Version\Notes360-Logo - Copy.png" alt="logo">
+<h3>The single biggest repository for all notes for any learning process.</h3>
+<hr>
+
+<div class="topshape">
+<h3 class="centered-text"><b>Control Center</b></h3>
+<div class="grid-container">
+
+<div class="grid-item">
+<p>Sign up by providing your school, grade and section to <br>get precise and personalized notes and resources.</p>
+<a href="signup.html"><button class="custom-button">Signup</button></a>
+</div>
+
+<div class="grid-item">
+<p>Details: <br></p>
+<h3><b><u><span id="grade-display"></span><span id="section-display"></span></b></u> of <br><u><b><i><span id="school-name"></span></i></b></u></h3>
+</div>
+
+<div class="grid-item">
+<p>Catch the notes you need from <br>your grade and section.</p>
+<a href="personalizedDashboard.html"><button class="custom-button">Personalized Dashboard</button></a>
+</div>
+
+<div class="grid-item">
+<p>Your digital study desk for managing <br>your work efficiently.</p>
+<a href="study.html"><button class="custom-button">Study Desk</button></a>
+</div>
+
+<br>
+
+</div>
+</div>
+
+<script>
+  const school = JSON.parse(localStorage.getItem("chosenSchool"));
+  const grade = localStorage.getItem("chosenGrade");
+  const section = localStorage.getItem("chosenSection");
+
+  document.getElementById("school-name").textContent = school ? school.name : "Not selected";
+  document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
+  document.getElementById("section-display").textContent = section ? section : "Not selected";
+</script>
+
+<hr>
+
+<div class="video-container">
+
+<video width="640" height="360" autoplay muted loop class="video">
+<source src="Ad.mp4" type="video/mp4">
+Your browser cannot display this video file.
+</video>
+
+</div>
+<p><i>Created using KineMaster.</i></p>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h2>Your turn to contribute.</h2>
+<p>Contribute to Notes360 by uploading your notes and get to help others in need.</p>
+<br>
+<div class="fixed-container">
+<img src="https://mapfineartscollege.ac.in/Content/mapfineartscollege.ac.in/UploadedImage/RealImage/153StudyMaterial.jpg" alt="Image">
+</div>
+<p><b>Every resource across every curriculum in the entire world doesn't come by itself.</b></p>
+<p>Your contribution will be greatly appreciated! Help everyone with your resources.</p>
+<a href="uploadnotes.html"><button class="custom-button">Upload Notes</button></a>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h2>Pick your School</h2>
+<p>Navigate Notes360's dynamic school map that covers every school across the entire world.</p>
+<a href="maps.html"><button class="custom-button">School Map</button></a>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h2>Pick a subject to continue to Notes360.</h2>
+<hr>
+<h3>General</h3>
+<a href="ComputerScienceNotes360.html"><button class="custom-button">Computer Science</button></a>
+<a href="EnglishNotes360.html"><button class="custom-button">English</button></a>
+<a href="SocialScienceNotes360.html"><button class="custom-button">Social Science</button></a>
+
+<hr>
+<h3>Regional Languages</h3>
+<a href="HindiNotes360.html"><button class="custom-button">Hindi</button></a>
+<a href="TamilNotes360.html"><button class="custom-button">Tamil</button></a>
+<a href="MalayalamNotes360.html"><button class="custom-button">Malayalam</button></a>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+<h2>What does Notes360 have?</h2>
+<p>Notes360 contains many resources for all subjects. Here are a few ones you can find...</p>
+
+<ul>
+<li>Textbooks</li>
+<li>Sticky Notes</li>
+<li>Classworks</li>
+<li>Worksheets</li>
+</ul>
+
+<p>and even more as Notes360 expands.</p>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h2>Do more with Notes360.</h2>
+<p>With Notes360, get more opportunities to learn better. Achieve anything with the power of infinite resources.</p>
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h2>Inspiring Quotes about Learning</h2>
+<p>View amazing quotes that add fuel to the fire of infinite learning.</p>
+
+<div class="stickynotes-grid">
+
+<div class="stickynote">
+<h3>Jiddu Krishnamurti</h3>
+<p><i>There is no end to education. It is not that you read a book, pass an examination, and finish with education. The whole of life, from the moment you are born to the moment you die, is a process of learning.</i></p>
+</div>
+<br>
+
+<div class="stickynote">
+<h3>Peter Drucker</h3>
+<p><i>We now accept the fact that learning is a lifelong process of keeping abreast of change. And the most pressing task is to teach people how to learn.</i></p>
+</div>
+<br>
+
+</div>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<p><b>Created by Sitheshwar M and Nithin J. <i>Maintained by you.</i></b></p>
+
+<h2>Contributions</h2>
+<h3>People</h3>
+<ul>
+<li>Sitheshwar M</li>
+</ul>
+<hr>
+
+<h3>Companies and Groups</h3>
+<ul>
+<li>Amazon Inc.</li>
+<li>CBSE</li>
+<li>Wikipedia <i>by Wikimedia Commons</i></li>
+<li>Google</li>
+<li>Leaflet <i>(LeafletJS)</i></li>
+<li><a href="https://hindigrammar.in/">hindigrammar.in</a></li>
+<li>HuggingFace Inc.</li>
+<li>Wix.com Ltd.</li>
+<li>PubHTML5</li>
+</ul>
+<hr>
+
+<h3>Education Boards</h3>
+<ul>
+<li>NCERT</li>
+<li>XSEED</li>
+<li>Government of Tamil Nadu <i>(exclusive to government-produced Tamil textbooks)</i></li>
+</ul>
+
+<h1>Thank You!</h1>
+</BODY>

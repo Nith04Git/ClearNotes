@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClearNotes</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="ClearNotesMiniLogo.png">
+
+<style>
+  :root {
+    --bg-main: #fcf2bd;
+    --bg-card: #ffffff;
+    --accent: #f76307;
+    --accent-soft: #fffcab;
+    --text-main: #1e1e1e;
+    --text-muted: #666;
+    --radius: 16px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.12);
+    --win-dark: #222;
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: "Bricolage Grotesque", "Segoe UI", sans-serif;
+  }
+
+  body {
+    margin: 10;
+    /* Use min-height to ensure gradient covers long pages */
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #ffffff, var(--bg-main));
+    color: var(--text-main);
+    overflow-x: hidden;
+  }
+
+  /* ---------- HEADER & SHARED UI ---------- */
+  header {
+    padding: 60px 20px 40px;
+    text-align: center;
+    background: linear-gradient(135deg, #fff9e6, #ffffff);
+  }
+
+  header h1 { font-size: 3rem; margin: 0; }
+
+  /* Re-using button styles for your "Detox" button glitch fix */
+  .btn, .custom-button {
+    padding: 12px 22px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-secondary { background: var(--accent-soft); color: var(--accent); }
+
+  /* ---------- WINDOW SYSTEM & FIXES ---------- */
+  .window {
+    position: absolute;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.1);
+    min-width: 300px;
+    /* Prevent window from starting under other elements */
+    z-index: 10; 
+  }
+
+  .titlebar {
+    background: var(--win-dark);
+    color: white;
+    padding: 10px 15px;
+    cursor: grab;
+    user-select: none; /* Prevents text highlighting while dragging */
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+  }
+
+  .titlebar p { margin: 0; pointer-events: none; }
+
+  .window iframe {
+    display: block;
+    border: none;
+    background: white;
+    /* Glitch fix: Ensure iframe doesn't eat mouse events during drag */
+    pointer-events: auto; 
+  }
+
+  /* Padding for window content that isn't an iframe (e.g. Detox window) */
+  #win2 { padding-bottom: 20px; text-align: center; }
+  #win2 p { padding: 0 20px; color: var(--text-muted); }
+
+  /* ---------- STICKY NOTES ---------- */
+  .stickynotes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    background: rgba(0,0,0,0.05);
+    padding: 20px;
+    border-radius: var(--radius);
+    margin: 20px;
+  }
+
+  .stickynote {
+    background-color: #87f8fa;
+    padding: 20px;
+    color: #111;
+    border-radius: 12px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    transform: rotate(-1deg);
+  }
+
+  /* ---------- FOOTER FIXES ---------- */
+  footer {
+    margin-top: 100px;
+    text-align: center;
+    padding: 40px;
+    background: rgba(0,0,0,0.03);
+    color: var(--text-muted);
+  }
+</style>
+
+
+<TITLE>ClearNotes - Study Desk</TITLE>
+</HEAD>
+
+<BODY>
+<h1><u>Study Desk</u></h1>
+
+
+
+<div class="window" id="win1">
+  <div class="titlebar"><p>📘 Study Buddy</p></div>
+<iframe
+	src="https://justusi-study-companion-2.hf.space"
+	frameborder="0"
+	width="750"
+	height="350"
+></iframe>
+
+</div>
+
+<div class="window" id="win2">
+<div class="titlebar"><p>Detox</p></div>
+<p>Take a chance to wind down from distractions and <br>focus on studies, materialistically and practically.</p>
+
+<a href="detox.html"><button class="custom-button">Detox 🚀</button></a>
+</div>
+
+<script>
+let activeWindow = null;
+let offsetX = 0;
+let offsetY = 0;
+let zIndexCounter = 100;
+
+document.querySelectorAll(".window").forEach(win => {
+  const bar = win.querySelector(".titlebar");
+
+  bar.addEventListener("mousedown", e => {
+    activeWindow = win;
+    offsetX = e.clientX - win.offsetLeft;
+    offsetY = e.clientY - win.offsetTop;
+
+    // bring window to front
+    win.style.zIndex = ++zIndexCounter;
+
+    bar.style.cursor = "grabbing";
+  });
+});
+
+document.addEventListener("mousemove", e => {
+  if (!activeWindow) return;
+
+  activeWindow.style.left = (e.clientX - offsetX) + "px";
+  activeWindow.style.top = (e.clientY - offsetY) + "px";
+});
+
+document.addEventListener("mouseup", () => {
+  if (!activeWindow) return;
+
+  const bar = activeWindow.querySelector(".titlebar");
+  bar.style.cursor = "grab";
+  activeWindow = null;
+});
+</script>
+
+<br>
+<hr>
+
+<h3><b>Study Buddy</b> feature by Thimmapuram Murali "AI Study Buddy"</h3>
+<h3>Credits to HuggingFace Inc.</h3>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClearNotes - Upload</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap CSS (needed for standard btn classes if you don't define them all) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="ClearNotesMiniLogo.png">
+
+  <style>
+    :root {
+      --bg-main: #fcf2bd;
+      --bg-card: #ffffff;
+      --accent: #f76307;
+      --accent-soft: #fffcab;
+      --text-main: #1e1e1e;
+      --text-muted: #666;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Bricolage Grotesque", "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px;
+      background: linear-gradient(to bottom, #ffffff, var(--bg-main));
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    .upload-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      padding: 40px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    h1, h2 { text-align: center; }
+    
+    .instruction {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    /* CUSTOM BUTTON STYLING */
+    .btn-primary {
+      background-color: var(--accent) !important;
+      border: none !important;
+      padding: 12px 25px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .btn-secondary {
+      background-color: var(--accent-soft) !important;
+      color: var(--accent) !important;
+      border: 1px solid var(--accent) !important;
+      padding: 10px 20px;
+      border-radius: 12px;
+      display: inline-block;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Hide the actual ugly file input */
+    .hidden-file-input {
+      display: none;
+    }
+
+    #file-name-display {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="upload-container">
+  <h1>Your contribution matters.</h1>
+  <p class="instruction"><i>This is a testing page for uploads.</i></p>
+  <hr>
+
+  <h2>Upload a Note</h2>
+
+  <form action="/uploadnotes.html" method="POST" enctype="multipart/form-data">
+
+    <div class="form-group">
+      <label><b>Your Name:</b></label>
+      <input type="text" name="uploader" placeholder="Enter your name" required>
+    </div>
+
+    <div class="form-group">
+      <label><b>Subject:</b></label>
+      <select name="subject" required>
+        <option value="" disabled selected>Select subject</option>
+        <option>Science</option>
+        <option>Maths</option>
+        <option>Malayalam</option>
+        <option>English</option>
+        <option>Social Science</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label><b>Select PDF:</b></label><br>
+      
+      <!-- STYLIZED BUTTON (The label acts as the button) -->
+      <label for="note-upload" class="btn btn-secondary">
+        Choose PDF File
+      </label>
+      
+      <!-- THE ACTUAL INPUT (Hidden) -->
+      <input type="file" id="note-upload" name="note" accept="application/pdf" class="hidden-file-input" required onchange="updateFileName()">
+      
+      <!-- Placeholder to show the user which file they picked -->
+      <span id="file-name-display">No file chosen</span>
+    </div>
+
+    <!-- Hidden fields auto-filled from signup -->
+    <input type="hidden" name="school" id="school-field">
+    <input type="hidden" name="grade" id="grade-field">
+    <input type="hidden" name="section" id="section-field">
+
+    <div style="text-align: center; margin-top: 30px;">
+      <input type="submit" value="Upload Note" class="btn btn-primary w-100">
+    </div>
+  </form>
+</div>
+
+<script>
+  // Function to show the name of the file after user selects it
+  function updateFileName() {
+    const input = document.getElementById('note-upload');
+    const display = document.getElementById('file-name-display');
+    if (input.files.length > 0) {
+      display.textContent = "Selected: " + input.files[0].name;
+    }
+  }
+
+  // Handle local storage logic
+  const school = JSON.parse(localStorage.getItem("chosenSchool"));
+  const grade = localStorage.getItem("chosenGrade");
+  const section = localStorage.getItem("chosenSection");
+
+  if (!school || !grade || !section) {
+    console.log("Signup information missing.");
+    // window.location.href = "signup.html"; // Uncomment when ready
+  } else {
+    document.getElementById('school-field').value = school;
+    document.getElementById('grade-field').value = grade;
+    document.getElementById('section-field').value = section;
+  }
+</script>
+
+</body>
+</html>

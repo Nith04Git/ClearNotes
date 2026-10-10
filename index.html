@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClearNotes</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="ClearNotesMiniLogo.png">
+
+  <style>
+    :root {
+      --bg-main: #fcf2bd;
+      --bg-card: #ffffff;
+      --accent: #f76307;
+      --accent-soft: #fffcab;
+      --text-main: #1e1e1e;
+      --text-muted: #666;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Bricolage Grotesque", "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #ffffff, var(--bg-main));
+      color: var(--text-main);
+    }
+
+    /* ---------- HEADER / HERO ---------- */
+    header {
+      padding: 60px 20px 40px;
+      text-align: center;
+      background: linear-gradient(135deg, #eef4ff, #ffffff);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .cta-row {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+
+    section p.section-desc {
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: auto auto 40px;
+    }
+
+    /* ---------- CARD GRID ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: var(--text-muted);
+    }
+
+    /* ---------- VIDEO ---------- */
+    .video-wrapper {
+      max-width: 720px;
+      margin: auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    video {
+      width: 100%;
+      display: block;
+    }
+
+    /* ---------- QUOTES ---------- */
+    .quote {
+      background: linear-gradient(135deg, #f0f6ff, #ffffff);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .quote i {
+      color: var(--text-muted);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      background: #f0f2f6;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>ClearNotes</h1>
+  <p>Welcome to ClearNotes, the soon-to-be largest repository of academic resources in the world.</p>
+
+  <div class="cta-row">
+    <a href="signup.html"><button class="btn btn-primary">Get Started</button></a>
+    <a href="dashboard.html"><button class="btn btn-primary">My Dashboard</button></a>
+  </div>
+</header>
+
+<section>
+  <h2>Your Control Center</h2>
+  <p class="section-desc">Everything you need to organize, access, and contribute study resources — in one place.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>Personalized Notes</h3>
+      <p>Choose your school, grade, and section to unlock highly relevant notes and materials.</p>
+      <a href="pickSubject.html"><button class="btn btn-secondary">Pick your subject to get started</button></a>
+    </div>
+
+    <div class="card">
+      <h3>Study Desk</h3>
+      <p>Your digital workspace to manage tasks, subjects, and learning efficiently.</p>
+      <a href="study.html"><button class="btn btn-secondary">Continue to Study Desk</button></a>
+    </div>
+
+    <div class="card">
+      <h3>Contribute</h3>
+      <p>Upload your notes and help learners worldwide. Knowledge grows when shared.</p>
+      <a href="uploadnotes.html"><button class="btn btn-secondary">Contribute Resources</button></a>
+    </div>
+
+    <div class="card">
+      <h3>Chat</h3>
+      <p>Join your class chat to locally contribute and ask for notes.</p>
+      <a href="groupchat.html"><button class="btn btn-secondary">Class Chat</button></a>
+    </div>
+  </div>
+</section>
+
+<section>
+
+  <div class="video-wrapper">
+    <video autoplay muted loop>
+      <source src="Ad.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</section>
+
+<section>
+  <h2>Resources in the Repository</h2>
+  <p class="section-desc">Various kinds of resources you can get.</p>
+
+  <div class="card-grid">
+    <div class="card"><h3>Textbooks</h3></div>
+    <div class="card"><h3>Sticky Notes</h3></div>
+    <div class="card"><h3>Worksheets</h3></div>
+    <div class="card"><h3>Classwork Archives</h3></div>
+  </div>
+</section>
+
+<section>
+  <h2>Words That Inspire Learning</h2>
+
+  <div class="card-grid">
+    <div class="quote">
+      <h3>Jiddu Krishnamurti</h3>
+      <p><i>“The whole of life, from the moment you are born to the moment you die, is a process of learning.”</i></p>
+    </div>
+
+    <div class="quote">
+      <h3>Peter Drucker</h3>
+      <p><i>“The most important task is to teach people how to learn.”</i></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><b>ClearNotes</b> — Built by SharkofGit and Nith04Git.</p>
+  <p>Maintained by the community. Powered by curiosity.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE HTML>
+
+<HEAD>
+<STYLE>
+h1, h2, h3, p, ul, ol, details {
+  font-family: "Consolas", monospace;
+}
+
+.fixed-container {
+   width: 200px;
+   height: 200px;
+}
+.fixed-container img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+}
+.grid-item img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   width: 200px;
+   height: 200px;
+}
+img {
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+details > summary {
+  background-color: cyan;
+  padding: 10px;
+  border: 10px cyan;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 250px;
+  color: black;
+  margin-left: 0px;
+  transition: background-color 0.3s ease;
+}
+
+details > summary:hover {
+  background-color: orange;
+}
+
+details {
+  background-color: cyan;
+  width: 270px;
+  color: black;
+  border-radius: 10px;
+  outline: 1px solid black;
+  padding: 5px;
+}
+
+.stickynote {
+  width: 450px;
+  height: auto;
+  background-color: #f58e49;
+  display: grid;
+  padding: 10px;
+  color: white;
+  border-radius: 15px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.cwnote {
+  width: auto;
+  height: auto;
+  padding: 10px;
+  background-color: white;
+  color: black;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  display: grid;
+}
+
+.worksheet {
+  width: auto;
+  height: auto;
+  padding: 10px;
+  background-color: orange;
+  color: black;
+  border-radius: 7px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+body {
+  background-image: linear-gradient(to bottom, #86cbfc, #4db4ff);
+  margin: 10;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+}
+
+.grid-item {
+  background-color: lightblue;
+  padding: 20px;
+  text-align: left;
+  border-radius: 10px;
+}
+
+</STYLE>
+
+<TITLE>Notes360: Computer Science</TITLE>
+<h1>Computer Science</h1>
+</HEAD>
+
+<BODY>
+<hr style="border: none; height: 5px; background-color: #333;">
+<h2>Explore</h2>
+
+<div class="grid-container">
+<div class="grid-item">
+<img src="https://m.media-amazon.com/images/I/915X76yImEL._AC_UF1000,1000_QL80_.jpg" alt="Textbook Cover">
+<p><b>Byte Code: Class 8</b></p>
+
+<details>
+<summary>Information</summary>
+<p>Byte Code: textbook for class 8. Explores various topics such as... </p>
+<ul>
+<li>More on HTML5</li>
+<li>Networking Concepts</li>
+<li>Cyber Ethics</li>
+</ul>
+<br>
+</details>
+
+<br>
+
+<details>
+<summary>Reviews</summary>
+<p><b>3.8 out of 5</b> out of 9 reviews</p>
+<p><i>Information from "Amazon"</i></p>
+<br>
+</details>
+</div>
+
+<div class="grid-item">
+<img src="https://homedelivery.xseedsuperteacher.in/cdn/shop/files/G8_1024x1024@2x.jpg?v=1743502727" alt="Textbook Cover">
+<p><b>XSEED Computer Science - Grade 8</b></p>
+
+<details>
+<summary>Information</summary>
+<p>Computer Science textbook for class 8. Explores various topics such as... </p>
+<ul>
+<li>Text-based coding: Python</li>
+<li>Web Development</li>
+<li>Cybersecurity</li>
+<li>Mobile app development</li>
+<li>Artificial Intelligence</li>
+<li>AR & VR</li>
+</ul>
+<br>
+</details>
+
+<br>
+
+<details>
+<summary>Reviews</summary>
+<p><b>Generally Positive</b></p>
+<p><i>Precise value unavailable</i></p>
+<br>
+</details>
+</div>
+</div>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+<h2>Sticky Notes</h2>
+
+<div class="stickynote">
+<h3>Keyboard Hotkeys 🔥</h3>
+<br />
+<ul>
+<li>Alt+Tab: Quick Window Switching</li>
+<li>Windows+Tab: Quick Desktop Switching</li>
+<li>Windows+Ctrl+(>): Next Desktop</li>
+<li>Windows+Ctrl+(<): Previous Desktop</li>
+</ul>
+</div>
+
+<br>
+
+<div class="stickynote">
+<h3>Phishing</h3>
+<img src=https://www.malwarebytes.com/wp-content/uploads/sites/2/2024/05/phishing.webp?w=1024, width=240, height=140, alt="Image">
+<p>Phishing is a type of cyberattack where attackers impersonate legitimate sources to trick people into revealing sensitive information like passwords, credit card numbers, or bank account details.</p>
+</div>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h2>Classwork</h2>
+<hr>
+<h3>HTML5</h3>
+
+<div class="cwnote">
+<p><b>Write a short note on HTML5.</b></p>
+<p>HTML stands for "Hypertext Markup Language". It is a complete code package that allows you to create webpages that contain both text and graphics. It is a simple markup language that describes the structure and behaviour of the web document. All the web browsers are designed to understand and interpret this language.</p>
+</div>
+<br>
+
+<div class="cwnote">
+<p><b>List the important features of HTML5.</b></p>
+<p>Some important features of HTML5 are: </p>
+<ul>
+<li>Adding audio and video clips in the webpage is as easy as including images which was not possible in the earlier versions.</li>
+<li>With the Canvas feature, you can also draw images directly on the webpage.</li>
+<li>It is compatible across all the major web browsers.</li>
+<li>It works well even for users with a slow internet connection.</li>
+<li>It provides a mobile friendly way to develop interactive fun games.</li>
+</ul>
+</div>
+<br>
+
+<div class="cwnote">
+<p><b>State the rules of writing a code in HTML.</b></p>
+<ul>
+<li>Tags and attribute names are not case-sensitive.</li>
+<li>Container tags should always be closed because an unclosed tag can lead to undesired results.</li>
+<li>Values given to the attribute should be enclosed within quotes especially if the value has any blank space.</li>
+<li>Attribute values can be case-sensitive.</li>
+<li>When the tags are embedded, i.e., when you start a tag within another tag, you need to close the inner tag first before closing the outer tag.</li>
+</ul>
+<details>
+<summary>⚡</summary>
+<p><i>This question is considered important.</i></p>
+<br>
+</details>
+</div>
+<br>
+
+<hr>
+
+<h3>Networking Concepts</h3>
+
+<div class="cwnote">
+<p><b>Define Networking.</b></p>
+<p>A computer network can be defined as a group of computers and other peripheral devices that are linked together for the purpose of sharing data and hardware resources. For example, if one of the computers in a network has a printer attached to it, then all the computers in that network can access the printer and use it to print documents. The computers in a network can communicate with each other as well as work independently. Each computer in a network is called a node.</p>
+<details>
+<summary>⚡</summary>
+<p><i>This question is considered important.</i></p>
+<br>
+</details>
+</div>
+<br>
+
+<hr>
+
+<h3>Cyber Ethics</h3>
+
+<div class="cwnote">
+<iframe src=".\Notes\CyberEthics.pdf" width="400px" height="400px" style="border: none;" title="Embedded Document Viewer">
+  Your browser does not support document viewing.
+</iframe>
+</div>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h2>Worksheets</h2>
+<div class="worksheet">
+<h3>Worksheet: HTML5</h3>
+<div class="cwnote">
+<p>The _____ tag marks the beginning of the header section in an HTML document.</p>
+<details>
+<summary>⭐Answer</summary>
+<p><b>"Head"</b></p>
+</details>
+</div>
+<br>
+
+<div class="cwnote">
+<p>The _____ attribute of <code>&lt;ol&gt;</code> tag is used to specify the list in descending order.</p>
+<details>
+<summary>⭐Answer</summary>
+<p><b>"reversed"</b></p>
+</details>
+</div>
+<br>
+
+<div class="cwnote">
+<p>The _____ is an ordinary text that has been spruced up with special features in webpages.</p>
+<details>
+<summary>⭐Answer</summary>
+<p><b>"Hypertext"</b></p>
+</details>
+</div>
+<br>
+
+<div class="cwnote">
+<p>_____ allow multiple HTML documents to be presented as independent windows within one browser window.</p>
+<details>
+<summary>⭐Answer</summary>
+<p><b>"Frames"</b></p>
+</details>
+</div>
+<br>
+
+<div class="cwnote">
+<p>(True or False): A:link is a normal unvisited link.</p>
+<details>
+<summary>⭐Answer</summary>
+<p><b>"true"</b></p>
+</details>
+</div>
+<br>
+
+<p><i>Source: "Computer Science: 2025 8th grade Quarterly Examination"</i></p>
+
+</div>
+
+<br>
+<hr>
+<br>
+
+<div class="worksheet">
+<h3>Worksheet: Networking Concepts</h3>
+<div class="cwnote">
+<p>In a ______ topology, each node is connected to every other node in the network.</p>
+<details>
+<summary>⭐Answer</summary>
+<p><b>"mesh"</b></p>
+</details>
+</div>
+<br>
+
+<div class="cwnote">
+<p>The ______ cables are twisted pair of wires containing RJ45 connectors used in networks.</p>
+<details>
+<summary>⭐Answer</summary>
+<p><b>"ethernet"</b></p>
+</details>
+</div>
+<br>
+
+<div class="cwnote">
+<p>Network ______ refers to the layout in which various components of a network are connected with each other.</p>
+<details>
+<summary>⭐Answer</summary>
+<p><b>"topology"</b></p>
+</details>
+</div>
+<br>
+
+<p><i>Source: "Computer Science: 2025 8th grade Quarterly Examination"</i></p>
+</div>
+
+<br>
+<hr>
+<br>
+
+<p><i>more worksheets coming soon!</i></p>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h2>Additional Resources</h2>
+<ul>
+<li>HTML (on Wikipedia): <button><a href=https://en.wikipedia.org/wiki/HTML>HTML</a></button></li>
+<li>Network Topologies (on Wikipedia): <button><a href=https://en.wikipedia.org/wiki/Network_topology>Network Topology</a></button></li>
+</ul>
+</BODY>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClearNotes</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="ClearNotesMiniLogo.png">
+
+  <style>
+    :root {
+      --bg-main: #fcf2bd;
+      --bg-card: #ffffff;
+      --accent: #f76307;
+      --accent-soft: #fffcab;
+      --text-main: #1e1e1e;
+      --text-muted: #666;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Bricolage Grotesque", "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #ffffff, var(--bg-main));
+      color: var(--text-main);
+    }
+
+    /* ---------- HEADER / HERO ---------- */
+    header {
+      padding: 60px 20px 40px;
+      text-align: center;
+      background: linear-gradient(135deg, #eef4ff, #ffffff);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .cta-row {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+
+    section p.section-desc {
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: auto auto 40px;
+    }
+
+    /* ---------- CARD GRID ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: var(--text-muted);
+    }
+
+    /* ---------- VIDEO ---------- */
+    .video-wrapper {
+      max-width: 720px;
+      margin: auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    video {
+      width: 100%;
+      display: block;
+    }
+
+    /* ---------- QUOTES ---------- */
+    .quote {
+      background: linear-gradient(135deg, #f0f6ff, #ffffff);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .quote i {
+      color: var(--text-muted);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      background: #f0f2f6;
+      color: var(--text-muted);
+    }
+  </style>
+<title>ClearNotes - Finish Signup</title>
+</head>
+
+<body>
+
+<h1>Congrats! 🥳</h1>
+
+<p>Your ClearNotes signup is complete. You can now access personalized notes and resources from your section and classmates right away from the ClearNotes repository!</p>
+
+<hr>
+
+<h1>Welcome to the full ClearNotes experience!</h1>
+
+<h3>Here's a summary of your selection:</h3>
+<ul>
+  <li><b>School:</b> <span id="school-name"></span></li>
+  <li><b>Grade:</b> <span id="grade-display"></span></li>
+  <li><b>Section:</b> <span id="section-display"></span></li>
+</ul>
+
+<p>In short, <span id="grade-short"></span><span id="section-short"></span> of <i><span id="school-short"></span></i>.</p>
+<br>
+
+<a href="index.html"><button class="custom-button">Confirm Signup</button></a>
+
+<script>
+  const school = JSON.parse(localStorage.getItem("chosenSchool"));
+  const grade = localStorage.getItem("chosenGrade");
+  const section = localStorage.getItem("chosenSection");
+
+  // Update the list
+  document.getElementById("school-name").textContent = school ? school.name : "Not selected";
+  document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
+  document.getElementById("section-display").textContent = section ? section : "Not selected";
+
+  // Update the "In short" sentence
+  document.getElementById("grade-short").textContent = grade ? grade : "";
+  document.getElementById("section-short").textContent = section ? section : "";
+  document.getElementById("school-short").textContent = school ? school.name : "";
+</script>
+
+</body>
+</html>

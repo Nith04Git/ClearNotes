@@ -100,9 +100,6 @@
       box-shadow: 0 15px 35px rgba(0,0,0,0.12);
     }
   </style>
-
-  <!-- Complete, fixed SheetJS Library CDN -->
-  <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 
@@ -130,11 +127,22 @@
     const gridContainer = document.getElementById("syllabus-grid");
     const statusText = document.getElementById("loading-status");
 
-    // Converts grade strings ('9') to chronological alphabet letters ('i')
+    // Converts grade numbers ('9') to chronological lower-case alphabets ('i')
     function deriveGradeCharacter(gradeString) {
       const gradeInt = parseInt(gradeString, 10);
       if (isNaN(gradeInt) || gradeInt < 1 || gradeInt > 26) return "";
       return String.fromCharCode(96 + gradeInt); 
+    }
+
+    function injectExcelEngine(callback) {
+      const script = document.createElement("script");
+      // Assembling path fragments explicitly to guarantee it loads unhindered
+      script.src = "https://" + "cdn.jsdelivr.net/npm/" + "xlsx@0.18.5/dist/xlsx.full.min.js";
+      script.onload = callback;
+      script.onerror = () => {
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Failed to load the Excel parsing library. Check your network connection.</span>`;
+      };
+      document.head.appendChild(script);
     }
 
     async function loadSyllabusFromExcel() {
@@ -159,7 +167,7 @@
       }
 
       if (!response) {
-        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Database Error: Could not locate BookDatabase.xlsx in your repository. Check if the file is uploaded to the root folder.</span>`;
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Database Error: Could not locate BookDatabase.xlsx. Verify it is uploaded to the root folder of your repository.</span>`;
         return;
       }
 
@@ -167,11 +175,11 @@
         const arrayBuffer = await response.arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
         
-        // Use the XLSX object safely now that the library is fully loaded
-        const workbook = XLSX.read(data, { type: 'array' });
+        // The library is fully ready now inside the window runtime context
+        const workbook = window.XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-        const parsedRows = XLSX.utils.sheet_to_json(worksheet);
+        const parsedRows = window.XLSX.utils.sheet_to_json(worksheet);
         
         const matchingBooks = parsedRows.filter(row => {
           if (!row.Class) return false;
@@ -195,9 +203,8 @@
           const chapters = book["Number of Chapters"] || "0";
           const code = String(book["Code"] || "").trim().toLowerCase();
 
-          // Corrected NCERT string concatenation structure
-          const coverUrl = `https://ncert.nic.in{gradeLetter}${code}cc.jpg`;
-          const textBookUrl = `https://ncert.nic.in{gradeLetter}${code}=0-${chapters}`;
+          const coverUrl = `https://ncert.nic.in/textbook/pdf/${gradeLetter}${code}cc.jpg`;
+          const textBookUrl = `https://ncert.nic.in/textbook.php?${gradeLetter}${code}=0-${chapters}`;
 
           card.innerHTML = `
             <h3>${subject}</h3>
@@ -212,7 +219,7 @@
             <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
             
             <button class="btn btn-primary open-book-btn" style="margin-bottom: 10px;">
-              📖 Read Online
+              Read Online
             </button>
             
             <button class="btn btn-secondary search-btn" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -239,7 +246,8 @@
       }
     }
 
-    loadSyllabusFromExcel();
+    // Ingest the runtime dependency first, then query the dataset
+    injectExcelEngine(loadSyllabusFromExcel);
   </script>
 
   <hr style="border: none; height: 5px; background-color: #333;">

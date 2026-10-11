@@ -28,7 +28,7 @@
     }
 
     body {
-      margin: 0;
+      margin: 10;
       background: linear-gradient(to bottom, #ffffff, var(--bg-main));
       color: var(--text-main);
     }
@@ -132,6 +132,11 @@
       color: var(--text-muted);
     }
 
+    .card img {
+      border-radius: var(--radius);
+    }
+ 	
+
     /* ---------- VIDEO ---------- */
     .video-wrapper {
       max-width: 720px;
@@ -158,6 +163,32 @@
       color: var(--text-muted);
     }
 
+    select {
+      background: var(--accent-soft);
+      color: black;
+      box-shadow: var(--shadow);
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 10px;
+      border: 1px solid #000000;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:hover {
+      transform: translateY(-2px);
+    }
+
+    option {
+      background: white;
+      color: var(--accent);
+      appearance: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+      
+
     /* ---------- FOOTER ---------- */
     footer {
       text-align: center;
@@ -166,7 +197,7 @@
       color: var(--text-muted);
     }
   </style>
-<title>ClearNotes - Registration</title>
+<title>ClearNotes - Signup</title>
 </head>
 
 <body>
@@ -181,8 +212,8 @@
 <hr>
 
 <a id="google-search-link" href="#" target="_blank">
-  <button class="custom-button">Search this school on Google <br><br> 
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/100px-Google_2015_logo.svg.png" alt="logo"></button>
+  <button class="btn btn-primary">Search this school on <br><br>	
+  <img src="Google-Logo.jpg" alt="logo" width="200" style="border-radius: var(--radius);"></button>
 </a>
 
 <script>
@@ -226,7 +257,7 @@
 </select>
 <br><br>
 
-<button id="save-grade">Save Grade</button>
+<button class="btn btn-primary" id="save-grade">Save Grade</button>
 
 <script>
 const gradePicker = document.getElementById("grade-picker");

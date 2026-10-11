@@ -132,6 +132,10 @@
       color: var(--text-muted);
     }
 
+    .card img {
+      border-radius: var(--radius);
+    }
+
     /* ---------- VIDEO ---------- */
     .video-wrapper {
       max-width: 720px;
@@ -182,7 +186,38 @@
 
 <section>
   <h2>Your Control Center</h2>
-  <p class="section-desc">Everything you need to organize, access, and contribute study resources — in one place.</p>
+
+  <p id="desc-fallback" class="section-desc">Everything you need to organize, access, and contribute study resources in one place.</p>
+<p id="desc-dynamic" class="section-desc" style="display: none;">Everything you need from <span id="school-name"></span> of class <span id="grade-display"></span><span id="section-display"></span>.</p>
+
+<script>
+  const school = JSON.parse(localStorage.getItem("chosenSchool"));
+  const grade = localStorage.getItem("chosenGrade");
+  const section = localStorage.getItem("chosenSection");
+
+  if (school && grade && section) {
+    document.getElementById("desc-dynamic").style.display = "block";
+    document.getElementById("desc-fallback").style.display = "none";
+
+    document.getElementById("school-name").textContent = school.name;
+    document.getElementById("grade-display").textContent = grade;
+    document.getElementById("section-display").textContent = section;
+  } else {
+    document.getElementById("desc-dynamic").style.display = "none";
+    document.getElementById("desc-fallback").style.display = "block";
+  }
+
+  if (document.getElementById("grade-short")) {
+    document.getElementById("grade-short").textContent = grade ? grade : "";
+  }
+  if (document.getElementById("section-short")) {
+    document.getElementById("section-short").textContent = section ? section : "";
+  }
+  if (document.getElementById("school-short")) {
+    document.getElementById("school-short").textContent = school ? school.name : "";
+  }
+</script>
+
 
   <div class="card-grid">
     <div class="card">

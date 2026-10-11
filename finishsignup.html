@@ -28,7 +28,7 @@
     }
 
     body {
-      margin: 0;
+      margin: 10;
       background: linear-gradient(to bottom, #ffffff, var(--bg-main));
       color: var(--text-main);
     }
@@ -78,6 +78,7 @@
     .btn-secondary {
       background: var(--accent-soft);
       color: var(--accent);
+      border: 1px solid #000000;
     }
 
     .btn:hover {
@@ -132,6 +133,11 @@
       color: var(--text-muted);
     }
 
+    .card img {
+      border-radius: var(--radius);
+    }
+ 	
+
     /* ---------- VIDEO ---------- */
     .video-wrapper {
       max-width: 720px;
@@ -158,6 +164,32 @@
       color: var(--text-muted);
     }
 
+    select {
+      background: var(--accent-soft);
+      color: black;
+      box-shadow: var(--shadow);
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 10px;
+      border: 1px solid #000000;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:hover {
+      transform: translateY(-2px);
+    }
+
+    option {
+      background: white;
+      color: var(--accent);
+      appearance: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+      
+
     /* ---------- FOOTER ---------- */
     footer {
       text-align: center;
@@ -168,7 +200,6 @@
   </style>
 <title>ClearNotes - Finish Signup</title>
 </head>
-
 <body>
 
 <h1>Congrats! 🥳</h1>
@@ -189,7 +220,8 @@
 <p>In short, <span id="grade-short"></span><span id="section-short"></span> of <i><span id="school-short"></span></i>.</p>
 <br>
 
-<a href="index.html"><button class="custom-button">Confirm Signup</button></a>
+<a href="index.html"><button class="btn btn-primary">Confirm Signup</button></a>
+<a href="signup.html"><button class="btn btn-secondary">Try signing up again</button></a>
 
 <script>
   const school = JSON.parse(localStorage.getItem("chosenSchool"));

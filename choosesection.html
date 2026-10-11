@@ -28,7 +28,7 @@
     }
 
     body {
-      margin: 0;
+      margin: 10;
       background: linear-gradient(to bottom, #ffffff, var(--bg-main));
       color: var(--text-main);
     }
@@ -132,6 +132,11 @@
       color: var(--text-muted);
     }
 
+    .card img {
+      border-radius: var(--radius);
+    }
+ 	
+
     /* ---------- VIDEO ---------- */
     .video-wrapper {
       max-width: 720px;
@@ -158,6 +163,32 @@
       color: var(--text-muted);
     }
 
+    select {
+      background: var(--accent-soft);
+      color: black;
+      box-shadow: var(--shadow);
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 10px;
+      border: 1px solid #000000;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:hover {
+      transform: translateY(-2px);
+    }
+
+    option {
+      background: white;
+      color: var(--accent);
+      appearance: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+      
+
     /* ---------- FOOTER ---------- */
     footer {
       text-align: center;
@@ -166,7 +197,7 @@
       color: var(--text-muted);
     }
   </style>
-<title>ClearNotes - Registration</title>
+<title>ClearNotes - Signup</title>
 </head>
 
 <body>
@@ -208,7 +239,7 @@
 </select>
 <br><br>
 
-<button id="save-section">Save Section</button>
+<button id="save-section" class="btn btn-primary">Save Section</button>
 
 <script>
 const saveSectionButton = document.getElementById("save-section");

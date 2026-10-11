@@ -1,514 +1,497 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ClearNotes - School Map</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- 1. ADDED LEAFLET CSS (Required for the map to look right) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  
+    <title>ClearNotes - School Map</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
-  
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-  <style>
-    :root {
-      --bg-main: #fcf2bd;
-      --bg-card: #ffffff;
-      --accent: #f76307;
-      --accent-soft: #fffcab;
-      --text-main: #1e1e1e;
-      --text-muted: #666;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    body {
-      margin: 0;
-      padding: 40px;
-      background: linear-gradient(to bottom, #ffffff, var(--bg-main));
-      color: var(--text-main);
-      font-family: "Bricolage Grotesque", sans-serif;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    /* 2. FIXED: Map must have a height to be visible */
-    #map { 
-      height: 500px; 
-      width: 100%; 
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 30px;
-      border: 2px solid white;
-    }
+    <style>
+        :root {
+            --bg-main: #fcf2bd;
+            --bg-card: #ffffff;
+            --accent: #f76307;
+            --accent-soft: #fffcab;
+            --text-main: #1e1e1e;
+            --text-muted: #666;
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    /* Stylized buttons to match your previous request */
-    .btn-primary {
-      background-color: var(--accent) !important;
-      color: white !important;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 14px;
-    }
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, #ffffff, var(--bg-main));
+            color: var(--text-main);
+            font-family: "Bricolage Grotesque", sans-serif;
+            min-height: 100vh;
+        }
 
-    .btn-secondary {
-      background-color: var(--accent-soft) !important;
-      color: var(--accent) !important;
-      border: 1px solid var(--accent) !important;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 14px;
-      margin-top: 5px;
-    }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
 
-   .btn {
-      padding: 12px 22px;
-      border-radius: 12px;
-      border: none;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+        h1 {
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-    }
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
 
-    h1 { text-align: center; margin-bottom: 30px; font-weight: 800; }
-    .footer-info { margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.5); border-radius: 12px; }
-  </style>
+        #map {
+            height: 550px;
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 2px solid white;
+            background: #e8e8e8;
+            z-index: 1;
+        }
+
+        #map-status {
+            text-align: center;
+            padding: 12px;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .btn-secondary {
+            background-color: var(--accent-soft);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            margin-top: 8px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            font-family: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .school-popup {
+            min-width: 190px;
+            font-family: "Bricolage Grotesque", sans-serif;
+            line-height: 1.5;
+        }
+
+        .school-popup h3 {
+            color: var(--accent);
+            margin: 0 0 8px;
+            font-size: 17px;
+        }
+
+        .school-popup p {
+            margin: 5px 0;
+            overflow-wrap: anywhere;
+        }
+
+        .school-popup hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 10px 0;
+        }
+
+        .leaflet-tooltip.custom-map-label {
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            color: var(--text-main);
+            font-family: "Bricolage Grotesque", sans-serif;
+            font-weight: 800;
+            font-size: 12px;
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+            padding: 4px 8px;
+            opacity: 1;
+        }
+
+        .leaflet-tooltip.custom-map-label::before {
+            border-top-color: var(--accent);
+        }
+
+        .footer-info {
+            margin-top: 35px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.65);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .footer-info h3 {
+            margin-top: 0;
+        }
+
+        .footer-info p {
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 24px 12px;
+            }
+
+            #map {
+                height: 450px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
+
 <body>
+    <div class="container">
 
-<div class="container">
-    <h1>ClearNotes School Map</h1>
-    
-    <!-- Map Container -->
-    <div id="map"></div>
+        <h1>ClearNotes School Map</h1>
 
-    <div class="footer-info">
-        <h3><u>Contributions</u></h3>
-        <p><b>Created by SharkofGit and Nith04Git.</b></p>
-        <p>Products: Google Earth, Google Chrome, LeafletJS</p>
-        <hr>
-        <p><small>Precise geolocation coordinates provided by Google Earth. Please be aware that these coordinates can sometimes be inaccurate.</small></p>
+        <p class="subtitle">
+            Explore schools on the map and select the one you want.
+        </p>
+
+        <div id="map"></div>
+
+        <div id="map-status" role="status" aria-live="polite">
+            Loading school data...
+        </div>
+
+        <div class="footer-info">
+            <h3><u>Contributions</u></h3>
+
+            <p>
+                <b>Created by SharkofGit and Nith04Git.</b>
+            </p>
+
+            <p>
+                Products: Google Earth, Google Chrome, LeafletJS
+            </p>
+
+            <hr>
+
+            <p>
+                <small>
+                    School coordinates are provided by Google Earth and may not
+                    always be precise. Map tiles are provided by OpenStreetMap.
+                </small>
+            </p>
+        </div>
+
     </div>
-</div>
 
-<!-- 3. LEAFLET JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<script>
-// Set up map (Centered on the school's general area)
-var map = L.map('map').setView([0, 0], 1);
+    <script>
+        "use strict";
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+        // 1. INITIALIZE THE MAP
 
-var schools = [
- {
-  "name": "Kola Perumal Chetty Vaishnav Senior Secondary School",
-  "address": "Kola Perumal Chetty Vaishnav Senior Secondary School, Periyar E.V.R. Salai, Gokul Bagh, 815, Kolaperumal School St, Arumbakkam, Chennai, Tamil Nadu 600106, India",
-  "lat": 13.0743908,
-  "lon": 80.2139190
- },
+        const map = L.map("map").setView([10.0, 76.3], 7);
 
- {
-  "name": "Chennai Public School",
-  "address": "Chennai Public School, Chennai Public School Radial Nagar, TVS Ave, Radial Nagar, Anna Nagar West Extension, Chennai, Tamil Nadu 600101, India",
-  "lat": 13.0890054,
-  "lon": 80.1899040
- },
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
+            }
+        ).addTo(map);
 
- {
-  "name": "Good Hope New Generation Higher Secondary School",
-  "address": "Good Hope New Gen Hr Sec School, 5, Jagannatha Nagar 1st Main Rd, Jagannatha Nagar, Arumbakkam, Chennai, Tamil Nadu 600106, India",
-  "lat": 13.0750778,
-  "lon": 80.2090660
- },
 
- {
-  "name": "Velammal Vidyalaya",
-  "address": "Block No, Velammal Vidyalaya - Mogappair West, 7, 1st Main Rd, Mogappair West, Mogappair East, Chennai, Tamil Nadu 600037, India",
-  "lat": 13.0790083,
-  "lon": 80.1751505
- },
+        // 2. SCHOOL DATABASE
 
- {
-  "name": "The Choice School",
-  "address": "The Choice School, 53, Nadama East, Karingachira, Thrippunithura, Ernakulam, Kerala 682301, India",
-  "lat": 9.9592941,
-  "lon": 76.3519666
- },
+        let schoolMemoryDatabase = [];
 
- {
-  "name": "Kendriya Vidyalaya Pattom",
-  "address": "Kendriya Vidyalaya Pattom, Pattom, Thiruvananthapuram, Kerala 695004, India",
-  "lat": 8.5206830,
-  "lon": 76.9410866
- },
+        const statusElement = document.getElementById("map-status");
 
- {
-  "name": "Chinmaya Vidyalaya",
-  "address": "Chinmaya Vidyalaya, School Rd, Kannankulangara, Thrippunithura, Kochi, Ernakulam, Kerala 682301, India",
-  "lat": 9.9392801,
-  "lon": 76.3430521
- },
 
- {
-  "name": "S Thomas' College",
-  "address": "Dehiwala-Mount Lavinia, Sri Lanka",
-  "lat": 6.8374503,
-  "lon": 79.8660067
- },
+        // 3. SELECT A SCHOOL
 
- {
-  "name": "St. Joseph's English Medium School",
-  "address": "St. Joseph's English Medium School, Valanchery - Nilambur Rd, Puthanangadi, Kerala 679321, India",
-  "lat": 10.9639330,
-  "lon": 76.1831600
- },
+        function handleMarkerSelection(index) {
+            const selectedSchool = schoolMemoryDatabase[index];
 
- {
-  "name": "International School of Beijing",
-  "address": "International School of Beijing, 10 Anhua St, Shunyi District, Beijing, China, 100103",
-  "lat": 40.0798790,
-  "lon": 116.5252350
- },
+            if (!selectedSchool) {
+                console.error("Selected school does not exist:", index);
+                return;
+            }
 
- {
-  "name": "Tsinghua University",
-  "address": "Tsinghua University, 30 Shuangqing Rd, 蓝旗营 Haidian District, Beijing, China, 100190",
-  "lat": 39.9996674,
-  "lon": 116.3264439
- },
+            localStorage.setItem(
+                "chosenSchool",
+                JSON.stringify(selectedSchool)
+            );
 
- {
-  "name": "Mangyŏngdae Revolution Academy",
-  "address": "Mangyŏngdae Revolution Academy, Pyongyang, North Korea",
-  "lat": 38.9981002,
-  "lon": 125.6635323
- },
+            window.location.href = "chooseschool.html";
+        }
 
- {
-  "name": "Government Higher Secondary School (GHSS) Maloth Kasaba",
-  "address": "GHSS Maloth Kasba, Malom - Cherupuzha Rd, Vallikkadavu, Malom, Maloth, Kerala 671534, India",
-  "lat": 12.3671748,
-  "lon": 75.3565458
- },
 
- {
-  "name": "Madha Public School (CBSE) Valasaravakkam",
-  "address": "Madha Public School (CBSE) Valasaravakkam, 39, Sri Lakshmi Nagar 4th St, Chakarabani Nagar, Sri Lakshmi Nagar, Valasaravakkam, Chennai, Tamil Nadu 600095, India",
-  "lat": 13.0504550,
-  "lon": 80.1736874
- },
+        // 4. ESCAPE HTML
 
- {
-  "name": "Velammal Vidyalaya Alapakkam",
-  "address": "Velammal Vidyalaya Alapakkam, Velammal Avenue, Seemathamman Nagar Main Rd, Alapakkam, Maduravoyal, Chennai, Tamil Nadu 600095, India",
-  "lat": 13.0580437,
-  "lon": 80.1685771
- },
+        function escapeHTML(value) {
+            const entities = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            };
 
- {
-  "name": "Velammal Vidyalaya Ayanambakkam",
-  "address": "Velammal Vidyalaya Ayanambakkam, Mel Ayanambakkam Main Rd, Mel Ayanambakkam, Kil Ayanambakkam, Chennai, Tamil Nadu 600095, India",
-  "lat": 13.0818256,
-  "lon": 80.1517569
- },
+            return String(value ?? "").replace(
+                /[&<>"']/g,
+                character => entities[character]
+            );
+        }
 
- {
-  "name": "Aachi Global International CBSE | CAMBRIDGE School | Ayanambakkam",
-  "address": "Aachi Global International CBSE | CAMBRIDGE School | Ayanambakkam, 46, Padaslai Rd, Agraharam, Kil Ayanambakkam, Chennai, Tamil Nadu 600095, India",
-  "lat": 13.0781352,
-  "lon": 80.1499726
- },
 
- {
-  "name": "International Village School",
-  "address": "International Village School, 89 - 91, Classic Farms Avenue, Road, Sholinganallur, Chennai, Tamil Nadu 600119, India",
-  "lat": 12.8960457,
-  "lon": 80.2179706
- },
+        // 5. VALIDATE SCHOOL COORDINATES
 
- {
-  "name": "Anand Singapore International School (Chennai)",
-  "address": "Anand Singapore International School Chennai, parvathi Avenue Madanandapuram, Udhaya Nagar Main Rd, Porur, Chennai, Tamil Nadu 600125, India",
-  "lat": 13.0214247,
-  "lon": 80.1546215
- },
+        function isValidCoordinate(school) {
+            if (
+                !school ||
+                school.lat === undefined ||
+                school.lon === undefined
+            ) {
+                return false;
+            }
 
- {
-  "name": "St. Thomas Academy Senior Secondary CBSE School",
-  "address": "St. Thomas Academy Senior Secondary CBSE School, Ramapuram, Parangi Malai, Chennai, St.Thomas Mount, Tamil Nadu 600016, India",
-  "lat": 13.0016919,
-  "lon": 80.1899152
- },
+            const lat = Number(school.lat);
+            const lon = Number(school.lon);
 
- {
-  "name": "Sri Sankara Senior Secondary School",
-  "address": "9, Sri Sankara Senior Secondary School, 21, Vasantha Press Rd, Arunachalapuram, Adyar, Chennai, Tamil Nadu 600020, India",
-  "lat": 13.0100267,
-  "lon": 80.2609395
- },
+            return (
+                Number.isFinite(lat) &&
+                Number.isFinite(lon) &&
+                lat >= -90 &&
+                lat <= 90 &&
+                lon >= -180 &&
+                lon <= 180
+            );
+        }
 
- {
-  "name": "Kendriya Vidyalaya (Ashok Nagar, Chennai)",
-  "address": "Kendriya Vidyalaya Ashok Nagar, Chennai, Dr Natesan Salai, Zaffarkhanpet, Ashok Nagar, Chennai, Tamil Nadu 600083, India",
-  "lat": 13.0369773,
-  "lon": 80.2092827
- },
 
- {
-  "name": "Kendriya Vidyalaya (Anna Nagar, Chennai)",
-  "address": "Kendriya Vidyalaya Anna Nagar, Chennai, GPRA Campus, Jawaharlal Nehru Salai, Anna Nagar West, Chennai, Tamil Nadu 600040, India",
-  "lat": 13.0825259,
-  "lon": 80.1978430
- },
+        // 6. LOAD SCHOOL DATA
 
- {
-  "name": "Kendriya Vidyalaya (Minambakkam)",
-  "address": "Kendriya Vidyalaya Minambakkam, Minambakkam Road, Near Palavanthangal Railway Station, Grand Southern Trunk Rd, Near Palavanthangal Railway Station, Kannan Colony, Palavanthangal, Chennai, Tamil Nadu 600016, India",
-  "lat": 12.9920594,
-  "lon": 80.1858939
- },
+        async function loadSchoolData() {
+            try {
+                statusElement.textContent = "Loading school data...";
 
- {
-  "name": "Kendriya Vidyalaya (Gill Nagar)",
-  "address": "Kendriya Vidyalaya Gill Nagar, Vada Agaram Rd, Kamarajar Nagar, Gill Nagar, Choolaimedu, Chennai, Tamil Nadu 600094, India",
-  "lat": 13.0632762,
-  "lon": 80.2244227
- },
+                const response = await fetch("./schooldata.json", {
+                    cache: "no-cache"
+                });
 
- {
-  "name": "Kendriya Vidyalaya DGQA",
-  "address": "Kendriya Vidyalaya DGQA, 1st Main Rd, NGO Colony, B.V. Nagar, Nanganallur, Chennai, Tamil Nadu 600061, India",
-  "lat": 12.9766434,
-  "lon": 80.1786448
- },
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to load schooldata.json (HTTP ${response.status})`
+                    );
+                }
 
- {
-  "name": "Kendriya Vidyalaya IIT Chennai",
-  "address": "Kendriya Vidyalaya IIT Chennai, Bonn Ave, Indian Institute Of Technology, Chennai, Tamil Nadu 600036, India",
-  "lat": 12.9928092,
-  "lon": 80.2330441
- },
+                const schools = await response.json();
 
- {
-  "name": "Kendriya Vidyalaya CLRI Chennai",
-  "address": "Kendriya Vidyalaya CLRI Chennai, PATEL ROAD, ADYAR, Chennai, Tamil Nadu 600025, India",
-  "lat": 13.0074064,
-  "lon": 80.2467321
- },
+                if (!Array.isArray(schools)) {
+                    throw new Error(
+                        "schooldata.json must contain a JSON array of schools."
+                    );
+                }
 
- {
-  "name": "Kendriya Vidyalaya OCF Avadi",
-  "address": "Kendriya Vidyalaya OCF Avadi, Bhaktavatsala Puram, Avadi, Tamil Nadu 600054, India",
-  "lat": 13.1237367,
-  "lon": 80.1007605
- },
+                schoolMemoryDatabase = schools;
 
- {
-  "name": "Kendriya Vidyalaya No.1",
-  "address": "Kendriya Vidyalaya No.1, Air Force Station, Road, Camp, Madambakkam, Chennai, Tamil Nadu 600073, India",
-  "lat": 12.9154625,
-  "lon": 80.1477967
- },
+                const bounds = [];
 
- {
-  "name": "Jawahar Vidyalaya Senior Secondary School",
-  "address": "Jawahar Vidyalaya Senior Secondary School (A Unit of Stree Seva Mandir), Old-36, New, 62, 4th Ave, Ashok Nagar, Chennai, Tamil Nadu 600083, India",
-  "lat": 13.0414457,
-  "lon": 80.2162886
- },
+                let markerCount = 0;
 
- {
-  "name": "Aadhithya International Public School(s)",
-  "address": "Aadhithya International Public Schools, Aadhithya International Public School, No 6, 2nd Main Road, Royal Garden Royal Garden Goparasanallur, Village, Kattupakkam, Chennai, Tamil Nadu 600056, India",
-  "lat": 13.0477213,
-  "lon": 80.1268788
- },
 
- {
-  "name": "ORCHIDS The International School (Manapakkam)",
-  "address": "ORCHIDS The International School - CBSE School in Manapakkam, Manapakkam Main Rd, Theresa Nagar, Kolapakkam, Chennai, Tamil Nadu 600128, India",
-  "lat": 13.0110059,
-  "lon": 80.1570431
- },
+                // CREATE A MARKER FOR EACH VALID SCHOOL
 
- {
-  "name": "ORCHIDS The International School (Pallikaranai)",
-  "address": "ORCHIDS The International School In Pallikaranai, Bharathiyar St, BHEL Nagar, Pallikaranai, Chennai, Tamil Nadu 600100, India",
-  "lat": 12.9235561,
-  "lon": 80.1989187
- },
+                schools.forEach((school, index) => {
+                    if (!isValidCoordinate(school)) {
+                        console.warn(
+                            `Skipping school at index ${index}: invalid coordinates.`,
+                            school
+                        );
 
- {
-  "name": "Ampa Sishya School",
-  "address": "Ampa Sishya School, Old no-29,New, 105A, Nelson Manickam Rd, Aminjikarai, Chennai, Tamil Nadu 600030, India",
-  "lat": 13.0721827,
-  "lon": 80.2219491
- },
+                        return;
+                    }
 
- {
-  "name": "National Public School",
-  "address": "National Public School, 228, Avvai Shanmugham Salai, Ganapathy Colony, Gopalapuram, Chennai, Tamil Nadu 600086, India",
-  "lat": 13.0499506,
-  "lon": 80.2579949
- },
+                    const lat = Number(school.lat);
+                    const lon = Number(school.lon);
 
- {
-  "name": "Sai Krish International School",
-  "address": "Sri Krish International School, OFFICE, Kundrathur Main Rd, Kovur, Rajiv Gandhi Nagar, Chennai, Tamil Nadu 600128, India",
-  "lat": 13.0083811,
-  "lon": 80.1127882
- },
+                    const schoolName = escapeHTML(
+                        school.name || "Unnamed School"
+                    );
 
- {
-  "name": "Chennai High School",
-  "address": "Chennai High School, Corporation Boys High School, 4, Strahans Rd, Pattalam, Purasaiwakkam, Chennai, Tamil Nadu 600012, India",
-  "lat": 13.0972627,
-  "lon": 80.2587167
- },
+                    const schoolAddress = escapeHTML(
+                        school.address || "Address unavailable"
+                    );
 
- {
-  "name": "St. Joseph School",
-  "address": "St.Joseph School, 6/130, Kalathiappa St, Choolai, Chennai, Tamil Nadu 600007, India",
-  "lat": 13.0896625,
-  "lon": 80.2618140
- },
 
- {
-  "name": "JM MATRICULATION GIRLS HIGHER SECONDARY SCHOOL",
-  "address": "J M MATRIC GIRLS HR SEC SCHOOL,, 37/3, Ponnan St, Otteri, Purasaiwakkam, Chennai, Tamil Nadu 600007, India",
-  "lat": 13.0899212,
-  "lon": 80.2521189
- },
+                    // BUILD POPUP CONTENT
 
- {
-  "name": "ORCHIDS - The International School (Pulianthope)",
-  "address": "ORCHIDS The International School - CBSE School in Pulianthope, Sri Sushwani Matha Jain Vidyalaya, 11, Kuttithambiran St, Bhogipalayam, Pulianthope, Chennai, Tamil Nadu 600012, India",
-  "lat": 13.1009390,
-  "lon": 80.2638342
- },
+                    const popupContent = `
+                        <div class="school-popup">
 
- {
-  "name": "St. Andrews High School",
-  "address": "St Andrews high School, 123, Kalathiappa St, Choolai, Chennai, Tamil Nadu 600007, India",
-  "lat": 13.0898918,
-  "lon": 80.2627856
- },
+                            <h3>${schoolName}</h3>
 
- {
-  "name": "TJV School (Pattalam)",
-  "address": "TJV School pattalam, 13, Barracks Gate Rd, Jai Nagar, Pattalam, Choolai, Chennai, Tamil Nadu 600012, India",
-  "lat": 13.0976701,
-  "lon": 80.2603389
- },
+                            <p>
+                                <strong>Address:</strong><br>
+                                ${schoolAddress}
+                            </p>
 
- {
-  "name": "SSA Government Higher School",
-  "address": "SSA Government Higher School, Jai Nagar, Pattalam, Choolai, Chennai, Tamil Nadu 600012, India",
-  "lat": 13.0948295,
-  "lon": 80.2597094
- },
+                            <p>
+                                <strong>Coordinates:</strong><br>
+                                ${lat}, ${lon}
+                            </p>
 
- {
-  "name": "Srivatsa Matriculation School",
-  "address": "SRIVATSA MATRICULATION SCHOOL, No.57, Chellappa Mudali St, Otteri, Purasaiwakkam, Chennai, Tamil Nadu 600012, India",
-  "lat": 13.0929540,
-  "lon": 80.2532871
- },
+                            <hr>
 
- {
-  "name": "American High School",
-  "address": "American High School, 36300 Fremont Blvd, Fremont, CA 94536, United States",
-  "lat": 37.5653507,
-  "lon": -122.0164692
- },
+                            <button
+                                type="button"
+                                class="btn-secondary choose-school-button"
+                                data-school-index="${index}"
+                            >
+                                Choose this school
+                            </button>
 
- {
-  "name": "American International School",
-  "address": "American International School, Jawaharlal Nehru Salai, Tharamani, Chennai, Tamil Nadu 600113, India",
-  "lat": 12.9819990,
-  "lon": 80.2463767
- },
+                            <a
+                                class="btn-secondary"
+                                href="https://www.google.com/search?q=${encodeURIComponent(school.name || "school")}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Search on Google
+                            </a>
 
- {
-  "name": "British International School of Charlotte",
-  "address": "British International School of Charlotte, 7000 Endhaven Ln, Charlotte, NC 28277, United States",
-  "lat": 35.0690345,
-  "lon": -80.8375194
- },
+                        </div>
+                    `;
 
- {
-  "name": "British International School (Chicago, Lincoln Park)",
-  "address": "British International School Chicago, Lincoln Park, 814 W Eastman St, Chicago, IL 60642, United States",
-  "lat": 41.9076559,
-  "lon": -87.6488044
- },
 
- {
-  "name": "Nord Anglia International School (New York)",
-  "address": "Nord Anglia International School, New York, 111 E 22nd St, New York, NY 10010, United States",
-  "lat": 40.7393501,
-  "lon": -73.9861675
- },
+                    // CREATE THE MAP MARKER
 
- {
-  "name": "British International School of Washington",
-  "address": "British International School of Washington, 2001 Wisconsin Ave NW, Washington, DC 20007, United States",
-  "lat": 38.9165487,
-  "lon": -77.0681123
- },
+                    const marker = L.circleMarker(
+                        [lat, lon],
+                        {
+                            radius: 9,
+                            fillColor: "#f76307",
+                            color: "#ffffff",
+                            weight: 2,
+                            opacity: 1,
+                            fillOpacity: 0.9
+                        }
+                    ).addTo(map);
 
- {
-  "name": "The International Village School",
-  "address": "The Village International School, Thodupuzha - Perumamkandam - Kaloor Rd, Kumaramangalam, Kumaramangalam part, Kerala 685608, India",
-  "lat": 9.9361327,
-  "lon": 76.7062104
- }
-];
 
-schools.forEach(school => {
-  const popupContent = `
-    <b>${school.name}</b><br><hr>
-    <details><summary>Location</summary>${school.address}</details>
-    <hr>
-    <button class="btn btn-secondary" onclick='chooseSchool(${JSON.stringify(school)})'>
-      Choose this school
-    </button>
-    <br><br>
-    <a href="https://www.google.com/search?q=${encodeURIComponent(school.name)}" target="_blank">
-      <button class="btn btn-secondary">Search on Google</button>
-    </a>
-  `;
-  L.marker([school.lat, school.lon]).addTo(map).bindPopup(popupContent);
-});
+                    // ATTACH THE POPUP
 
-// Store chosen school in localStorage and go to page
-function chooseSchool(school) {
-  localStorage.setItem("chosenSchool", JSON.stringify(school));
-  window.location.href = "chooseschool.html";
-}
-</script>
+                    marker.bindPopup(popupContent);
 
+
+                    // ATTACH THE SCHOOL-NAME LABEL
+
+                    marker.bindTooltip(
+                        school.name || "Unnamed School",
+                        {
+                            permanent: true,
+                            direction: "top",
+                            className: "custom-map-label",
+                            offset: [0, -8]
+                        }
+                    );
+
+
+                    // SAVE THE COORDINATES FOR MAP BOUNDS
+
+                    bounds.push([lat, lon]);
+
+                    markerCount++;
+                });
+
+
+                // ADJUST THE MAP TO SHOW ALL MARKERS
+
+                if (bounds.length > 0) {
+                    map.fitBounds(
+                        bounds,
+                        {
+                            padding: [35, 35],
+                            maxZoom: 15
+                        }
+                    );
+
+                    statusElement.textContent =
+                        `Displaying ${markerCount} of ${schools.length} schools.`;
+
+                } else {
+                    statusElement.textContent =
+                        schools.length === 0
+                            ? "No schools were found in schooldata.json."
+                            : "No schools with valid coordinates could be displayed.";
+                }
+
+            } catch (error) {
+                console.error("School map initialization error:", error);
+
+                statusElement.textContent =
+                    "Unable to load school data. Check schooldata.json and the browser console.";
+            }
+        }
+
+
+        // 7. HANDLE SCHOOL SELECTION
+
+        map.on("popupopen", function (event) {
+            const popupElement = event.popup.getElement();
+
+            if (!popupElement) {
+                return;
+            }
+
+            const button = popupElement.querySelector(
+                ".choose-school-button"
+            );
+
+            if (!button) {
+                return;
+            }
+
+            button.addEventListener("click", function () {
+                const index = Number(button.dataset.schoolIndex);
+
+                handleMarkerSelection(index);
+            });
+        });
+
+
+        // 8. START LOADING
+
+        loadSchoolData();
+
+    </script>
 </body>
 </html>

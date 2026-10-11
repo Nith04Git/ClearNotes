@@ -201,21 +201,17 @@
 
             <p>
                 <small>
-                    School coordinates are provided by Google Earth and may not
+                    Coordinates are provided by Google Earth and may not
                     always be precise. Map tiles are provided by OpenStreetMap.
                 </small>
             </p>
         </div>
 
     </div>
-
-    <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
         "use strict";
-
-        // 1. INITIALIZE THE MAP
 
         const map = L.map("map").setView([10.0, 76.3], 7);
 
@@ -227,15 +223,9 @@
             }
         ).addTo(map);
 
-
-        // 2. SCHOOL DATABASE
-
         let schoolMemoryDatabase = [];
 
         const statusElement = document.getElementById("map-status");
-
-
-        // 3. SELECT A SCHOOL
 
         function handleMarkerSelection(index) {
             const selectedSchool = schoolMemoryDatabase[index];
@@ -253,9 +243,6 @@
             window.location.href = "chooseschool.html";
         }
 
-
-        // 4. ESCAPE HTML
-
         function escapeHTML(value) {
             const entities = {
                 "&": "&amp;",
@@ -270,9 +257,6 @@
                 character => entities[character]
             );
         }
-
-
-        // 5. VALIDATE SCHOOL COORDINATES
 
         function isValidCoordinate(school) {
             if (
@@ -295,9 +279,6 @@
                 lon <= 180
             );
         }
-
-
-        // 6. LOAD SCHOOL DATA
 
         async function loadSchoolData() {
             try {
@@ -462,9 +443,6 @@
             }
         }
 
-
-        // 7. HANDLE SCHOOL SELECTION
-
         map.on("popupopen", function (event) {
             const popupElement = event.popup.getElement();
 
@@ -486,9 +464,6 @@
                 handleMarkerSelection(index);
             });
         });
-
-
-        // 8. START LOADING
 
         loadSchoolData();
 

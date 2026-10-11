@@ -189,8 +189,9 @@
   </div>
 </section>
 
+<script src="https://jsdelivr.net"></script>
 <script>
-// 1. Fetch user data from localStorage
+// 1. Fetch user dashboard details from localStorage
 const school = JSON.parse(localStorage.getItem("chosenSchool"));
 const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
 const section = localStorage.getItem("chosenSection");
@@ -202,7 +203,14 @@ document.getElementById("section-display").textContent = section ? " " + section
 const gridContainer = document.getElementById("syllabus-grid");
 const statusText = document.getElementById("loading-status");
 
-// 2. Dynamic Excel Fetch and Parse Function
+// Helper function to map grade numbers to alphabet letters (1->a, 2->b, 9->i, 10->j)
+function getGradeLetter(gradeString) {
+  const gradeNum = parseInt(gradeString, 10);
+  if (isNaN(gradeNum) || gradeNum < 1 || gradeNum > 26) return "";
+  return String.fromCharCode(96 + gradeNum); // 97 is 'a'
+}
+
+// 2. Dynamic Ingestion and URL Construction
 async function loadSyllabusFromExcel() {
   if (!grade) {
     statusText.textContent = "Please select a grade to display your syllabus.";
@@ -210,28 +218,22 @@ async function loadSyllabusFromExcel() {
   }
 
   try {
-    // Fetch the Excel file relative to this HTML file
+    // Fetch Excel sheet locally or from GitHub Pages environment
     const response = await fetch("./BookDatabase.xlsx");
     if (!response.ok) {
-      throw new Error("Unable to read BookDatabase.xlsx. Ensure it's in the same directory and served via a local server.");
+      throw new Error("Unable to fetch BookDatabase.xlsx automatically.");
     }
     
-    // Parse the file structure
     const arrayBuffer = await response.arrayBuffer();
     const data = new Uint8Array(arrayBuffer);
     const workbook = XLSX.read(data, { type: 'array' });
-    
-    // Extract the first sheet
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
-    
-    // Convert rows into a usable JSON object array
     const rawRows = XLSX.utils.sheet_to_json(worksheet);
     
-    // Filter where row.Class matches our chosen grade value
+    // Filter spreadsheet database matching dashboard grade
     const matchingBooks = rawRows.filter(row => String(row.Class).trim() === grade);
 
-    // Clear loading text
     gridContainer.innerHTML = "";
 
     if (matchingBooks.length === 0) {
@@ -239,35 +241,52 @@ async function loadSyllabusFromExcel() {
       return;
     }
 
-    // 3. Render the matched textbooks dynamically
+    // Convert grade number into its alphabet letter prefix
+    const gradeLetter = getGradeLetter(grade);
+
+    // 3. Render cards with personalized dynamic asset paths
     matchingBooks.forEach(book => {
       const card = document.createElement("div");
       card.className = "card";
 
-      // Map spreadsheet column names safely
       const subject = book["Subject"] || "Unknown Subject";
       const chapters = book["Number of Chapters"] || "0";
-      const code = book["Code"] || "N/A";
+      const code = String(book["Code"] || "").trim();
+
+      // Formulate dynamic target URLs according to specifications
+      const coverUrl = `https://ncert.nic.in{gradeLetter}${code}cc.jpg`;
+      const bookUrl = `https://ncert.nic.in{gradeLetter}${code}=0-${chapters}`;
 
       card.innerHTML = `
         <h3>${subject}</h3>
         <p>NCERT Textbook for Class ${grade}</p>
         <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Code: ${code}</small></p>
-        <div style="height: 150px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 15px 0; border: 1px dashed #ccc;">
-          <span style="color: #999; font-size: 0.9rem;">[ Book Cover ]</span>
+        
+        <div style="text-align: center; margin: 15px 0;">
+          <img src="${coverUrl}" alt="${subject} Cover" width="160" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'height:150px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; border:1px dashed #ccc; border-radius:8px;\'><span style=\'color:#999; font-size:0.9rem;\'>Cover Preview Unavailable</span></div>';">
         </div>
+
         <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        
+        <button class="btn btn-primary read-btn" style="width: 100%; font-weight: 600; margin-bottom: 10px;">
+          📖 Read Online
+        </button>
+        
         <button class="btn btn-secondary search-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
           <span>Search textbook on</span>
           <img src="Google-Logo.jpg" alt="Google" width="60" style="border-radius: 4px; vertical-align: middle;">
         </button>
       `;
 
-      // Set unique search query for this card
+      // Assign direct URL handlers
+      card.querySelector(".read-btn").onclick = () => {
+        window.open(bookUrl, "_blank");
+      };
+
       card.querySelector(".search-btn").onclick = () => {
-        const query = `NCERT ${subject} Textbook Class ${grade} PDF`;
-        const url = "https://google.com" + encodeURIComponent(query);
-        window.open(url, "_blank");
+        const searchQuery = `NCERT ${subject} Textbook Class ${grade} PDF`;
+        const googleUrl = "https://google.com" + encodeURIComponent(searchQuery);
+        window.open(googleUrl, "_blank");
       };
 
       gridContainer.appendChild(card);
@@ -275,12 +294,12 @@ async function loadSyllabusFromExcel() {
 
   } catch (error) {
     console.error(error);
-    statusText.innerHTML = `<span style="color: red;">Error reading spreadsheet: ${error.message}</span>`;
+    statusText.innerHTML = `<span style="color: red;">Error processing spreadsheet setup. Ensure running on a live server environments or host on GitHub Pages.</span>`;
   }
 }
 
-// Fire data ingestion sequence
 loadSyllabusFromExcel();
 </script>
+
 
 </BODY>

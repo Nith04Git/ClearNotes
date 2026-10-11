@@ -1,16 +1,16 @@
 [
  {
-  "name": "Kola Perumal Chetty Vaishnav Senior Secondary School",
-  "address": "Kola Perumal Chetty Vaishnav Senior Secondary School, Periyar E.V.R. Salai, Gokul Bagh, 815, Kolaperumal School St, Arumbakkam, Chennai, Tamil Nadu 600106, India",
-  "lat": 13.0743908,
-  "lon": 80.2139190
- },
-
- {
   "name": "Chennai Public School",
   "address": "Chennai Public School, Chennai Public School Radial Nagar, TVS Ave, Radial Nagar, Anna Nagar West Extension, Chennai, Tamil Nadu 600101, India",
   "lat": 13.0890054,
   "lon": 80.1899040
+ },
+
+ {
+  "name": "Kola Perumal Chetty Vaishnav Senior Secondary School",
+  "address": "Kola Perumal Chetty Vaishnav Senior Secondary School, Periyar E.V.R. Salai, Gokul Bagh, 815, Kolaperumal School St, Arumbakkam, Chennai, Tamil Nadu 600106, India",
+  "lat": 13.0743908,
+  "lon": 80.2139190
  },
 
  {
@@ -361,5 +361,146 @@
   "address": "The Village International School, Thodupuzha - Perumamkandam - Kaloor Rd, Kumaramangalam, Kumaramangalam part, Kerala 685608, India",
   "lat": 9.9361327,
   "lon": 76.7062104
+ },
+
+ {
+  "name": "The Pupil Saveetha Eco School",
+  "address": "The Pupil Saveetha Eco School, Annammal Street, 4/68, Arignar Anna Rd, Thiverkadu Co-operative Nagar, Chennai, Tamil Nadu 600077",
+  "lat": 13.0591353,
+  "lon": 80.1228506
+ },
+
+ {
+  "name": "Rajeswari Matric School",
+  "address": "Rajeswari Matric School, No:, 1st Main Road, 89, 5th Cross St, T.P.Chatram, Police Colony, Thandavaraya, Kilpauk, Chennai, Tamil Nadu 600010",
+  "lat": 13.0817003,
+  "lon": 80.2313173
+ },
+
+ {
+  "name": "Mary Immaculate Middle School",
+  "address": "Mary Immaculate Middle School, 62, Halls Rd, Kilpauk, Chennai, Tamil Nadu 600010",
+  "lat": 13.0810957,
+  "lon": 80.2353508
+ },
+
+ {
+  "name": "Pioneer Matric Higher Secondary School",
+  "address": "Pioneer Matric Hr. Sec. School, 02, Pillaiyar Koil St, Maccana Industrial Estate, Velappanchavadi, Poonamallee, Thiruverkadu, Tamil Nadu 600077",
+  "lat": 13.0582139,
+  "lon": 80.1326888
+ },
+
+ {
+  "name": "Chennai Primary School",
+  "address": "Chennai Primary School, No.9, Thiyagappa Street, Kilpauk Garden Road, Kilpauk, Chennai, Tamil Nadu 600010",
+  "lat": 13.0834775,
+  "lon": 80.2347901
+ },
+
+ {
+  "name": "Puliyambedu Government Primary School",
+  "address": "Puliyambedu Government Primary School, Goparasanallur, Thiruverkadu, Tamil Nadu 600077",
+  "lat": 13.0524921,
+  "lon": 80.1287962
+ },
+
+ {
+  "name": "Sunbeam CBSE Global School",
+  "address": "Sunbeam Global School CBSE, E Coast Road, School St, Saraswathy Nagar North, Neelankarai, Chennai, Tamil Nadu 600115",
+  "lat": 12.9505298,
+  "lon": 80.2491732
+ },
+
+ {
+  "name": "CSI Ewart Matriculation & Higher Secondary School",
+  "address": "CSI Ewart Matriculation & Higher Secondary School, Plot No.R22/1A1, Soundarya Colony, Anna Nagar West Extension, Chennai, Tamil Nadu 600101",
+  "lat": 13.0887236,
+  "lon": 80.1953524
+ },
+
+ {
+  "name": "St. Vincent's Matriculation Higher Secondary School",
+  "address": "Railway Colony, St. Vincent’s Matriculation Higher Secondary School, 24, 4th St, Collectorate Colony, Aminjikarai, Chennai, Tamil Nadu 600030",
+  "lat": 13.0686502,
+  "lon": 80.2231169
+ },
+
+ {
+  "name": "Olive Public School (CBSE)",
+  "address": "Olive Public School(CBSE), Chitlapakkam, 1, IInd Main Road, Sarvamangala Nagar, Chitlapakkam, Tambaram, Tamil Nadu 600064",
+  "lat": 12.9322897,
+  "lon": 80.1508105
+ },
+
+ {
+  "name": "Remo International School",
+  "address": "Remo International School, 9, Grand Southern Trunk Rd, near PSBB Millenium School, Parangi Malai, Alandur, St.Thomas Mount, Tamil Nadu 600016",
+  "lat": 13.0012785,
+  "lon": 80.1990923
+ },
+
+ {
+  "name": "Vels Vidyashram CBSE School",
+  "address": "Vels Vidyashram CBSE School, Pallavaram, no-54, Dharga Rd, Rajiv Gandhi Nagar, Pallavaram, Chennai, Tambaram, Tamil Nadu 600117",
+  "lat": 12.9651526,
+  "lon": 80.1684329
+ },
+
+ {
+  "name": "Arul Jothy Public School",
+  "address": "Arul Jothy Public School - Pallavaram, Vallalar street, 200 Feet Radial Rd, Pallava Garden, Zamin Pallavaram, Alagappa nagar, Tambaram, Tamil Nadu 600117",
+  "lat": 12.9530982,
+  "lon": 80.1714930
+ },
+
+ {
+  "name": "Saraswati Vidyaniketan Public School",
+  "address": "SARASWATI VIDYANIKETAN PUBLIC SCHOOL, Perandoor Rd, Mamangalam, Elamakkara, Kochi, Ernakulam, Keralam 682026",
+  "lat": 10.0064102,
+  "lon": 76.2867560
+ },
+
+ {
+  "name": "Asoka World School",
+  "address": "Asoka World School, Kochi ,Ernakulam, Parayil Rd, Elamakkara, Kochi, Ernakulam, Keralam 682026",
+  "lat": 10.0230451,
+  "lon": 76.2877413
+ },
+
+ {
+  "name": "Russian International School",
+  "address": "Russian International School, Ulitsa Yefremova, 19, корп. 4, Moscow, Russia, 119048",
+  "lat": 55.7213349,
+  "lon": 37.5698872
+ },
+
+ {
+  "name": "Russian International School",
+  "address": "Russian International School, 42, Barvikha, Moscow Oblast, Russia, 143083",
+  "lat": 55.7407180,
+  "lon": 37.2751210
+ },
+
+ {
+  "name": "German School Moscow",
+  "address": "German School Moscow, пр. Вернадского, 103/5, Moscow, Russia, 119526",
+  "lat": 55.6644292,
+  "lon": 37.4953455
+ },
+
+ {
+  "name": "Harrow School",
+  "address": "Harrow School, 5 High St, Harrow HA1 3HP, United Kingdom",
+  "lat": 51.5724182,
+  "lon": -0.3374892
+ },
+
+ {
+  "name": "International School of London, ISL London",
+  "address": "International School of London, ISL London, 139 Gunnersbury Ave, London W3 8LG, United Kingdom",
+  "lat": 51.4957903,
+  "lon": -0.2829103
  }
+
 ]

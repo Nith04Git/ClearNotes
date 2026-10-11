@@ -1,14 +1,11 @@
 <!DOCTYPE HTML>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>ClearNotes</title>
 
-  <script src="https://jsdelivr.net"></script>
-
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://googleapis.com" rel="stylesheet">
 
   <!-- Favicon -->
   <link rel="icon" href="ClearNotesMiniLogo.png">
@@ -31,7 +28,7 @@
     }
 
     body {
-      margin: 10;
+      margin: 10px;
       background: linear-gradient(to bottom, #ffffff, var(--bg-main));
       color: var(--text-main);
     }
@@ -138,168 +135,165 @@
     .card p {
       color: var(--text-muted);
     }
-
-    /* ---------- VIDEO ---------- */
-    .video-wrapper {
-      max-width: 720px;
-      margin: auto;
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    video {
-      width: 100%;
-      display: block;
-    }
-
-    /* ---------- QUOTES ---------- */
-    .quote {
-      background: linear-gradient(135deg, #f0f6ff, #ffffff);
-      border-radius: var(--radius);
-      padding: 25px;
-      box-shadow: var(--shadow);
-    }
-
-    .quote i {
-      color: var(--text-muted);
-    }
-
-    /* ---------- FOOTER ---------- */
-    footer {
-      text-align: center;
-      padding: 40px 20px;
-      background: #f0f2f6;
-      color: var(--text-muted);
-    }
   </style>
+
+  <!-- Verified CDN library script build for loading Excel workbooks -->
+  <script src="https://jsdelivr.net"></script>
 </head>
 
-<BODY>
+<body>
 
-<h1><u>Personalized Dashboard</u></h1>
-<h3>All you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i></h3>
+  <h1><u>Personalized Dashboard</u></h1>
+  <h3>All you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i></h3>
 
-<hr style="border: none; height: 5px; background-color: #333;">
+  <hr style="border: none; height: 5px; background-color: #333;">
 
-<h2>Syllabus</h2>
-<section>
-  <div class="card-grid" id="syllabus-grid">
-    <p id="loading-status">Loading textbooks from database...</p>
-  </div>
-</section>
+  <h2>Syllabus</h2>
+  <section>
+    <div class="card-grid" id="syllabus-grid">
+      <p id="loading-status">Loading textbooks from spreadsheet database...</p>
+    </div>
+  </section>
 
-<script src="https://jsdelivr.net"></script>
-<script>
-// 1. Fetch user dashboard details from localStorage
-const school = JSON.parse(localStorage.getItem("chosenSchool"));
-const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
-const section = localStorage.getItem("chosenSection");
+  <script>
+    // 1. Ingest dashboard values safely from local browser storage
+    const school = JSON.parse(localStorage.getItem("chosenSchool"));
+    const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
+    const section = localStorage.getItem("chosenSection");
 
-document.getElementById("school-name").textContent = school ? school.name : "Not selected";
-document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
-document.getElementById("section-display").textContent = section ? " " + section : "";
+    document.getElementById("school-name").textContent = school ? school.name : "Not selected";
+    document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
+    document.getElementById("section-display").textContent = section ? " " + section : "";
 
-const gridContainer = document.getElementById("syllabus-grid");
-const statusText = document.getElementById("loading-status");
+    const gridContainer = document.getElementById("syllabus-grid");
+    const statusText = document.getElementById("loading-status");
 
-// Helper function to map grade numbers to alphabet letters (1->a, 2->b, 9->i, 10->j)
-function getGradeLetter(gradeString) {
-  const gradeNum = parseInt(gradeString, 10);
-  if (isNaN(gradeNum) || gradeNum < 1 || gradeNum > 26) return "";
-  return String.fromCharCode(96 + gradeNum); // 97 is 'a'
-}
-
-// 2. Dynamic Ingestion and URL Construction
-async function loadSyllabusFromExcel() {
-  if (!grade) {
-    statusText.textContent = "Please select a grade to display your syllabus.";
-    return;
-  }
-
-  try {
-    // Fetch Excel sheet locally or from GitHub Pages environment
-    const response = await fetch("./BookDatabase.xlsx");
-    if (!response.ok) {
-      throw new Error("Unable to fetch BookDatabase.xlsx automatically.");
-    }
-    
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-    const workbook = XLSX.read(data, { type: 'array' });
-    const firstSheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[firstSheetName];
-    const rawRows = XLSX.utils.sheet_to_json(worksheet);
-    
-    // Filter spreadsheet database matching dashboard grade
-    const matchingBooks = rawRows.filter(row => String(row.Class).trim() === grade);
-
-    gridContainer.innerHTML = "";
-
-    if (matchingBooks.length === 0) {
-      gridContainer.innerHTML = `<p>No textbooks found matching Grade ${grade}.</p>`;
-      return;
+    /**
+     * Maps standard grade string digits to corresponding lower-case letters.
+     * Examples: '1' -> 'a', '9' -> 'i', '10' -> 'j'
+     */
+    function deriveGradeCharacter(gradeString) {
+      const gradeInt = parseInt(gradeString, 10);
+      if (isNaN(gradeInt) || gradeInt < 1 || gradeInt > 26) return "";
+      return String.fromCharCode(96 + gradeInt); // 96 + 1 = 97 ('a')
     }
 
-    // Convert grade number into its alphabet letter prefix
-    const gradeLetter = getGradeLetter(grade);
+    // 2. Fetch and Render Spreadsheet Processing Engine
+    async function loadSyllabusFromExcel() {
+      if (!grade) {
+        statusText.textContent = "Please select a grade to look up your syllabus configuration.";
+        return;
+      }
 
-    // 3. Render cards with personalized dynamic asset paths
-    matchingBooks.forEach(book => {
-      const card = document.createElement("div");
-      card.className = "card";
+      // Check common deployment filename variants to prevent case sensitivity issues
+      const filenameVariants = ["./BookDatabase.xlsx", "./BookDatabase.xslx", "BookDatabase.xlsx"];
+      let response = null;
 
-      const subject = book["Subject"] || "Unknown Subject";
-      const chapters = book["Number of Chapters"] || "0";
-      const code = String(book["Code"] || "").trim();
+      for (const currentPath of filenameVariants) {
+        try {
+          const fetchCheck = await fetch(currentPath);
+          if (fetchCheck.ok) {
+            response = fetchCheck;
+            break;
+          }
+        } catch (error) {
+          console.warn(`Skipping path check: ${currentPath}`);
+        }
+      }
 
-      // Formulate dynamic target URLs according to specifications
-      const coverUrl = `https://ncert.nic.in{gradeLetter}${code}cc.jpg`;
-      const bookUrl = `https://ncert.nic.in{gradeLetter}${code}=0-${chapters}`;
+      if (!response) {
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Database Error: Could not locate BookDatabase.xlsx in your root folder. Verify that the file matches spelling configurations exactly.</span>`;
+        return;
+      }
 
-      card.innerHTML = `
-        <h3>${subject}</h3>
-        <p>NCERT Textbook for Class ${grade}</p>
-        <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Code: ${code}</small></p>
+      try {
+        const arrayBuffer = await response.arrayBuffer();
+        const data = new Uint8Array(arrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
         
-        <div style="text-align: center; margin: 15px 0;">
-          <img src="${coverUrl}" alt="${subject} Cover" width="160" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'height:150px; background:#f8f9fa; display:flex; align-items:center; justify-content:center; border:1px dashed #ccc; border-radius:8px;\'><span style=\'color:#999; font-size:0.9rem;\'>Cover Preview Unavailable</span></div>';">
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const parsedRows = XLSX.utils.sheet_to_json(worksheet);
         
-        <button class="btn btn-primary read-btn" style="width: 100%; font-weight: 600; margin-bottom: 10px;">
-          📖 Read Online
-        </button>
-        
-        <button class="btn btn-secondary search-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <span>Search textbook on</span>
-          <img src="Google-Logo.jpg" alt="Google" width="60" style="border-radius: 4px; vertical-align: middle;">
-        </button>
-      `;
+        // Find records matching selected grade
+        const matchingBooks = parsedRows.filter(row => {
+          if (!row.Class) return false;
+          return String(row.Class).trim() === grade;
+        });
 
-      // Assign direct URL handlers
-      card.querySelector(".read-btn").onclick = () => {
-        window.open(bookUrl, "_blank");
-      };
+        gridContainer.innerHTML = "";
 
-      card.querySelector(".search-btn").onclick = () => {
-        const searchQuery = `NCERT ${subject} Textbook Class ${grade} PDF`;
-        const googleUrl = "https://google.com" + encodeURIComponent(searchQuery);
-        window.open(googleUrl, "_blank");
-      };
+        if (matchingBooks.length === 0) {
+          gridContainer.innerHTML = `<p>No textbooks listed in database matching Grade ${grade}.</p>`;
+          return;
+        }
 
-      gridContainer.appendChild(card);
-    });
+        const gradeLetter = deriveGradeCharacter(grade);
 
-  } catch (error) {
-    console.error(error);
-    statusText.innerHTML = `<span style="color: red;">Error processing spreadsheet setup. Ensure running on a live server environments or host on GitHub Pages.</span>`;
-  }
-}
+        // 3. Render textbooks into structured interface cards
+        matchingBooks.forEach(book => {
+          const card = document.createElement("div");
+          card.className = "card";
 
-loadSyllabusFromExcel();
-</script>
+          const subject = book["Subject"] || "Unknown Subject";
+          const chapters = book["Number of Chapters"] || "0";
+          const code = String(book["Code"] || "").trim().toLowerCase();
 
+          // EXACT FORMULATED ROUTING PATH PATTERNS:
+          const coverUrl = `https://ncert.nic.in{gradeLetter}${code}cc.jpg`;
+          const textBookUrl = `https://ncert.nic.in{gradeLetter}${code}=0-${chapters}`;
 
-</BODY>
+          card.innerHTML = `
+            <h3>${subject}</h3>
+            <p>NCERT Textbook for Class ${grade}</p>
+            <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Catalog Code: ${code}</small></p>
+            
+            <div style="text-align: center; margin: 15px 0; min-height: 150px; display: flex; align-items: center; justify-content: center;">
+              <img src="${coverUrl}" alt="${subject} Cover Image" width="140" style="border-radius: var(--radius); box-shadow: var(--shadow);" 
+                   onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\'height:150px; width:140px; background:#fafafa; border:1px dashed #ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#999; font-size:0.85rem; padding:10px; text-align:center;\'>Preview Cover Unavailable</div>';">
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+            
+            <button class="btn btn-primary open-book-btn" style="width: 100%; font-weight: 600; margin-bottom: 10px;">
+              📖 Read Online
+            </button>
+            
+            <button class="btn btn-secondary search-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <span>Google Search</span>
+              <img src="Google-Logo.jpg" alt="Google" width="50" style="border-radius: 4px; vertical-align: middle;">
+            </button>
+          `;
+
+          // Event Listeners for links
+          card.querySelector(".open-book-btn").onclick = () => {
+            window.open(textBookUrl, "_blank");
+          };
+
+          card.querySelector(".search-btn").onclick = () => {
+            const searchQuery = `NCERT ${subject} Class ${grade} Textbook PDF`;
+            window.open(`https://google.com{encodeURIComponent(searchQuery)}`, "_blank");
+          };
+
+          gridContainer.appendChild(card);
+        });
+
+      } catch (err) {
+        console.error("Spreadsheet ingestion failed:", err);
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Parsing Failure: ${err.message}</span>`;
+      }
+    }
+
+    // Run execution sequence
+    loadSyllabusFromExcel();
+  </script>
+
+  <hr style="border: none; height: 5px; background-color: #333;">
+
+  <h2>Upload Leaderboard</h2>
+  <p>The leading note uploaders from your grade.</p>
+
+  <div class="topshape"></div>
+
+</body>
+</html>

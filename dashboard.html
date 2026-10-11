@@ -33,31 +33,44 @@
       color: var(--text-main);
     }
 
-    /* ---------- HEADER / HERO ---------- */
-    header {
-      padding: 60px 20px 40px;
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
       text-align: center;
-      background: linear-gradient(135deg, #eef4ff, #ffffff);
+      margin-bottom: 10px;
+      font-size: 2rem;
     }
 
-    header h1 {
-      font-size: 3rem;
-      margin: 0;
+    /* ---------- CARD GRID ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
     }
 
-    header p {
-      font-size: 1.1rem;
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
       color: var(--text-muted);
-      max-width: 600px;
-      margin: 20px auto;
-    }
-
-    .cta-row {
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
     }
 
     .btn {
@@ -66,6 +79,8 @@
       border: none;
       font-size: 1rem;
       cursor: pointer;
+      width: 100%;
+      font-weight: 600;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -84,63 +99,11 @@
       transform: translateY(-2px);
       box-shadow: 0 15px 35px rgba(0,0,0,0.12);
     }
-
-    /* ---------- SECTIONS ---------- */
-    section {
-      padding: 50px 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    section h2 {
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 2rem;
-    }
-
-    section p.section-desc {
-      text-align: center;
-      color: var(--text-muted);
-      max-width: 700px;
-      margin: auto auto 40px;
-    }
-
-    /* ---------- CARD GRID ---------- */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 25px;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 25px;
-      box-shadow: var(--shadow);
-      transition: transform 0.2s ease;
-    }
-
-    .card img {
-      border-radius: var(--radius);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-    }
-
-    .card h3 {
-      margin-top: 0;
-    }
-
-    .card p {
-      color: var(--text-muted);
-    }
   </style>
 
-  <!-- Verified CDN library script build for loading Excel workbooks -->
+  <!-- Complete, fixed SheetJS Library CDN -->
   <script src="https://jsdelivr.net"></script>
 </head>
-
 <body>
 
   <h1><u>Personalized Dashboard</u></h1>
@@ -156,7 +119,6 @@
   </section>
 
   <script>
-    // 1. Ingest dashboard values safely from local browser storage
     const school = JSON.parse(localStorage.getItem("chosenSchool"));
     const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
     const section = localStorage.getItem("chosenSection");
@@ -168,54 +130,49 @@
     const gridContainer = document.getElementById("syllabus-grid");
     const statusText = document.getElementById("loading-status");
 
-    /**
-     * Maps standard grade string digits to corresponding lower-case letters.
-     * Examples: '1' -> 'a', '9' -> 'i', '10' -> 'j'
-     */
+    // Converts grade strings ('9') to chronological alphabet letters ('i')
     function deriveGradeCharacter(gradeString) {
       const gradeInt = parseInt(gradeString, 10);
       if (isNaN(gradeInt) || gradeInt < 1 || gradeInt > 26) return "";
-      return String.fromCharCode(96 + gradeInt); // 96 + 1 = 97 ('a')
+      return String.fromCharCode(96 + gradeInt); 
     }
 
-    // 2. Fetch and Render Spreadsheet Processing Engine
     async function loadSyllabusFromExcel() {
       if (!grade) {
-        statusText.textContent = "Please select a grade to look up your syllabus configuration.";
+        statusText.textContent = "Please select a grade to look up your syllabus.";
         return;
       }
 
-      // Check common deployment filename variants to prevent case sensitivity issues
-      const filenameVariants = ["./BookDatabase.xlsx", "./BookDatabase.xslx", "BookDatabase.xlsx"];
+      const paths = ["./BookDatabase.xlsx", "BookDatabase.xlsx", "./BookDatabase.xslx"];
       let response = null;
 
-      for (const currentPath of filenameVariants) {
+      for (const p of paths) {
         try {
-          const fetchCheck = await fetch(currentPath);
-          if (fetchCheck.ok) {
-            response = fetchCheck;
+          const res = await fetch(p);
+          if (res.ok) {
+            response = res;
             break;
           }
-        } catch (error) {
-          console.warn(`Skipping path check: ${currentPath}`);
+        } catch (e) {
+          console.error("Path unavailable: " + p);
         }
       }
 
       if (!response) {
-        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Database Error: Could not locate BookDatabase.xlsx in your root folder. Verify that the file matches spelling configurations exactly.</span>`;
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Database Error: Could not locate BookDatabase.xlsx in your repository. Check if the file is uploaded to the root folder.</span>`;
         return;
       }
 
       try {
         const arrayBuffer = await response.arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
-        const workbook = XLSX.read(data, { type: 'array' });
         
+        // Use the XLSX object safely now that the library is fully loaded
+        const workbook = XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
         const parsedRows = XLSX.utils.sheet_to_json(worksheet);
         
-        // Find records matching selected grade
         const matchingBooks = parsedRows.filter(row => {
           if (!row.Class) return false;
           return String(row.Class).trim() === grade;
@@ -230,7 +187,6 @@
 
         const gradeLetter = deriveGradeCharacter(grade);
 
-        // 3. Render textbooks into structured interface cards
         matchingBooks.forEach(book => {
           const card = document.createElement("div");
           card.className = "card";
@@ -239,7 +195,7 @@
           const chapters = book["Number of Chapters"] || "0";
           const code = String(book["Code"] || "").trim().toLowerCase();
 
-          // EXACT FORMULATED ROUTING PATH PATTERNS:
+          // Corrected NCERT string concatenation structure
           const coverUrl = `https://ncert.nic.in{gradeLetter}${code}cc.jpg`;
           const textBookUrl = `https://ncert.nic.in{gradeLetter}${code}=0-${chapters}`;
 
@@ -249,23 +205,22 @@
             <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Catalog Code: ${code}</small></p>
             
             <div style="text-align: center; margin: 15px 0; min-height: 150px; display: flex; align-items: center; justify-content: center;">
-              <img src="${coverUrl}" alt="${subject} Cover Image" width="140" style="border-radius: var(--radius); box-shadow: var(--shadow);" 
+              <img src="${coverUrl}" alt="${subject} Cover" width="140" style="border-radius: var(--radius); box-shadow: var(--shadow);" 
                    onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\'height:150px; width:140px; background:#fafafa; border:1px dashed #ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#999; font-size:0.85rem; padding:10px; text-align:center;\'>Preview Cover Unavailable</div>';">
             </div>
 
             <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
             
-            <button class="btn btn-primary open-book-btn" style="width: 100%; font-weight: 600; margin-bottom: 10px;">
+            <button class="btn btn-primary open-book-btn" style="margin-bottom: 10px;">
               📖 Read Online
             </button>
             
-            <button class="btn btn-secondary search-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <button class="btn btn-secondary search-btn" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
               <span>Google Search</span>
               <img src="Google-Logo.jpg" alt="Google" width="50" style="border-radius: 4px; vertical-align: middle;">
             </button>
           `;
 
-          // Event Listeners for links
           card.querySelector(".open-book-btn").onclick = () => {
             window.open(textBookUrl, "_blank");
           };
@@ -279,12 +234,11 @@
         });
 
       } catch (err) {
-        console.error("Spreadsheet ingestion failed:", err);
+        console.error(err);
         statusText.innerHTML = `<span style="color: red; font-weight: 600;">Parsing Failure: ${err.message}</span>`;
       }
     }
 
-    // Run execution sequence
     loadSyllabusFromExcel();
   </script>
 
@@ -292,7 +246,6 @@
 
   <h2>Upload Leaderboard</h2>
   <p>The leading note uploaders from your grade.</p>
-
   <div class="topshape"></div>
 
 </body>

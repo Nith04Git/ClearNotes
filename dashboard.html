@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <title>ClearNotes</title>
 
+  <script src="https://jsdelivr.net"></script>
+
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
 
@@ -181,45 +183,104 @@
 <hr style="border: none; height: 5px; background-color: #333;">
 
 <h2>Syllabus</h2>
-<div class="grid-container">
-<div class="grid-item">
-<h3>Science</h3>
-<hr>
-<p>NCERT Science Textbook for Class 9</p>
-<div class="card">
-<img src="https://ncert.nic.in/textbook/pdf/iesc1cc.jpg" alt="book-cover">
-</div>
-<br>
-<button id="search-info" class="btn btn-secondary">
-  Search textbook on <br><br> <img src="Google-Logo.jpg" alt="img" width="200" style="border-radius: 20px;">
-</button>
-</div>
-</div>
+<section>
+  <div class="card-grid" id="syllabus-grid">
+    <p id="loading-status">Loading textbooks from database...</p>
+  </div>
+</section>
 
 <script>
+// 1. Fetch user data from localStorage
 const school = JSON.parse(localStorage.getItem("chosenSchool"));
-const grade = localStorage.getItem("chosenGrade");
+const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
 const section = localStorage.getItem("chosenSection");
 
 document.getElementById("school-name").textContent = school ? school.name : "Not selected";
 document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
 document.getElementById("section-display").textContent = section ? " " + section : "";
 
-document.getElementById("search-info").onclick = () => {
+const gridContainer = document.getElementById("syllabus-grid");
+const statusText = document.getElementById("loading-status");
 
-const query = "NCERT Science Textbook Class 9 PDF";
+// 2. Dynamic Excel Fetch and Parse Function
+async function loadSyllabusFromExcel() {
+  if (!grade) {
+    statusText.textContent = "Please select a grade to display your syllabus.";
+    return;
+  }
 
-const url = "https://www.google.com/search?q=" + encodeURIComponent(query);
-window.open(url, "_blank");
-};
+  try {
+    // Fetch the Excel file relative to this HTML file
+    const response = await fetch("./BookDatabase.xlsx");
+    if (!response.ok) {
+      throw new Error("Unable to read BookDatabase.xlsx. Ensure it's in the same directory and served via a local server.");
+    }
+    
+    // Parse the file structure
+    const arrayBuffer = await response.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+    const workbook = XLSX.read(data, { type: 'array' });
+    
+    // Extract the first sheet
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    
+    // Convert rows into a usable JSON object array
+    const rawRows = XLSX.utils.sheet_to_json(worksheet);
+    
+    // Filter where row.Class matches our chosen grade value
+    const matchingBooks = rawRows.filter(row => String(row.Class).trim() === grade);
+
+    // Clear loading text
+    gridContainer.innerHTML = "";
+
+    if (matchingBooks.length === 0) {
+      gridContainer.innerHTML = `<p>No textbooks found matching Grade ${grade}.</p>`;
+      return;
+    }
+
+    // 3. Render the matched textbooks dynamically
+    matchingBooks.forEach(book => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      // Map spreadsheet column names safely
+      const subject = book["Subject"] || "Unknown Subject";
+      const chapters = book["Number of Chapters"] || "0";
+      const code = book["Code"] || "N/A";
+
+      card.innerHTML = `
+        <h3>${subject}</h3>
+        <p>NCERT Textbook for Class ${grade}</p>
+        <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Code: ${code}</small></p>
+        <div style="height: 150px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 15px 0; border: 1px dashed #ccc;">
+          <span style="color: #999; font-size: 0.9rem;">[ Book Cover ]</span>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        <button class="btn btn-secondary search-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <span>Search textbook on</span>
+          <img src="Google-Logo.jpg" alt="Google" width="60" style="border-radius: 4px; vertical-align: middle;">
+        </button>
+      `;
+
+      // Set unique search query for this card
+      card.querySelector(".search-btn").onclick = () => {
+        const query = `NCERT ${subject} Textbook Class ${grade} PDF`;
+        const url = "https://google.com" + encodeURIComponent(query);
+        window.open(url, "_blank");
+      };
+
+      gridContainer.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error(error);
+    statusText.innerHTML = `<span style="color: red;">Error reading spreadsheet: ${error.message}</span>`;
+  }
+}
+
+// Fire data ingestion sequence
+loadSyllabusFromExcel();
 </script>
-
-<hr style="border: none; height: 5px; background-color: #333;">
-
-<h2>Upload Leaderboard</h2>
-<p>The leading note uploaders from your grade.</p>
-
-<div class="topshape">
-</div>
 
 </BODY>

@@ -5,7 +5,7 @@
   <title>ClearNotes</title>
 
   <!-- Fonts -->
-  <link href="https://googleapis.com" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
 
   <!-- Favicon -->
   <link rel="icon" href="ClearNotesMiniLogo.png">
@@ -104,14 +104,14 @@
 <body>
 
   <h1><u>Personalized Dashboard</u></h1>
-  <h3>All you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i></h3>
+  <h3>All you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i>.</h3>
 
   <hr style="border: none; height: 5px; background-color: #333;">
 
   <h2>Syllabus</h2>
   <section>
     <div class="card-grid" id="syllabus-grid">
-      <p id="loading-status">Loading textbooks from spreadsheet database...</p>
+      <p id="loading-status">Loading textbooks...</p>
     </div>
   </section>
 
@@ -140,7 +140,7 @@
       script.src = "https://" + "cdn.jsdelivr.net/npm/" + "xlsx@0.18.5/dist/xlsx.full.min.js";
       script.onload = callback;
       script.onerror = () => {
-        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Failed to load the Excel parsing library. Check your network connection.</span>`;
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Failed to load Database parsing library. Please check your internet connection.</span>`;
       };
       document.head.appendChild(script);
     }
@@ -167,7 +167,7 @@
       }
 
       if (!response) {
-        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Database Error: Could not locate BookDatabase.xlsx. Verify it is uploaded to the root folder of your repository.</span>`;
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Error: Could not locate database.</span>`;
         return;
       }
 
@@ -223,7 +223,7 @@
             </button>
             
             <button class="btn btn-secondary search-btn" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-              <span>Google Search</span>
+              <span>Search on </span>
               <img src="Google-Logo.jpg" alt="Google" width="50" style="border-radius: 4px; vertical-align: middle;">
             </button>
           `;

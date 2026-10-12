@@ -381,7 +381,7 @@
 
           card.querySelector(".search-btn").onclick = () => {
             const searchQuery = `NCERT ${subject} Class ${grade} Textbook PDF`;
-            window.open(`https://google.com{encodeURIComponent(searchQuery)}`, "_blank");
+            window.open(`https://google.com${encodeURIComponent(searchQuery)}`, "_blank");
           };
 
           gridContainer.appendChild(card);

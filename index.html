@@ -296,5 +296,17 @@
   <p>Maintained by the community. Powered by curiosity.</p>
 </footer>
 
+<script>
+JSON.parse(
+  localStorage.getItem("clearNotesExamSchedule")
+)?.flatMap(exam =>
+  exam.entries.map(entry => ({
+    examination: entry.examination || exam.name,
+    subject: entry.subject,
+    date: entry.date
+  }))
+)
+</script>
+
 </body>
 </html>

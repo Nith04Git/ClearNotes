@@ -195,6 +195,56 @@
     }
 
 }
+
+
+    /* ---------- EXAM SCHEDULE ---------- */
+    .exam-schedule-wrap { max-width: 1100px; margin: 24px auto; padding: 0 20px; }
+    .exam-panel { background: var(--bg-card); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+    .exam-header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+    .exam-header h3 { margin:0 0 6px; }
+    .exam-subtitle { color:var(--text-muted); margin:0; }
+    .exam-actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .exam-actions .btn { width:auto; }
+    .exam-form { display:none; margin-top:22px; padding:20px; border:1px solid #f0d7c8; border-radius:14px; background:#fffdf7; }
+    .exam-form.active { display:block; }
+    .exam-form label { display:block; font-weight:600; margin:14px 0 7px; }
+    .exam-form input { width:100%; padding:12px; border:1px solid #d8d8d8; border-radius:10px; font-size:1rem; background:white; color:var(--text-main); }
+    .exam-form input:focus { outline:2px solid #ffbd91; border-color:var(--accent); }
+    .exam-form-row { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .exam-step-note { color:var(--text-muted); font-size:.92rem; margin:8px 0; }
+    .exam-calendar { margin-top:24px; }
+    .calendar-top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; }
+    .calendar-top h3 { text-align:center; margin:0; font-size:1.2rem; }
+    .calendar-nav { border:0; background:var(--accent-soft); color:var(--accent); border-radius:10px; padding:10px 14px; font-size:1rem; cursor:pointer; font-weight:800; }
+    .calendar-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:7px; }
+    .calendar-weekday { text-align:center; font-size:.83rem; font-weight:800; color:var(--text-muted); padding:8px 0; }
+    .calendar-day { min-height:90px; border:1px solid #ececec; border-radius:10px; padding:8px; background:#fff; text-align:left; color:var(--text-main); cursor:pointer; min-width:0; }
+    .calendar-day:hover { border-color:var(--accent); background:#fffaf4; }
+    .calendar-day.empty { background:transparent; border-color:transparent; cursor:default; }
+    .calendar-day.selected { outline:2px solid var(--accent); border-color:var(--accent); }
+    .calendar-day.has-exam { background:#fff3e9; border-color:#ffc49f; }
+    .calendar-day-number { display:block; font-weight:800; margin-bottom:5px; }
+    .calendar-subject { display:block; font-size:.76rem; line-height:1.25; overflow-wrap:anywhere; color:#8c3907; }
+    .exam-list { margin-top:24px; }
+    .exam-list h3 { margin-bottom:10px; }
+    .exam-entry { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid #eee; }
+    .exam-entry:last-child { border-bottom:0; }
+    .exam-entry strong { display:block; }
+    .exam-entry small { color:var(--text-muted); }
+    .exam-entry button { border:0; border-radius:9px; padding:8px 10px; background:#fff0e8; color:#a33b00; cursor:pointer; }
+    .exam-empty { color:var(--text-muted); padding:12px 0; }
+    .exam-status { margin-top:12px; color:#287344; font-size:.92rem; min-height:1.2em; }
+    @media(max-width:650px) {
+      .exam-schedule-wrap { padding:0; }
+      .exam-panel { padding:16px; }
+      .exam-form-row { grid-template-columns:1fr; gap:0; }
+      .calendar-grid { gap:3px; }
+      .calendar-day { min-height:68px; padding:4px; border-radius:7px; }
+      .calendar-subject { font-size:.66rem; }
+      .calendar-weekday { font-size:.7rem; }
+      .exam-entry { align-items:flex-start; }
+    }
+
   </style>
 </head>
 <body>
@@ -342,6 +392,43 @@
 
         const gradeLetter = deriveGradeCharacter(grade);
 
+        // Read all saved examination schedules so textbook cards can show
+        // upcoming exams, even when a different examination is selected below.
+        function getUpcomingExamMatches(textbookSubject) {
+          try {
+            const stored = JSON.parse(localStorage.getItem("clearNotesExamSchedule") || "[]");
+            const allSchedules = Array.isArray(stored)
+              ? stored
+              : (stored && typeof stored.name === "string" && Array.isArray(stored.entries) ? [stored] : []);
+            const normalize = value => String(value || "").trim().toLocaleLowerCase();
+            const textbookName = normalize(textbookSubject);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const soonLimit = new Date(today);
+            soonLimit.setDate(soonLimit.getDate() + 30);
+            const todayISO = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+            const limitISO = `${soonLimit.getFullYear()}-${String(soonLimit.getMonth()+1).padStart(2,"0")}-${String(soonLimit.getDate()).padStart(2,"0")}`;
+
+            return allSchedules.flatMap(exam => {
+              if (!exam || !Array.isArray(exam.entries)) return [];
+              return exam.entries
+                .filter(entry => {
+                  const examSubject = normalize(entry.subject);
+                  return examSubject && textbookName.includes(examSubject) &&
+                    /^\d{4}-\d{2}-\d{2}$/.test(entry.date) &&
+                    entry.date >= todayISO && entry.date <= limitISO;
+                })
+                .map(entry => ({
+                  examination: entry.examination || exam.name || "Scheduled examination",
+                  date: entry.date
+                }));
+            }).sort((a, b) => a.date.localeCompare(b.date));
+          } catch (error) {
+            console.warn("Could not read exam schedule for textbook reminders:", error);
+            return [];
+          }
+        }
+
         matchingBooks.forEach(book => {
           const card = document.createElement("div");
           card.className = "card";
@@ -374,6 +461,23 @@
               <img src="Google-Logo.jpg" alt="Google" width="50" style="border-radius: 4px; vertical-align: middle;">
             </button>
           `;
+
+          const upcomingMatches = getUpcomingExamMatches(subject);
+          if (upcomingMatches.length) {
+            const reminder = document.createElement("div");
+            reminder.className = "textbook-exam-reminder";
+            reminder.style.cssText = "margin: 10px 0; padding: 10px 12px; border-radius: 8px; background: #fff1df; color: #7a3e00; font-weight: 600; font-size: 0.9rem;";
+            upcomingMatches.forEach(match => {
+              const line = document.createElement("p");
+              line.style.cssText = "margin: 3px 0;";
+              const [year, month, day] = match.date.split("-").map(Number);
+              const prettyDate = new Date(year, month - 1, day).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+              line.textContent = `Coming up in your ${match.examination} exam soon · ${prettyDate}`;
+              reminder.appendChild(line);
+            });
+            const heading = card.querySelector("h3");
+            heading.insertAdjacentElement("afterend", reminder);
+          }
 
           card.querySelector(".open-book-btn").onclick = () => {
             window.open(textBookUrl, "_blank");
@@ -624,6 +728,289 @@ setTimeout(
     150
 );
 
+</script>
+
+  <hr style="border: none; height: 5px; background-color: #333;">
+
+  <h2>Exam Schedule</h2>
+  <p style="text-align:center;">Save your examination dates locally and view them in a month-by-month calendar.</p>
+  <div class="exam-schedule-wrap">
+    <div class="exam-panel">
+      <div class="exam-header">
+        <div>
+          <h3 id="exam-title-display">Your exam schedule</h3>
+          <p class="exam-subtitle" id="exam-description">Your schedule is saved only in this browser on this device.</p>
+        </div>
+        <div class="exam-actions">
+          <select id="exam-select" aria-label="Choose an examination" style="display:none; max-width:240px; padding:10px; border:1px solid #e5c4ad; border-radius:10px; background:white; color:var(--text-main);"></select>
+          <button type="button" class="btn btn-primary" id="exam-create-btn">Add examination</button>
+          <button type="button" class="btn btn-secondary" id="exam-edit-btn" style="display:none;">Edit schedule</button>
+          <button type="button" class="btn btn-secondary" id="exam-delete-btn" style="display:none;">Delete examination</button>
+        </div>
+      </div>
+
+      <div class="exam-form" id="exam-form" aria-live="polite">
+        <h3 id="exam-form-heading">Set up your examination</h3>
+        <p class="exam-step-note" id="exam-step-note">First, give the entire examination a name, such as “Annual Examination 2026–27”.</p>
+        <div id="exam-name-step">
+          <label for="exam-name-input">Name of the entire examination</label>
+          <input id="exam-name-input" type="text" maxlength="100" placeholder="e.g. Annual Examination 2026–27" autocomplete="off">
+          <button type="button" class="btn btn-primary" id="exam-name-continue" style="margin-top:14px;">Continue to calendar</button>
+        </div>
+        <div id="exam-day-step" style="display:none;">
+          <p class="exam-step-note">Choose a date on the calendar below, enter that day's subject, and add it. You'll do one exam day at a time.</p>
+          <div class="exam-form-row">
+            <div>
+              <label for="exam-date-input">Selected exam date</label>
+              <input id="exam-date-input" type="date">
+            </div>
+            <div>
+              <label for="exam-subject-input">Subject for this date</label>
+              <input id="exam-subject-input" type="text" maxlength="80" placeholder="e.g. Mathematics" autocomplete="off">
+            </div>
+          </div>
+          <div class="exam-actions" style="margin-top:14px;">
+            <button type="button" class="btn btn-primary" id="exam-add-day">Add this exam day</button>
+            <button type="button" class="btn btn-secondary" id="exam-finish-entry">Finish and save</button>
+          </div>
+          <p class="exam-step-note">If two subjects share a date, add the date again with the other subject. Adding a subject to an already-used date won't erase the existing entry.</p>
+        </div>
+        <p class="exam-status" id="exam-status" role="status"></p>
+      </div>
+
+      <div id="exam-saved-content" style="display:none;">
+        <div class="exam-calendar">
+          <div class="calendar-top">
+            <button type="button" class="calendar-nav" id="exam-prev-month" aria-label="Previous month">‹</button>
+            <h3 id="exam-month-heading">Month Year</h3>
+            <button type="button" class="calendar-nav" id="exam-next-month" aria-label="Next month">›</button>
+          </div>
+          <div class="calendar-grid" id="exam-calendar-grid" aria-label="Exam calendar"></div>
+          <p class="exam-step-note">Dates with a light orange background have an exam. Academic year labels run from July to June, so March 2027 is shown as “March 2027 · Academic year 2026–27”.</p>
+        </div>
+        <div class="exam-list">
+          <h3>Scheduled exam days</h3>
+          <div id="exam-entry-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+(() => {
+  const STORAGE_KEY = "clearNotesExamSchedule";
+  const $ = id => document.getElementById(id);
+  const createBtn = $("exam-create-btn"), editBtn = $("exam-edit-btn"), deleteBtn = $("exam-delete-btn");
+  const scheduleSelect = $("exam-select");
+  const form = $("exam-form"), nameStep = $("exam-name-step"), dayStep = $("exam-day-step");
+  const nameInput = $("exam-name-input"), dateInput = $("exam-date-input"), subjectInput = $("exam-subject-input");
+  const savedContent = $("exam-saved-content"), status = $("exam-status");
+  let schedules = [];
+  let schedule = null;
+  let viewDate = new Date();
+  viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+  let selectedDate = "";
+
+  function readSchedules() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      // Migrate the previous single-examination format without losing its data.
+      const list = Array.isArray(parsed) ? parsed : (parsed && typeof parsed.name === "string" && Array.isArray(parsed.entries) ? [parsed] : []);
+      return list.filter(item => item && typeof item.name === "string" && Array.isArray(item.entries)).map((item, index) => ({
+        id: item.id || `exam-${Date.now()}-${index}`,
+        name: item.name,
+        // Store the examination name directly on every entry as well as grouping
+        // entries inside their examination, so each record is self-identifying.
+        entries: item.entries.filter(e => e && /^\d{4}-\d{2}-\d{2}$/.test(e.date) && typeof e.subject === "string").map(e => ({
+          ...e,
+          examination: typeof e.examination === "string" && e.examination ? e.examination : item.name
+        }))
+      }));
+    } catch (err) { console.warn("Could not load saved exam schedules", err); return []; }
+  }
+  function saveSchedules() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(schedules));
+      status.textContent = "All examinations saved on this device.";
+      return true;
+    } catch (err) {
+      status.textContent = "Could not save. Your browser may have disabled local storage or run out of space.";
+      return false;
+    }
+  }
+  function academicYearLabel(year, month) {
+    const start = month >= 6 ? year : year - 1;
+    return `${start}–${String(start + 1).slice(-2)}`;
+  }
+  function formatDate(iso) {
+    const [y,m,d] = iso.split("-").map(Number);
+    return new Date(y, m-1, d).toLocaleDateString(undefined, { day:"numeric", month:"long", year:"numeric" });
+  }
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]));
+  }
+  function showSetup() {
+    form.classList.add("active"); status.textContent = "";
+    if (schedule) {
+      nameStep.style.display = "none"; dayStep.style.display = "block";
+      $("exam-form-heading").textContent = "Add or edit exam days";
+      $("exam-step-note").textContent = `Examination: ${schedule.name}. Add one date and subject at a time.`;
+    } else {
+      nameStep.style.display = "block"; dayStep.style.display = "none";
+      $("exam-form-heading").textContent = "Set up your examination";
+      $("exam-step-note").textContent = "First, give the entire examination a name, such as “Annual Examination 2026–27”.";
+      nameInput.value = "";
+      nameInput.focus();
+    }
+  }
+  function renderSelector() {
+    scheduleSelect.innerHTML = "";
+    schedules.forEach(item => {
+      const option = document.createElement("option");
+      option.value = item.id; option.textContent = item.name;
+      option.selected = !!schedule && item.id === schedule.id;
+      scheduleSelect.appendChild(option);
+    });
+    scheduleSelect.style.display = schedules.length > 1 ? "inline-block" : "none";
+    editBtn.style.display = schedule ? "inline-block" : "none";
+    deleteBtn.style.display = schedule ? "inline-block" : "none";
+  }
+  function render() {
+    const hasSchedule = !!schedule;
+    createBtn.textContent = "Add examination";
+    savedContent.style.display = hasSchedule ? "block" : "none";
+    $("exam-title-display").textContent = hasSchedule ? schedule.name : "Your exam schedule";
+    const totalDays = schedules.reduce((sum, item) => sum + item.entries.length, 0);
+    $("exam-description").textContent = schedules.length
+      ? `${schedules.length} examination${schedules.length === 1 ? "" : "s"} saved · ${totalDays} scheduled exam ${totalDays === 1 ? "day" : "days"} · stored locally on this device.`
+      : "No saved examinations yet. Add one to start scheduling exam days.";
+    renderSelector();
+    if (!hasSchedule) return;
+    renderCalendar(); renderEntries();
+  }
+  function renderCalendar() {
+    if (!schedule) return;
+    const year = viewDate.getFullYear(), month = viewDate.getMonth();
+    const monthName = viewDate.toLocaleDateString(undefined, {month:"long", year:"numeric"});
+    $("exam-month-heading").textContent = `${monthName} · Academic year ${academicYearLabel(year, month)}`;
+    const grid = $("exam-calendar-grid"); grid.innerHTML = "";
+    ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(day => {
+      const el = document.createElement("div"); el.className = "calendar-weekday"; el.textContent = day; grid.appendChild(el);
+    });
+    const firstDay = new Date(year, month, 1);
+    const offset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let i=0; i<offset; i++) { const blank=document.createElement("div"); blank.className="calendar-day empty"; blank.setAttribute("aria-hidden","true"); grid.appendChild(blank); }
+    for (let day=1; day<=daysInMonth; day++) {
+      const iso = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+      const entries = schedule.entries.filter(e => e.date === iso);
+      const button = document.createElement("button"); button.type="button";
+      button.className = "calendar-day" + (entries.length ? " has-exam" : "") + (selectedDate === iso ? " selected" : "");
+      button.setAttribute("aria-label", `${formatDate(iso)}${entries.length ? ": " + entries.map(e=>e.subject).join(", ") : ""}`);
+      const num = document.createElement("span"); num.className="calendar-day-number"; num.textContent=day; button.appendChild(num);
+      entries.forEach(entry => { const subject=document.createElement("span"); subject.className="calendar-subject"; subject.textContent=entry.subject; button.appendChild(subject); });
+      button.addEventListener("click", () => {
+        selectedDate=iso; dateInput.value=iso;
+        if (!form.classList.contains("active")) showSetup();
+        nameStep.style.display="none"; dayStep.style.display="block";
+        subjectInput.focus(); renderCalendar();
+      });
+      grid.appendChild(button);
+    }
+  }
+  function renderEntries() {
+    const list = $("exam-entry-list"); list.innerHTML = "";
+    const entries = [...schedule.entries].sort((a,b) => a.date.localeCompare(b.date) || a.subject.localeCompare(b.subject));
+    if (!entries.length) { list.innerHTML = '<p class="exam-empty">No exam days added yet. Click “Edit schedule” to add the first one.</p>'; return; }
+    entries.forEach(entry => {
+      const row=document.createElement("div"); row.className="exam-entry";
+      const info=document.createElement("div");
+      const title=document.createElement("strong"); title.textContent=entry.subject;
+      const date=document.createElement("small"); date.textContent=formatDate(entry.date);
+      const examName=document.createElement("small"); examName.textContent=`Examination: ${entry.examination || schedule.name}`;
+      info.append(title,date,examName);
+      const remove=document.createElement("button"); remove.type="button"; remove.textContent="Remove"; remove.setAttribute("aria-label",`Remove ${entry.subject} on ${formatDate(entry.date)}`);
+      remove.addEventListener("click", () => {
+        const index = schedule.entries.indexOf(entry);
+        if (index >= 0) { schedule.entries.splice(index,1); if (saveSchedules()) render(); }
+      });
+      row.append(info,remove); list.appendChild(row);
+    });
+  }
+  createBtn.addEventListener("click", () => {
+    schedule = null;
+    showSetup();
+  });
+  editBtn.addEventListener("click", showSetup);
+  scheduleSelect.addEventListener("change", () => {
+    schedule = schedules.find(item => item.id === scheduleSelect.value) || null;
+    form.classList.remove("active");
+    if (schedule && schedule.entries.length) {
+      const first = [...schedule.entries].sort((a,b)=>a.date.localeCompare(b.date))[0];
+      const [y,m] = first.date.split("-").map(Number); viewDate = new Date(y,m-1,1);
+    }
+    render();
+  });
+  deleteBtn.addEventListener("click", () => {
+    if (!schedule || !confirm(`Delete “${schedule.name}” and all its exam days? This cannot be undone.`)) return;
+    const index = schedules.findIndex(item => item.id === schedule.id);
+    if (index >= 0) schedules.splice(index,1);
+    schedule = schedules[0] || null;
+    form.classList.remove("active");
+    saveSchedules(); render();
+    if (!schedule) showSetup();
+  });
+  $("exam-name-continue").addEventListener("click", () => {
+    const name=nameInput.value.trim();
+    if (!name) { status.textContent="Enter a name for the entire examination first."; nameInput.focus(); return; }
+    const newSchedule = {id: `exam-${Date.now()}-${Math.random().toString(36).slice(2,8)}`, name, entries:[]};
+    schedules.push(newSchedule);
+    schedule = newSchedule;
+    if (!saveSchedules()) { schedules.pop(); schedule = schedules[0] || null; render(); return; }
+    nameStep.style.display="none"; dayStep.style.display="block";
+    $("exam-form-heading").textContent=name;
+    $("exam-step-note").textContent=`Examination: ${name}. Now add each date and subject one at a time.`;
+    const today=new Date(); selectedDate=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+    dateInput.value=selectedDate; viewDate=new Date(today.getFullYear(),today.getMonth(),1);
+    status.textContent="Choose a date on the calendar, then enter its subject.";
+    render(); renderCalendar(); subjectInput.focus();
+  });
+  dateInput.addEventListener("change", () => {
+    if (!dateInput.value) return;
+    selectedDate=dateInput.value;
+    const [y,m]=selectedDate.split("-").map(Number); viewDate=new Date(y,m-1,1);
+    renderCalendar();
+  });
+  $("exam-add-day").addEventListener("click", () => {
+    if (!schedule) return;
+    const date=dateInput.value, subject=subjectInput.value.trim();
+    if (!date) { status.textContent="Choose the date for this exam day."; dateInput.focus(); return; }
+    if (!subject) { status.textContent="Enter the subject for this date."; subjectInput.focus(); return; }
+    schedule.entries.push({examination: schedule.name, date, subject});
+    if (!saveSchedules()) { schedule.entries.pop(); return; }
+    selectedDate=date; const [y,m]=date.split("-").map(Number); viewDate=new Date(y,m-1,1);
+    subjectInput.value=""; status.textContent=`Added ${subject} on ${formatDate(date)}. Now enter the next exam day, or finish and save.`;
+    render(); subjectInput.focus();
+  });
+  $("exam-finish-entry").addEventListener("click", () => {
+    if (!schedule) return;
+    if (!schedule.entries.length && !confirm("You haven't added any exam days yet. Save this examination with no dates for now?")) return;
+    if (!saveSchedules()) return;
+    form.classList.remove("active"); render();
+  });
+  $("exam-prev-month").addEventListener("click", () => { viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1); renderCalendar(); });
+  $("exam-next-month").addEventListener("click", () => { viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1); renderCalendar(); });
+
+  schedules = readSchedules();
+  schedule = schedules[0] || null;
+  // Persist normalized records so every saved entry explicitly contains its examination.
+  if (schedules.length) saveSchedules();
+  render();
+  if (!schedule) showSetup();
+})();
 </script>
 
   <hr style="border: none; height: 5px; background-color: #333;">

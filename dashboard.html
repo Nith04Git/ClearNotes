@@ -379,8 +379,10 @@
             window.open(textBookUrl, "_blank");
           };
 
+          const currentYear = new Date().getFullYear();
+
           card.querySelector(".search-btn").onclick = () => {
-            const searchQuery = `NCERT ${subject} Class ${grade} Textbook PDF`;
+            const searchQuery = `NCERT ${subject} Class ${grade} Textbook PDF for ${currentYear}`;
             window.open(`https://google.com/search?q=${encodeURIComponent(searchQuery)}`);
           };
 

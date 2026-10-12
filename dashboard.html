@@ -101,9 +101,27 @@
       box-shadow: 0 15px 35px rgba(0,0,0,0.12);
     }
 
+.location-card {
+    padding: 20px;
+}
+
+.location-layout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 20px;
+    align-items: stretch;
+    margin-top: 18px;
+}
+
+.location-map-panel {
+    min-width: 0;
+}
+
+
 #school-location-map {
-    height: 180px;
-    width: 100%;
+    width: auto;
+    aspect-ratio: 4 / 6;
+    height: auto;
     border-radius: 12px;
     border: 2px solid white;
     box-shadow: var(--shadow);
@@ -115,6 +133,7 @@
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-top: 12px;
+    line-height: 1.5;
 }
 
 #location-school-name {
@@ -127,6 +146,55 @@
     border-radius: 50%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+
+.street-view-panel {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.street-view-heading {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+
+#school-street-view {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    flex: 1;
+    border: none;
+    border-radius: 12px;
+    background: #eee;
+    box-shadow: var(--shadow);
+}
+
+
+.street-view-note {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 650px) {
+
+    .location-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .location-map-panel {
+        width: min(100%, 260px);
+    }
+    #school-street-view {
+        min-height: 260px;
+    }
+
+}
   </style>
 </head>
 <body>
@@ -135,25 +203,56 @@
   <h3>All you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i>.</h3>
 
   <hr style="border: none; height: 5px; background-color: #333;">
-   <h2>School Location</h2>
 
-    <div class="card-grid">
-        <div class="card">
+<h2>Your School</h2>
+<div class="card location-card">
+	
+    <h3 id="location-school-name">
+        Loading school...
+    </h3>
 
-            <h3 id="location-school-name">Loading school...</h3>
 
-            <p id="location-school-address">
-                Loading school address...
-            </p>
+    <p id="location-school-address">
+        Loading school address...
+    </p>
 
-            <div id="school-location-map"></div>
+    <div class="location-layout">
 
-            <p id="school-location-status">
+        <div class="location-map-panel">
+
+            <div
+                id="school-location-map"
+                aria-label="Map centred on the selected school">
+            </div>
+
+
+            <p
+                id="school-location-status"
+                aria-live="polite">
                 Loading map...
             </p>
 
         </div>
+
+        <div class="street-view-panel">
+            <iframe
+                id="school-street-view"
+                title="Street View near the selected school"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen>
+            </iframe>
+
+
+            <p class="street-view-note">
+                Street View provided by Google Maps.
+            </p>
+
+        </div>
+
     </div>
+
+</div>
 
   <hr style="border: none; height: 5px; background-color: #333;">
 
@@ -185,7 +284,7 @@
 
     function injectExcelEngine(callback) {
       const script = document.createElement("script");
-      // Assembling path fragments explicitly to guarantee it loads unhindered
+
       script.src = "https://" + "cdn.jsdelivr.net/npm/" + "xlsx@0.18.5/dist/xlsx.full.min.js";
       script.onload = callback;
       script.onerror = () => {
@@ -224,7 +323,6 @@
         const arrayBuffer = await response.arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
         
-        // The library is fully ready now inside the window runtime context
         const workbook = window.XLSX.read(data, { type: 'array' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
@@ -295,163 +393,234 @@
       }
     }
 
-    // Ingest the runtime dependency first, then query the dataset
     injectExcelEngine(loadSyllabusFromExcel);
   </script>
 
-<!-- Leaflet JavaScript -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
     const locationSchoolName =
-        document.getElementById("location-school-name");
+    document.getElementById("location-school-name");
 
-    const locationSchoolAddress =
-        document.getElementById("location-school-address");
 
-    const locationMapStatus =
-        document.getElementById("school-location-status");
+const locationSchoolAddress =
+    document.getElementById("location-school-address");
 
-    const openSchoolMapButton =
-        document.getElementById("open-school-map");
 
-    let selectedSchool = null;
+const locationMapStatus =
+    document.getElementById("school-location-status");
 
-    try {
-        selectedSchool = JSON.parse(
-            localStorage.getItem("chosenSchool")
-        );
-    } catch (error) {
-        console.error("Could not read the selected school:", error);
-    }
 
-    const schoolLocationMap = L.map("school-location-map", {
+const streetViewFrame =
+    document.getElementById("school-street-view");
+
+let selectedSchool = null;
+
+
+try {
+
+    selectedSchool = JSON.parse(
+        localStorage.getItem("chosenSchool")
+    );
+
+} catch (error) {
+
+    console.error(
+        "Could not read the selected school:",
+        error
+    );
+
+}
+
+const schoolLocationMap = L.map(
+    "school-location-map",
+    {
         scrollWheelZoom: false
-    });
+    }
+);
 
-    L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        maxZoom: 12,
+
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }
+).addTo(schoolLocationMap);
+
+const hasValidCoordinates =
+
+    selectedSchool &&
+    selectedSchool.lat !== undefined &&
+    selectedSchool.lon !== undefined &&
+    Number.isFinite(Number(selectedSchool.lat)) &&
+    Number.isFinite(Number(selectedSchool.lon)) &&
+    Number(selectedSchool.lat) >= -90 &&
+    Number(selectedSchool.lat) <= 90 &&
+    Number(selectedSchool.lon) >= -180 &&
+    Number(selectedSchool.lon) <= 180;
+
+if (hasValidCoordinates) {
+    const schoolLatitude =
+        Number(selectedSchool.lat);
+
+
+    const schoolLongitude =
+        Number(selectedSchool.lon);
+
+
+    const schoolName =
+        selectedSchool.name || "Unnamed School";
+
+    locationSchoolName.textContent =
+        schoolName;
+
+
+    locationSchoolAddress.textContent =
+        selectedSchool.address || "Address unavailable";
+
+    schoolLocationMap.setView(
+        [
+            schoolLatitude,
+            schoolLongitude
+        ],
+        16
+    );
+
+    const schoolMarker = L.circleMarker(
+        [
+            schoolLatitude,
+            schoolLongitude
+        ],
         {
-            maxZoom: 19,
-            attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            radius: 9,
+            fillColor: "#f76307",
+            color: "#ffffff",
+            weight: 3,
+            opacity: 1,
+            fillOpacity: 1
         }
     ).addTo(schoolLocationMap);
 
-    if (
-        selectedSchool &&
-        selectedSchool.lat !== undefined &&
-        selectedSchool.lon !== undefined &&
-        Number.isFinite(Number(selectedSchool.lat)) &&
-        Number.isFinite(Number(selectedSchool.lon)) &&
-        Number(selectedSchool.lat) >= -90 &&
-        Number(selectedSchool.lat) <= 90 &&
-        Number(selectedSchool.lon) >= -180 &&
-        Number(selectedSchool.lon) <= 180
-    ) {
+    schoolMarker.bindPopup(
+        `<strong>${escapeSchoolHTML(schoolName)}</strong>`
+    );
 
-        const schoolLatitude = Number(selectedSchool.lat);
-        const schoolLongitude = Number(selectedSchool.lon);
+    schoolMarker.bindTooltip(
+        escapeSchoolHTML(schoolName),
+        {
+            permanent: true,
+            direction: "top",
+            offset: [0, -10]
+        }
+    );
 
-
-        // Display school information.
-
-        locationSchoolName.textContent =
-            selectedSchool.name || "Unnamed School";
-
-        locationSchoolAddress.textContent =
-            selectedSchool.address || "Address unavailable";
+    const streetViewURL = new URL(
+        "https://maps.google.com/maps"
+    );
 
 
-        // Centre the map on the selected school.
-
-        schoolLocationMap.setView(
-            [schoolLatitude, schoolLongitude],
-            15
-        );
+    streetViewURL.searchParams.set(
+        "layer",
+        "c"
+    );
 
 
-        // Add a marker at the school's coordinates.
-
-        const schoolMarker = L.circleMarker(
-            [schoolLatitude, schoolLongitude],
-            {
-                radius: 10,
-                fillColor: "#f76307",
-                color: "#ffffff",
-                weight: 3,
-                opacity: 1,
-                fillOpacity: 1
-            }
-        ).addTo(schoolLocationMap);
+    streetViewURL.searchParams.set(
+        "cbll",
+        `${schoolLatitude},${schoolLongitude}`
+    );
 
 
-        // Display the school name when the marker is clicked.
-
-        schoolMarker.bindPopup(
-            `<strong>${escapeSchoolHTML(selectedSchool.name || "Unnamed School")}</strong>`
-        );
-
-
-        // Add a permanent school-name label.
-
-        schoolMarker.bindTooltip(
-            selectedSchool.name || "Unnamed School",
-            {
-                permanent: true,
-                direction: "top",
-                offset: [0, -10]
-            }
-        );
+    streetViewURL.searchParams.set(
+        "cbp",
+        "12,0,,0,0"
+    );
 
 
-        // Update the status message.
+    streetViewURL.searchParams.set(
+        "output",
+        "svembed"
+    );
 
-        locationMapStatus.textContent =
-            `Location: ${schoolLatitude}, ${schoolLongitude}`;
 
-    } else {
+    streetViewFrame.src =
+        streetViewURL.toString();
 
-        // Handle missing or invalid school information.
+    locationMapStatus.textContent =
+        `Coordinates: ${schoolLatitude.toFixed(5)}, ${schoolLongitude.toFixed(5)}`;
 
-        locationSchoolName.textContent = "No school selected";
 
-        locationSchoolAddress.textContent =
-            "Select a school to display its location.";
+} else {
 
-        locationMapStatus.textContent =
-            "School coordinates are unavailable.";
+    locationSchoolName.textContent =
+        "No school selected";
 
-        openSchoolMapButton.disabled = true;
 
-        openSchoolMapButton.style.opacity = "0.5";
+    locationSchoolAddress.textContent =
+        "Select a school to display its location.";
 
-        schoolLocationMap.setView([10, 76.3], 7);
 
-    }
+    locationMapStatus.textContent =
+        "School coordinates are unavailable.";
 
-    function escapeSchoolHTML(value) {
+    schoolLocationMap.setView(
+        [
+            0,
+            0
+        ],
+        7
+    );
 
-        return String(value).replace(/[&<>"']/g, character => {
+
+    // Do not display an unrelated Street View
+
+    streetViewFrame.removeAttribute("src");
+
+
+    streetViewFrame.title =
+        "Street View unavailable because school coordinates are missing.";
+
+}
+
+function escapeSchoolHTML(value) {
+
+    return String(value).replace(
+        /[&<>"']/g,
+
+        character => {
 
             const entities = {
+
                 "&": "&amp;",
+
                 "<": "&lt;",
+
                 ">": "&gt;",
+
                 '"': "&quot;",
+
                 "'": "&#39;"
+
             };
+
 
             return entities[character];
 
-        });
+        }
+    );
 
-    }
+}
 
-    setTimeout(() => {
+setTimeout(
+    () => {
+
         schoolLocationMap.invalidateSize();
-    }, 100);
+},
+    150
+);
 
 </script>
 

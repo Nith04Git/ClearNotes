@@ -2,12 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ClearNotes</title>
+  <title>ClearNotes - Detox</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
-
-  <!-- Favicon -->
   <link rel="icon" href="ClearNotesMiniLogo.png">
 
   <style>
@@ -28,35 +26,53 @@
     }
 
     body {
-      margin: 10;
+      margin: 10px;
       background: linear-gradient(to bottom, #ffffff, var(--bg-main));
       color: var(--text-main);
     }
 
-    header {
-      padding: 60px 20px 40px;
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h1 {
       text-align: center;
-      background: linear-gradient(135deg, #eef4ff, #ffffff);
     }
 
-    header h1 {
-      font-size: 3rem;
-      margin: 0;
+    p {
+      text-align: center;
     }
 
-    header p {
-      font-size: 1.1rem;
+    /* ---------- CARD GRID ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
       color: var(--text-muted);
-      max-width: 600px;
-      margin: 20px auto;
-    }
-
-    .cta-row {
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
+      text-align: left;
     }
 
     .btn {
@@ -74,145 +90,82 @@
       box-shadow: var(--shadow);
     }
 
-    .btn-secondary {
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 15px 35px rgba(0,0,0,0.12);
     }
-
-    /* ---------- SECTIONS ---------- */
-    section {
-      padding: 50px 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    section h2 {
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 2rem;
-    }
-
-    section p.section-desc {
-      text-align: center;
-      color: var(--text-muted);
-      max-width: 700px;
-      margin: auto auto 40px;
-    }
-
-    /* ---------- CARD GRID ---------- */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 25px;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      padding: 25px;
-      box-shadow: var(--shadow);
-      transition: transform 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-    }
-
-    .card h3 {
-      margin-top: 0;
-    }
-
-    .card p {
-      color: var(--text-muted);
-    }
-
-    .card img {
-      border-radius: var(--radius);
-    }
-
-    /* ---------- VIDEO ---------- */
-    .video-wrapper {
-      max-width: 720px;
-      margin: auto;
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    video {
-      width: 100%;
-      display: block;
-    }
-
-    /* ---------- QUOTES ---------- */
-    .quote {
-      background: linear-gradient(135deg, #f0f6ff, #ffffff);
-      border-radius: var(--radius);
-      padding: 25px;
-      box-shadow: var(--shadow);
-    }
-
-    .quote i {
-      color: var(--text-muted);
-    }
-
-    /* ---------- FOOTER ---------- */
-    footer {
-      text-align: center;
-      padding: 40px 20px;
-      background: #f0f2f6;
-      color: var(--text-muted);
-    }
-
-    img {
-       
   </style>
-<title>ClearNotes - Detox</title>
 </head>
 
 <body>
-<h1><u>Detox</u></h1>
+  <h1><u>Detox</u></h1>
+  <p>Wind down from your distractions. Learn how to concentrate on studying when you want to.</p>
+  <hr>
+  <h2 style="text-align: center;">Pick your distractions.</h2>
 
-<p style="color: white;">Wind down from your distractions. Purely focus on studying.</p>
+  <section>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Short-Form Content</h3>
+        <p>Being unable to pull away from content like YT Shorts, IG Reels, Tiktok, etc.</p>
+        <img src="https://i.giphy.com/FASybzL1ElrxpT2rTq.webp" alt="img" width="200">
+        <br><br>
+        <!-- Changed id to class -->
+        <button class="btn btn-primary save-distraction">Choose</button>
+      </div>
 
-<hr>
+      <div class="card">
+        <h3>Overeating</h3>
+        <p>Overeating food items, snacks, desserts, etc for leisure or stress.</p>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbZ_IhNHNlRiq_0j_hs7xtBOF4345jQY8k7w&s" alt="img" width="200">
+        <br><br>
+        <button class="btn btn-primary save-distraction">Choose</button>
+      </div>
 
-<h2>Pick your distraction.</h2>
+      <div class="card">
+        <h3>Sleeping</h3>
+        <p>Taking too many naps to avoid doing work.</p>
+        <img src="https://cdn-icons-png.flaticon.com/256/3094/3094837.png" alt="img" width="200">
+        <br><br>
+        <button class="btn btn-primary save-distraction">Choose</button>
+      </div>
 
-<section>
-<div class="card-grid">
+      <div class="card">
+        <h3>Gaming</h3>
+        <p>Playing video games instead of working.</p>
+        <img src="https://png.pngtree.com/png-vector/20240930/ourmid/pngtree-retro-neon-video-game-controller-png-image_13929194.png" alt="img" width="200">
+        <br><br>
+        <button class="btn btn-primary save-distraction">Choose</button>
+      </div>
+    </div>
+  </section>
 
-<div class="card">
-<h3>Short-Form Content</h3>
-<p>Being unable to pull away from content like YT Shorts, IG Reels, Tiktok, etc.</p>
-<img src="https://i.giphy.com/FASybzL1ElrxpT2rTq.webp" alt="img" width="200">
-</div>
+  <script>
+    // 1. Target all buttons using class selector
+    const buttons = document.querySelectorAll(".save-distraction");
 
-<div class="card">
-<h3>Overeating</h3>
-<p>Overeating food items, snacks, desserts, etc for leisure or stress.</p>
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbZ_IhNHNlRiq_0j_hs7xtBOF4345jQY8k7w&s" alt="img" width="200">
-</div>
+    buttons.forEach(button => {
+      button.addEventListener("click", (event) => {
+        // Find the title element inside the clicked button's card parent container
+        const cardElement = event.target.closest(".card");
+        const titleText = cardElement.querySelector("h3").innerText;
 
-<div class="card">
-<h3>Sleeping</h3>
-<p>Taking too many naps to avoid doing work.</p>
-<img src="https://cdn-icons-png.flaticon.com/256/3094/3094837.png" alt="img" width="200">
-</div>
+        // 2. Append the plain string title into localStorage array
+        appendToArray("chosenDistractions", titleText);
 
-<div class="card">
-<h3>Gaming</h3>
-<p>Playing video games instead of working.</p>
-<img src="https://png.pngtree.com/png-vector/20240930/ourmid/pngtree-retro-neon-video-game-controller-png-image_13929194.png" alt="img" width="200">
-</div>
+        // 3. Redirect user
+        window.location.href = "index.html";
+      });
+    });
 
-</div>
-</section>
+    // Renamed the parameter 'new' to 'newItem' to fix the script crash
+    function appendToArray(key, newItem) {
+      let prevdata = localStorage.getItem(key);
+      let array = prevdata ? JSON.parse(prevdata) : [];
 
+      array.push(newItem);
+      localStorage.setItem(key, JSON.stringify(array));
+    }
+  </script>
 </body>
 </html>

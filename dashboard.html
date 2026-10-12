@@ -307,6 +307,7 @@
   <hr style="border: none; height: 5px; background-color: #333;">
 
   <h2>Syllabus</h2>
+  <p>ClearNotes approximated your syllabus using your school and class. Please note that <b>our approximations may not always be fully accurate.</b></p>
   <section>
     <div class="card-grid" id="syllabus-grid">
       <p id="loading-status">Loading textbooks...</p>
@@ -442,7 +443,7 @@
 
           card.innerHTML = `
             <h3>${subject}</h3>
-            <p>NCERT Textbook for Class ${grade}</p>
+            <p><b>NCERT Textbook</b> for Class ${grade}</p>
             <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Catalog Code: ${code}</small></p>
             
             <div style="text-align: center; margin: 15px 0; min-height: 150px; display: flex; align-items: center; justify-content: center;">
@@ -733,7 +734,7 @@ setTimeout(
   <hr style="border: none; height: 5px; background-color: #333;">
 
   <h2>Exam Schedule</h2>
-  <p style="text-align:center;">Save your examination dates locally and view them in a month-by-month calendar.</p>
+  <p style="text-align:center;">Save and remember your exam dates using ClearNotes.</p>
   <div class="exam-schedule-wrap">
     <div class="exam-panel">
       <div class="exam-header">
@@ -930,8 +931,8 @@ setTimeout(
       const info=document.createElement("div");
       const title=document.createElement("strong"); title.textContent=entry.subject;
       const date=document.createElement("small"); date.textContent=formatDate(entry.date);
-      const examName=document.createElement("small"); examName.textContent=`Examination: ${entry.examination || schedule.name}`;
-      info.append(title,date," ",examName);
+      const examName=document.createElement("small"); examName.textContent=`${entry.examination || schedule.name}`;
+      info.append(title,examName," | ",date);
       const remove=document.createElement("button"); remove.type="button"; remove.textContent="Remove"; remove.setAttribute("aria-label",`Remove ${entry.subject} on ${formatDate(entry.date)}`);
       remove.addEventListener("click", () => {
         const index = schedule.entries.indexOf(entry);

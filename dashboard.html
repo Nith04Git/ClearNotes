@@ -786,7 +786,7 @@ setTimeout(
             <button type="button" class="calendar-nav" id="exam-next-month" aria-label="Next month">›</button>
           </div>
           <div class="calendar-grid" id="exam-calendar-grid" aria-label="Exam calendar"></div>
-          <p class="exam-step-note">Dates with a light orange background have an exam. Academic year labels run from July to June, so March 2027 is shown as “March 2027 · Academic year 2026–27”.</p>
+          <p class="exam-step-note"></p>
         </div>
         <div class="exam-list">
           <h3>Scheduled exam days</h3>
@@ -931,7 +931,7 @@ setTimeout(
       const title=document.createElement("strong"); title.textContent=entry.subject;
       const date=document.createElement("small"); date.textContent=formatDate(entry.date);
       const examName=document.createElement("small"); examName.textContent=`Examination: ${entry.examination || schedule.name}`;
-      info.append(title,date,examName);
+      info.append(title,date," ",examName);
       const remove=document.createElement("button"); remove.type="button"; remove.textContent="Remove"; remove.setAttribute("aria-label",`Remove ${entry.subject} on ${formatDate(entry.date)}`);
       remove.addEventListener("click", () => {
         const index = schedule.entries.indexOf(entry);

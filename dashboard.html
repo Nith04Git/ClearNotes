@@ -442,9 +442,9 @@
           const importance = String(book["Importance"] || "Secondary").trim();
 
           // 2. Define colors for each priority type
-          let badgeColor = "#6c757d"; // Gray for Secondary
-          if (importance.toLowerCase() === "primary") badgeColor = "#0d6efd";   // Blue for Primary
-          if (importance.toLowerCase() === "language") badgeColor = "#198754";  // Green for Language
+          let badgeColor = "#fc9d21";
+          if (importance.toLowerCase() === "primary") badgeColor = "#fc2c03";
+          if (importance.toLowerCase() === "language") badgeColor = "#faf200";
 
           const coverUrl = `https://ncert.nic.in/textbook/pdf/${gradeLetter}${code}cc.jpg`;
           const textBookUrl = `https://ncert.nic.in/textbook.php?${gradeLetter}${code}=0-${chapters}`;

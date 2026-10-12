@@ -446,8 +446,8 @@
           if (importance.toLowerCase() === "primary") badgeColor = "#0d6efd";   // Blue for Primary
           if (importance.toLowerCase() === "language") badgeColor = "#198754";  // Green for Language
 
-          const coverUrl = `https://ncert.nic.in{gradeLetter}${code}cc.jpg`;
-          const textBookUrl = `https://ncert.nic.in{gradeLetter}${code}=0-${chapters}`;
+          const coverUrl = `https://ncert.nic.in${gradeLetter}${code}cc.jpg`;
+          const textBookUrl = `https://ncert.nic.in${gradeLetter}${code}=0-${chapters}`;
 
           // 3. Render the card with the dynamic badge header
           card.innerHTML = `

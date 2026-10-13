@@ -1019,7 +1019,7 @@ async function determineSchoolState() {
   if (!chosenSchool || !chosenSchool.name) return null;
 
   try {
-    const res = await fetch("schoolnames.json");
+    const res = await fetch("schooldata.json");
     const schools = await res.json();
 
     const match = schools.find(s => s.name.trim().toLowerCase() === chosenSchool.name.trim().toLowerCase());
@@ -1037,7 +1037,7 @@ async function determineSchoolState() {
     return foundState ? foundState : null;
 
   } catch (err) {
-    console.error("Could not load schoolnames.json:", err);
+    console.error("Could not load schooldata.json:", err);
     return null;
   }
 }

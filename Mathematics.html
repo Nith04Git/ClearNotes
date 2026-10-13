@@ -298,10 +298,54 @@ matchingBooks.forEach(book => {
     </div>
     <p><b>NCERT Textbook</b> for Class ${grade}</p>
     <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Catalog Code: ${code}</small></p>
-    ...
-  `;
+<p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Catalog Code: ${code}</small></p>
+            
+            <div style="text-align: center; margin: 15px 0; min-height: 150px; display: flex; align-items: center; justify-content: center;">
+              <img src="${coverUrl}" alt="${subject} Cover" width="140" style="border-radius: var(--radius); box-shadow: var(--shadow);" 
+                   onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\'height:150px; width:140px; background:#fafafa; border:1px dashed #ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#999; font-size:0.85rem; padding:10px; text-align:center;\'>Preview Cover Unavailable</div>';">
+            </div>
 
-  // rest of your card logic (exam reminders, buttons, etc.)
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+            
+            <button class="btn btn-primary open-book-btn" style="margin-bottom: 10px;">
+              Read Online
+            </button>
+            
+            <button class="btn btn-secondary search-btn" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <span>Search on </span>
+              <img src="Google-Logo.jpg" alt="Google" width="50" style="border-radius: 4px; vertical-align: middle;">
+            </button>
+          `;
+
+          const upcomingMatches = getUpcomingExamMatches(subject);
+          if (upcomingMatches.length) {
+            const reminder = document.createElement("div");
+            reminder.className = "textbook-exam-reminder";
+            reminder.style.cssText = "margin: 10px 0; padding: 10px 12px; border-radius: 8px; background: #fff1df; color: #7a3e00; font-weight: 600; font-size: 0.9rem;";
+            upcomingMatches.forEach(match => {
+              const line = document.createElement("p");
+              line.style.cssText = "margin: 3px 0;";
+              const [year, month, day] = match.date.split("-").map(Number);
+              const prettyDate = new Date(year, month - 1, day).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+              line.textContent = `Coming up in your ${match.examination} exam soon · ${prettyDate}`;
+              reminder.appendChild(line);
+            });
+
+            const layoutHeader = card.querySelector("div");
+            layoutHeader.insertAdjacentElement("afterend", reminder);
+          }
+
+          card.querySelector(".open-book-btn").onclick = () => {
+            window.open(textBookUrl, "_blank");
+          };
+
+          const currentYear = new Date().getFullYear();
+
+          card.querySelector(".search-btn").onclick = () => {
+            const searchQuery = `NCERT ${subject} Class ${grade} Textbook PDF for ${currentYear}`;
+            window.open(`https://google.com/search?q=${encodeURIComponent(searchQuery)}`);
+          };
+
   gridContainer.appendChild(card);
 });
 

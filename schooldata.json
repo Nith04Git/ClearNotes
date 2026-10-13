@@ -501,6 +501,41 @@
   "address": "International School of London, ISL London, 139 Gunnersbury Ave, London W3 8LG, United Kingdom",
   "lat": 51.4957903,
   "lon": -0.2829103
- }
+ },
+
+ {
+  "name": "Ambience Public School",
+  "address": "Ambience Public School, Safdarjung Enclave, B3 Block, A-1, Safdarjung Enclave, New Delhi, Delhi 110029",
+  "lat": 28.5662371,
+  "lon": 77.1978100
+ },
+
+ {
+  "name": "Green Fields School",
+  "address": "Green Fields School, Chaudhary Jhandu Singh Marg, Block A 2, Nauroji Nagar, Safdarjung Enclave, New Delhi, Delhi 110029",
+  "lat": 28.5664708,
+  "lon": 77.1940407
+ },
+
+ {
+  "name": "Jain Modern Public School",
+  "address": "Jain Modern Public School, Green Park Ext Rd, Block R, Green Park Extension, Green Park, New Delhi, Delhi 110016",
+  "lat": 28.5620570,
+  "lon": 77.2048810
+ },
+
+ {
+  "name": "St. Mary's School",
+  "address": "St. Mary's School, B-2, Sara Mathew Rd, Block Madam, Safdarjung Enclave, New Delhi, Delhi 110029",
+  "lat": 28.5650894,
+  "lon": 77.1908661
+ },
+
+ {
+  "name": "Global Indonesia School",
+  "address": "Global Indonesia School, Perumahan Emerald Lake, Jl. Boulevard Emerald No.1, Pelamunan, Kramatwatu, Serang Regency, Banten 42616, Indonesia",
+  "lat": -6.0621522,
+  "lon": 106.1261517
+ },
 
 ]

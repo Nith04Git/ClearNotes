@@ -2,13 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ClearNotes - Signup</title>
+  <title>ClearNotes</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
-  
-  <!-- Bootstrap CSS (needed for standard btn classes if you don't define them all) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Favicon -->
   <link rel="icon" href="ClearNotesMiniLogo.png">
@@ -32,76 +29,148 @@
 
     body {
       margin: 0;
-      padding: 40px;
       background: linear-gradient(to bottom, #ffffff, var(--bg-main));
       color: var(--text-main);
-      min-height: 100vh;
     }
 
-    .upload-container {
+    /* ---------- HEADER / HERO ---------- */
+    header {
+      padding: 60px 20px 40px;
+      text-align: center;
+      background: linear-gradient(135deg, #eef4ff, #ffffff);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
       max-width: 600px;
-      margin: 0 auto;
-      background: var(--bg-card);
-      padding: 40px;
-      border-radius: var(--radius);
+      margin: 20px auto;
+    }
+
+    .cta-row {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
       box-shadow: var(--shadow);
     }
 
-    h1, h2 { text-align: center; }
-    
-    .instruction {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    /* CUSTOM BUTTON STYLING */
-    .btn-primary {
-      background-color: var(--accent) !important;
-      border: none !important;
-      padding: 12px 25px;
-      border-radius: 12px;
-      font-weight: 600;
-    }
-
     .btn-secondary {
-      background-color: var(--accent-soft) !important;
-      color: var(--accent) !important;
-      border: 1px solid var(--accent) !important;
-      padding: 10px 20px;
-      border-radius: 12px;
-      display: inline-block;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    /* Hide the actual ugly file input */
-    .hidden-file-input {
-      display: none;
-    }
-
-    #file-name-display {
-      display: block;
-      margin-top: 10px;
-      font-size: 0.85rem;
+      background: var(--accent-soft);
       color: var(--accent);
-      font-style: italic;
     }
 
-    .form-group {
-      margin-bottom: 20px;
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
     }
 
-    input[type="text"], select {
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+
+    section p.section-desc {
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: auto auto 40px;
+    }
+
+    /* ---------- CARD GRID ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: var(--text-muted);
+    }
+
+    .card img {
+      border-radius: var(--radius);
+    }
+
+    /* ---------- VIDEO ---------- */
+    .video-wrapper {
+      max-width: 720px;
+      margin: auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    video {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
+      display: block;
+    }
+
+    /* ---------- QUOTES ---------- */
+    .quote {
+      background: linear-gradient(135deg, #f0f6ff, #ffffff);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+    }
+
+    .quote i {
+      color: var(--text-muted);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      background: #f0f2f6;
+      color: var(--text-muted);
     }
   </style>
 </head>
-
 
 <body>
 
@@ -117,5 +186,17 @@
     <p>By signing up, you get personalized notes and resources from your specific grade and section.</p>
     </div>
    </div>
+
+<br>
+
+  <div class="video-wrapper">
+    <video autoplay muted loop>
+      <source src="EarthRotation.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+<br>
+
 </body>
 </html>

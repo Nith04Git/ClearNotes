@@ -1,99 +1,109 @@
 <!DOCTYPE HTML>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Yantramanav:wght@400;700&display=swap" rel="stylesheet">
-  <title>Notes360: Hindi</title>
+  <title>ClearNotes</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="ClearNotesMiniLogo.png">
 
   <style>
-    h1, h2, h3, p, ul, ol, details {
-      font-family: 'Yantramanav', sans-serif;
+    :root {
+      --bg-main: #fcf2bd;
+      --bg-card: #ffffff;
+      --accent: #f76307;
+      --accent-soft: #fffcab;
+      --text-main: #1e1e1e;
+      --text-muted: #666;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
 
-    .fixed-container {
-      width: 200px;
-      height: 200px;
-    }
-
-    .fixed-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    img {
-      border-radius: 10px;
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    details > summary {
-      background-color: cyan;
-      padding: 10px;
-      border: 10px cyan;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 250px;
-      color: black;
-      margin-left: 0px;
-      transition: background-color 0.3s ease;
-    }
-
-    details > summary:hover {
-      background-color: orange;
-    }
-
-    details {
-      background-color: cyan;
-      width: 270px;
-      color: black;
-      border-radius: 10px;
-      outline: 1px solid black;
-      padding: 5px;
-    }
-
-    .stickynote {
-      width: 650px;
-      background-color: #f58e49;
-      padding: 10px;
-      color: white;
-      border-radius: 15px;
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-      display: grid;
-    }
-
-    .cwnote {
-      padding: 10px;
-      background-color: white;
-      color: black;
-      border-radius: 10px;
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .worksheet {
-      padding: 10px;
-      background-color: orange;
-      color: black;
-      border-radius: 7px;
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    * {
+      box-sizing: border-box;
+      font-family: "Bricolage Grotesque", "Segoe UI", sans-serif;
     }
 
     body {
-      background-image: linear-gradient(to bottom, #fcb6a9, #f7984f);
       margin: 10px;
+      background: linear-gradient(to bottom, #ffffff, var(--bg-main));
+      color: var(--text-main);
     }
 
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-gap: 10px;
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
     }
 
-    .grid-item {
-      background-color: lightblue;
-      padding: 20px;
+    section h2 {
       text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
     }
+
+    /* ---------- CARD GRID ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+
+iframe {
+   border-radius: var(--radius);
+}
   </style>
 </head>
 
@@ -101,60 +111,21 @@
 <h1>हिंदी</h1>
 <hr style="border: none; height: 5px; background-color: #333;">
 
-<h2>Explore</h2>
-<div class="fixed-container">
-<img src="https://m.media-amazon.com/images/I/91VOc0aFwXL.jpg" alt="Textbook Cover">
-</div>
-<p><b>NCERT Hindi Textbook for Class 8: वसंत भाग 3</b></p>
+<h3>Your syllabus for Hindi for this year in <span id="grade-display"></span><span id="section-display"></span></h3>
+<p><span id="school-name"></span></p>
 
-<details>
-<summary>Information</summary>
-<p>NCERT Hindi Textbook for Class 8 वसंत भाग 3. Contents include... </p>
-<ul>
-<li>पाठ</li>
-<li>कविता</li>
-<li>व्याकरण</li>
-</ul>
-<br>
-</details>
-
-<br>
-
-<details>
-<summary>Reviews</summary>
-<p><b>4.4 out of 5</b> out of 1,074 reviews</p>
-<p><i>Information from "Amazon"</i></p>
-<br>
-</details>
-
-<hr style="border: none; height: 5px; background-color: #333;">
-
-<h2>Classwork</h2>
-<p><i>Your classwork experience was last updated on 4/11/2025.</i></p>
-<hr>
-
-<div class="cwnote">
-<h3>Hindi CW: बस की यात्रा</h3>
-<iframe src=".\Notes\Hindi_BusKiYatra.pdf" width="400px" height="400px" style="border: none;" title="Embedded Document Viewer">
-  Your browser does not support document viewing.
-</iframe>
-</div>
-
-<hr>
-<div class="cwnote">
-<h3>Hindi CW: जहा पहिया है</h3>
-<iframe src=".\Notes\Hindi_JahaPahiyaHai.pdf" width="400px" height="400px" style="border: none;" title="Embedded Document Viewer">
-  Your browser does not support document viewing.
-</iframe>
+<div class="card-grid" id="syllabus-grid">
+<p id="loading-status">Loading syllabus...</p>
 </div>
 
 <hr style="border: none; height: 5px; background-color: #333;">
 
-<h2>Grammar</h2>
+<h3>Grammar</h3>
+
 <iframe 
 src="https://www.hindigrammar.in" 
-width="800" 
-height="600" 
+width="100%" 
+height="600px" 
 style="border:none;">
 </iframe>
 
@@ -167,4 +138,208 @@ style="border:none;">
 <li><a href="https://hindigrammar.in/">hindigrammar.in</a></li>
 </ul>
 <hr>
+
+<script>
+const school = JSON.parse(localStorage.getItem("chosenSchool"));
+    const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
+    const section = localStorage.getItem("chosenSection");
+
+    document.getElementById("school-name").textContent = school ? school.name : "Not selected";
+    document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
+    document.getElementById("section-display").textContent = section ? " " + section : "";
+
+    const gridContainer = document.getElementById("syllabus-grid");
+    const statusText = document.getElementById("loading-status");
+
+    // Converts grade numbers ('9') to chronological lower-case alphabets ('i')
+    function deriveGradeCharacter(gradeString) {
+      const gradeInt = parseInt(gradeString, 10);
+      if (isNaN(gradeInt) || gradeInt < 1 || gradeInt > 26) return "";
+      return String.fromCharCode(96 + gradeInt); 
+    }
+
+    function injectExcelEngine(callback) {
+      const script = document.createElement("script");
+
+      script.src = "https://" + "cdn.jsdelivr.net/npm/" + "xlsx@0.18.5/dist/xlsx.full.min.js";
+      script.onload = callback;
+      script.onerror = () => {
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Failed to load Database parsing library. Please check your internet connection.</span>`;
+      };
+      document.head.appendChild(script);
+    }
+
+    async function loadSyllabusFromExcel() {
+      if (!grade) {
+        statusText.textContent = "Please select a grade to look up your syllabus.";
+        return;
+      }
+
+      const paths = ["./BookDatabase.xlsx", "BookDatabase.xlsx", "./BookDatabase.xlsx"];
+      let response = null;
+
+      for (const p of paths) {
+        try {
+          const res = await fetch(p);
+          if (res.ok) {
+            response = res;
+            break;
+          }
+        } catch (e) {
+          console.error("Path unavailable: " + p);
+        }
+      }
+
+      if (!response) {
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Error: Could not locate database.</span>`;
+        return;
+      }
+
+      try {
+        const arrayBuffer = await response.arrayBuffer();
+        const data = new Uint8Array(arrayBuffer);
+        
+        const workbook = window.XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const parsedRows = window.XLSX.utils.sheet_to_json(worksheet);
+        
+        const matchingBooks = parsedRows.filter(row => {
+          if (!row.Class) return false;
+          return String(row.Class).trim() === grade;
+        });
+
+        gridContainer.innerHTML = "";
+
+        if (matchingBooks.length === 0) {
+          gridContainer.innerHTML = `<p>No textbooks listed in database matching Grade ${grade}.</p>`;
+          return;
+        }
+
+        const gradeLetter = deriveGradeCharacter(grade);
+
+        function getUpcomingExamMatches(textbookSubject) {
+          try {
+            const stored = JSON.parse(localStorage.getItem("clearNotesExamSchedule") || "[]");
+            const allSchedules = Array.isArray(stored)
+              ? stored
+              : (stored && typeof stored.name === "string" && Array.isArray(stored.entries) ? [stored] : []);
+            const normalize = value => String(value || "").trim().toLocaleLowerCase();
+            const textbookName = normalize(textbookSubject);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const soonLimit = new Date(today);
+            soonLimit.setDate(soonLimit.getDate() + 30);
+            const todayISO = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+            const limitISO = `${soonLimit.getFullYear()}-${String(soonLimit.getMonth()+1).padStart(2,"0")}-${String(soonLimit.getDate()).padStart(2,"0")}`;
+
+            return allSchedules.flatMap(exam => {
+              if (!exam || !Array.isArray(exam.entries)) return [];
+              return exam.entries
+                .filter(entry => {
+                  const examSubject = normalize(entry.subject);
+                  return examSubject && textbookName.includes(examSubject) &&
+                    /^\d{4}-\d{2}-\d{2}$/.test(entry.date) &&
+                    entry.date >= todayISO && entry.date <= limitISO;
+                })
+                .map(entry => ({
+                  examination: entry.examination || exam.name || "Scheduled examination",
+                  date: entry.date
+                }));
+            }).sort((a, b) => a.date.localeCompare(b.date));
+          } catch (error) {
+            console.warn("Could not read exam schedule for textbook reminders:", error);
+            return [];
+          }
+        }
+
+matchingBooks.forEach(book => {
+  const subject = book["Subject"] || "Unknown Subject";
+
+  if (!subject.toLowerCase().includes("hindi")) {
+    return; // skip this book
+  }
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const chapters = book["Number of Chapters"] || "0";
+  const code = String(book["Code"] || "").trim().toLowerCase();
+  const importance = String(book["Importance"] || "Secondary").trim();
+
+  let badgeColor = "#fc9d21";
+  if (importance.toLowerCase() === "primary") badgeColor = "#fc2c03";
+  if (importance.toLowerCase() === "language") badgeColor = "#00abfa";
+
+  const gradeLetter = deriveGradeCharacter(grade);
+  const coverUrl = `https://ncert.nic.in/textbook/pdf/${gradeLetter}${code}cc.jpg`;
+  const textBookUrl = `https://ncert.nic.in/textbook.php?${gradeLetter}${code}=0-${chapters}`;
+
+  card.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+      <h3 style="margin: 0;">${subject}</h3>
+      <span style="background: ${badgeColor}; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; white-space: nowrap; letter-spacing: 0.5px;">
+        ${importance}
+      </span>
+    </div>
+    <p><b>NCERT Textbook</b> for Class ${grade}</p>
+    <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Catalog Code: ${code}</small></p>
+            
+            <div style="text-align: center; margin: 15px 0; min-height: 150px; display: flex; align-items: center; justify-content: center;">
+              <img src="${coverUrl}" alt="${subject} Cover" width="140" style="border-radius: var(--radius); box-shadow: var(--shadow);" 
+                   onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\'height:150px; width:140px; background:#fafafa; border:1px dashed #ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#999; font-size:0.85rem; padding:10px; text-align:center;\'>Preview Cover Unavailable</div>';">
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+            
+            <button class="btn btn-primary open-book-btn" style="margin-bottom: 10px;">
+              Read Online
+            </button>
+            
+            <button class="btn btn-secondary search-btn" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <span>Search on </span>
+              <img src="Google-Logo.jpg" alt="Google" width="50" style="border-radius: 4px; vertical-align: middle;">
+            </button>
+          `;
+
+          const upcomingMatches = getUpcomingExamMatches(subject);
+          if (upcomingMatches.length) {
+            const reminder = document.createElement("div");
+            reminder.className = "textbook-exam-reminder";
+            reminder.style.cssText = "margin: 10px 0; padding: 10px 12px; border-radius: 8px; background: #fff1df; color: #7a3e00; font-weight: 600; font-size: 0.9rem;";
+            upcomingMatches.forEach(match => {
+              const line = document.createElement("p");
+              line.style.cssText = "margin: 3px 0;";
+              const [year, month, day] = match.date.split("-").map(Number);
+              const prettyDate = new Date(year, month - 1, day).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+              line.textContent = `Coming up in your ${match.examination} exam soon · ${prettyDate}`;
+              reminder.appendChild(line);
+            });
+
+            const layoutHeader = card.querySelector("div");
+            layoutHeader.insertAdjacentElement("afterend", reminder);
+          }
+
+          card.querySelector(".open-book-btn").onclick = () => {
+            window.open(textBookUrl, "_blank");
+          };
+
+          const currentYear = new Date().getFullYear();
+
+          card.querySelector(".search-btn").onclick = () => {
+            const searchQuery = `NCERT ${subject} Class ${grade} Textbook PDF for ${currentYear}`;
+            window.open(`https://google.com/search?q=${encodeURIComponent(searchQuery)}`);
+          };
+
+  gridContainer.appendChild(card);
+});
+
+      } catch (err) {
+        console.error(err);
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Parsing Failure: ${err.message}</span>`;
+      }
+    }
+
+    injectExcelEngine(loadSyllabusFromExcel);
+</script>
 </body>

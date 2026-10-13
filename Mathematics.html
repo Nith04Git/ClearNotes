@@ -122,6 +122,13 @@ iframe {
     <a href="mathematics_lexiconofforumulae.pdf">Download the file</a> instead.</p>
   </iframe>
 
+  <hr style="border: none; height: 5px; background-color: #333;">
+<h3>Your syllabus for Mathematics for this year</h3>
+
+<div class="card-grid" id="syllabus-grid">
+<p id="loading-status">Loading syllabus...</p>
+</div>
+
   <script>
     window.addEventListener("load", () => {
       let currentGrade = localStorage.getItem("chosenGrade") 
@@ -142,5 +149,168 @@ iframe {
       }
     });
   </script>
+<script>
+const school = JSON.parse(localStorage.getItem("chosenSchool"));
+    const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
+    const section = localStorage.getItem("chosenSection");
+
+    document.getElementById("school-name").textContent = school ? school.name : "Not selected";
+    document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
+    document.getElementById("section-display").textContent = section ? " " + section : "";
+
+    const gridContainer = document.getElementById("syllabus-grid");
+    const statusText = document.getElementById("loading-status");
+
+    // Converts grade numbers ('9') to chronological lower-case alphabets ('i')
+    function deriveGradeCharacter(gradeString) {
+      const gradeInt = parseInt(gradeString, 10);
+      if (isNaN(gradeInt) || gradeInt < 1 || gradeInt > 26) return "";
+      return String.fromCharCode(96 + gradeInt); 
+    }
+
+    function injectExcelEngine(callback) {
+      const script = document.createElement("script");
+
+      script.src = "https://" + "cdn.jsdelivr.net/npm/" + "xlsx@0.18.5/dist/xlsx.full.min.js";
+      script.onload = callback;
+      script.onerror = () => {
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Failed to load Database parsing library. Please check your internet connection.</span>`;
+      };
+      document.head.appendChild(script);
+    }
+
+    async function loadSyllabusFromExcel() {
+      if (!grade) {
+        statusText.textContent = "Please select a grade to look up your syllabus.";
+        return;
+      }
+
+      const paths = ["./BookDatabase.xlsx", "BookDatabase.xlsx", "./BookDatabase.xslx"];
+      let response = null;
+
+      for (const p of paths) {
+        try {
+          const res = await fetch(p);
+          if (res.ok) {
+            response = res;
+            break;
+          }
+        } catch (e) {
+          console.error("Path unavailable: " + p);
+        }
+      }
+
+      if (!response) {
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Error: Could not locate database.</span>`;
+        return;
+      }
+
+      try {
+        const arrayBuffer = await response.arrayBuffer();
+        const data = new Uint8Array(arrayBuffer);
+        
+        const workbook = window.XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const parsedRows = window.XLSX.utils.sheet_to_json(worksheet);
+        
+        const matchingBooks = parsedRows.filter(row => {
+          if (!row.Class) return false;
+          return String(row.Class).trim() === grade;
+        });
+
+        gridContainer.innerHTML = "";
+
+        if (matchingBooks.length === 0) {
+          gridContainer.innerHTML = `<p>No textbooks listed in database matching Grade ${grade}.</p>`;
+          return;
+        }
+
+        const gradeLetter = deriveGradeCharacter(grade);
+
+        // Read all saved examination schedules so textbook cards can show
+        // upcoming exams, even when a different examination is selected below.
+        function getUpcomingExamMatches(textbookSubject) {
+          try {
+            const stored = JSON.parse(localStorage.getItem("clearNotesExamSchedule") || "[]");
+            const allSchedules = Array.isArray(stored)
+              ? stored
+              : (stored && typeof stored.name === "string" && Array.isArray(stored.entries) ? [stored] : []);
+            const normalize = value => String(value || "").trim().toLocaleLowerCase();
+            const textbookName = normalize(textbookSubject);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const soonLimit = new Date(today);
+            soonLimit.setDate(soonLimit.getDate() + 30);
+            const todayISO = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+            const limitISO = `${soonLimit.getFullYear()}-${String(soonLimit.getMonth()+1).padStart(2,"0")}-${String(soonLimit.getDate()).padStart(2,"0")}`;
+
+            return allSchedules.flatMap(exam => {
+              if (!exam || !Array.isArray(exam.entries)) return [];
+              return exam.entries
+                .filter(entry => {
+                  const examSubject = normalize(entry.subject);
+                  return examSubject && textbookName.includes(examSubject) &&
+                    /^\d{4}-\d{2}-\d{2}$/.test(entry.date) &&
+                    entry.date >= todayISO && entry.date <= limitISO;
+                })
+                .map(entry => ({
+                  examination: entry.examination || exam.name || "Scheduled examination",
+                  date: entry.date
+                }));
+            }).sort((a, b) => a.date.localeCompare(b.date));
+          } catch (error) {
+            console.warn("Could not read exam schedule for textbook reminders:", error);
+            return [];
+          }
+        }
+
+matchingBooks.forEach(book => {
+  const subject = book["Subject"] || "Unknown Subject";
+
+  // Only continue if subject includes "Mathematics"
+  if (!subject.toLowerCase().includes("mathematics")) {
+    return; // skip this book
+  }
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const chapters = book["Number of Chapters"] || "0";
+  const code = String(book["Code"] || "").trim().toLowerCase();
+  const importance = String(book["Importance"] || "Secondary").trim();
+
+  let badgeColor = "#fc9d21";
+  if (importance.toLowerCase() === "primary") badgeColor = "#fc2c03";
+  if (importance.toLowerCase() === "language") badgeColor = "#00abfa";
+
+  const gradeLetter = deriveGradeCharacter(grade);
+  const coverUrl = `https://ncert.nic.in/textbook/pdf/${gradeLetter}${code}cc.jpg`;
+  const textBookUrl = `https://ncert.nic.in/textbook.php?${gradeLetter}${code}=0-${chapters}`;
+
+  card.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+      <h3 style="margin: 0;">${subject}</h3>
+      <span style="background: ${badgeColor}; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; white-space: nowrap; letter-spacing: 0.5px;">
+        ${importance}
+      </span>
+    </div>
+    <p><b>NCERT Textbook</b> for Class ${grade}</p>
+    <p><small style="color: var(--accent); font-weight: 600;">Chapters: ${chapters} | Catalog Code: ${code}</small></p>
+    ...
+  `;
+
+  // rest of your card logic (exam reminders, buttons, etc.)
+  gridContainer.appendChild(card);
+});
+
+      } catch (err) {
+        console.error(err);
+        statusText.innerHTML = `<span style="color: red; font-weight: 600;">Parsing Failure: ${err.message}</span>`;
+      }
+    }
+
+    injectExcelEngine(loadSyllabusFromExcel);
+</script>
 </body>
 </html>

@@ -1013,6 +1013,94 @@ setTimeout(
   if (!schedule) showSetup();
 })();
 </script>
+<script>
+async function loadSchoolSyllabusAttributes() {
+  const school = JSON.parse(localStorage.getItem("chosenSchool"));
+  if (!school || !school.state) return; // need state info
+
+  const paths = ["./schoolsyllabusattributes.xlsx", "schoolsyllabusattributes.xlsx"];
+  let response = null;
+
+  for (const p of paths) {
+    try {
+      const res = await fetch(p);
+      if (res.ok) {
+        response = res;
+        break;
+      }
+    } catch (e) {
+      console.error("Path unavailable: " + p);
+    }
+  }
+
+  if (!response) {
+    console.warn("Could not locate school syllabus attributes file.");
+    return;
+  }
+
+  try {
+    const arrayBuffer = await response.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+
+    const workbook = window.XLSX.read(data, { type: 'array' });
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    const parsedRows = window.XLSX.utils.sheet_to_json(worksheet);
+
+    const match = parsedRows.find(row => {
+      return row.State && String(row.State).trim().toLowerCase() === school.state.trim().toLowerCase();
+    });
+
+    if (!match) return;
+
+    if (String(match["Native Language"]).trim().toLowerCase() === "tamil") {
+      const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
+      if (!grade) return;
+
+      const currentYear = new Date().getFullYear();
+      const coverUrl = `${grade}_TamilBook${currentYear}Cover.jpg`;
+      const textBookUrl = "https://www.tnpscjob.com/tn-samacheer-kalvi-books-online-pdf/";
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+          <h3 style="margin: 0;">Tamil Language Textbook</h3>
+          <span style="background: #00abfa; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;">
+            Native Language
+          </span>
+        </div>
+        <p><b>Samacheer Kalvi Textbook</b> for Class ${grade}</p>
+        
+        <div style="text-align: center; margin: 15px 0; min-height: 150px; display: flex; align-items: center; justify-content: center;">
+          <img src="${coverUrl}" alt="Tamil Book Cover" width="140" style="border-radius: var(--radius); box-shadow: var(--shadow);" 
+               onerror="this.onerror=null; this.parentNode.innerHTML='<div style=\'height:150px; width:140px; background:#fafafa; border:1px dashed #ccc; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#999; font-size:0.85rem; padding:10px; text-align:center;\'>Preview Cover Unavailable</div>';">
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        
+        <button class="btn btn-primary open-book-btn" style="margin-bottom: 10px;">
+          Read Online
+        </button>
+      `;
+
+      card.querySelector(".open-book-btn").onclick = () => {
+        window.open(textBookUrl, "_blank");
+      };
+
+      document.getElementById("syllabus-grid").appendChild(card);
+    }
+  } catch (err) {
+    console.error("Parsing Failure:", err);
+  }
+}
+
+injectExcelEngine(() => {
+  loadSyllabusFromExcel();       // your existing NCERT loader
+  loadSchoolSyllabusAttributes(); // new Tamil-native loader
+});
+</script>
 
   <hr style="border: none; height: 5px; background-color: #333;">
 

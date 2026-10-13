@@ -437,11 +437,9 @@
           const subject = book["Subject"] || "Unknown Subject";
           const chapters = book["Number of Chapters"] || "0";
           const code = String(book["Code"] || "").trim().toLowerCase();
-          
-          // 1. Read the "Importance" column directly from the Excel row
+
           const importance = String(book["Importance"] || "Secondary").trim();
 
-          // 2. Define colors for each priority type
           let badgeColor = "#fc9d21";
           if (importance.toLowerCase() === "primary") badgeColor = "#fc2c03";
           if (importance.toLowerCase() === "language") badgeColor = "#00abfa";
@@ -449,7 +447,6 @@
           const coverUrl = `https://ncert.nic.in/textbook/pdf/${gradeLetter}${code}cc.jpg`;
           const textBookUrl = `https://ncert.nic.in/textbook.php?${gradeLetter}${code}=0-${chapters}`;
 
-          // 3. Render the card with the dynamic badge header
           card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
               <h3 style="margin: 0;">${subject}</h3>
@@ -490,7 +487,7 @@
               line.textContent = `Coming up in your ${match.examination} exam soon · ${prettyDate}`;
               reminder.appendChild(line);
             });
-            // Inserts reminder cleanly below our new flex header layout
+
             const layoutHeader = card.querySelector("div");
             layoutHeader.insertAdjacentElement("afterend", reminder);
           }

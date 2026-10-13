@@ -1019,13 +1019,15 @@ async function determineSchoolState() {
   if (!chosenSchool || !chosenSchool.name) return null;
 
   try {
-    const res = await fetch("schooldata.json");
+    const res = await fetch("./schooldata.json"); // adjust path if needed
     const schools = await res.json();
 
-    const match = schools.find(s => s.name.trim().toLowerCase() === chosenSchool.name.trim().toLowerCase());
+    const normalize = str => String(str || "").trim().toLowerCase();
+    const match = schools.find(s => normalize(s.name) === normalize(chosenSchool.name));
+
     if (!match || !match.address) return null;
 
-    const address = match.address.toLowerCase();
+    const address = normalize(match.address);
 
     const states = [
       "tamil nadu", "kerala", "maharashtra", "andhra pradesh", "telangana",
@@ -1034,7 +1036,8 @@ async function determineSchoolState() {
     ];
 
     const foundState = states.find(state => address.includes(state));
-    return foundState ? foundState : null;
+    console.log("Detected state:", foundState);
+    return foundState || null;
 
   } catch (err) {
     console.error("Could not load schooldata.json:", err);

@@ -1014,9 +1014,36 @@ setTimeout(
 })();
 </script>
 <script>
-async function loadSchoolSyllabusAttributes() {
+async function determineSchoolState() {
+  const chosenSchool = JSON.parse(localStorage.getItem("chosenSchool"));
+  if (!chosenSchool || !chosenSchool.name) return null;
+
+  try {
+    const res = await fetch("schoolnames.json");
+    const schools = await res.json();
+
+    const match = schools.find(s => s.name.trim().toLowerCase() === chosenSchool.name.trim().toLowerCase());
+    if (!match || !match.address) return null;
+
+    const address = match.address.toLowerCase();
+
+    const states = [
+      "tamil nadu", "kerala", "maharashtra", "andhra pradesh", "telangana",
+      "chhattisgarh", "karnataka", "gujarat", "madhya pradesh", "rajasthan",
+      "odisha", "bihar", "jharkhand", "west bengal", "uttar pradesh"
+    ];
+
+    const foundState = states.find(state => address.includes(state));
+    return foundState ? foundState : null;
+
+  } catch (err) {
+    console.error("Could not load schoolnames.json:", err);
+    return null;
+  }
+}
+
+async function loadSchoolSyllabusAttributes(state) {
   const school = JSON.parse(localStorage.getItem("chosenSchool"));
-  if (!school || !school.state) return; // need state info
 
   const paths = ["./schoolsyllabusattributes.xlsx", "schoolsyllabusattributes.xlsx"];
   let response = null;
@@ -1047,9 +1074,9 @@ async function loadSchoolSyllabusAttributes() {
     const worksheet = workbook.Sheets[firstSheetName];
     const parsedRows = window.XLSX.utils.sheet_to_json(worksheet);
 
-    const match = parsedRows.find(row => {
-      return row.State && String(row.State).trim().toLowerCase() === school.state.trim().toLowerCase();
-    });
+  const match = parsedRows.find(row => {
+    return row.State && String(row.State).trim().toLowerCase() === state.trim().toLowerCase();
+  });
 
     if (!match) return;
 
@@ -1096,9 +1123,14 @@ async function loadSchoolSyllabusAttributes() {
   }
 }
 
-injectExcelEngine(() => {
-  loadSyllabusFromExcel();       // your existing NCERT loader
-  loadSchoolSyllabusAttributes(); // new Tamil-native loader
+injectExcelEngine(async () => {
+  loadSyllabusFromExcel();
+
+  const state = await determineSchoolState();
+
+  if(state){
+  loadSchoolSyllabusAttributes(state);
+}
 });
 </script>
 

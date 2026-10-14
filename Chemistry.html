@@ -299,7 +299,7 @@ const school = JSON.parse(localStorage.getItem("chosenSchool"));
 matchingBooks.forEach(book => {
   const subject = book["Subject"] || "Unknown Subject";
 
-  if (!(subject.toLowerCase().includes("science") || subject.toLowerCase().includes("chemistry"))) {
+  if (!(subject.toLowerCase().includes("science") || subject.toLowerCase().includes("chemistry")) || (subject.toLowerCase().includes("social") || subject.toLowerCase().includes("computer"))) {
     return;
   }
 

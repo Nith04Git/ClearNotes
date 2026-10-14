@@ -398,10 +398,6 @@ matchingBooks.forEach(book => {
             window.open(`https://google.com/search?q=${encodeURIComponent(searchQuery)}`);
           };
 
-  gridContainer.appendChild(card);
-});
-const subject = book["Subject"] || "Unknown Subject";
-
 if(subject.toLowerCase().includes("science")){
 const para = document.createElement("div");
 
@@ -421,6 +417,9 @@ const btn = para.querySelector(".searchchapters-btn");
 
 card.appendChild(para);
 }
+
+  gridContainer.appendChild(card);
+});
 
       } catch (err) {
         console.error(err);

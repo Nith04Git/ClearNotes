@@ -278,7 +278,7 @@ const school = JSON.parse(localStorage.getItem("chosenSchool"));
 matchingBooks.forEach(book => {
   const subject = book["Subject"] || "Unknown Subject";
 
-  if (!subject.toLowerCase().includes("physics") || !subject.toLowerCase().includes("science")) {
+  if (!(subject.toLowerCase().includes("science") || subject.toLowerCase().includes("physics"))) {
     return;
   }
 
@@ -364,4 +364,5 @@ matchingBooks.forEach(book => {
 
     injectExcelEngine(loadSyllabusFromExcel);
 </script>
+
 </body>

@@ -353,24 +353,22 @@ matchingBooks.forEach(book => {
             window.open(`https://google.com/search?q=${encodeURIComponent(searchQuery)}`);
           };
 
-if(subject.toLowerCase().includes("science")){
-const para = document.createElement("div");
+if (subject.toLowerCase().includes("science")) {
+  const para = document.createElement("div");
+  para.innerHTML = `
+    <p>You have a combined textbook this year. <b>Know which chapters are actually Physics content.</b></p>
+    <button class="btn btn-primary searchchapters-btn">
+      Find out on <img src="Google-Logo.jpg" width="50">
+    </button>
+  `;
 
-para.innerHTML = `
-<p>You have a combined textbook this year. <b>Know which chapters are actually Physics content.</b></p>
-            <button class="btn btn-primary searchchapters-btn" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-              <span>Find out on </span>
-              <img src="Google-Logo.jpg" alt="Google" width="50" style="border-radius: 4px; vertical-align: middle;">
-            </button>
-`;
+  const btn = para.querySelector(".searchchapters-btn");
+  btn.onclick = () => {
+    const searchQuery = `Which chapters are part of Physics in NCERT ${subject} Class ${grade} Textbook for ${currentYear}?`;
+    window.open(`https://google.com/search?q=${encodeURIComponent(searchQuery)}`);
+  };
 
-const btn = para.querySelector(".searchchapters-btn");
-          card.querySelector(".searchchapters-btn").onclick = () => {
-            const searchQuery = `Which chapters are part of Physics in NCERT ${subject} Class ${grade} Textbook for ${currentYear}?`;
-            window.open(`https://google.com/search?q=${encodeURIComponent(searchQuery)}`);
-          };
-
-card.appendChild(para);
+  card.appendChild(para);
 }
 
   gridContainer.appendChild(card);

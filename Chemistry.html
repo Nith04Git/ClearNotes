@@ -376,6 +376,7 @@ matchingBooks.forEach(book => {
 
   gridContainer.appendChild(card);
 });
+const subject = book["Subject"] || "Unknown Subject";
 
 if(subject.toLowerCase().includes("science")){
 const para = document.createElement("div");

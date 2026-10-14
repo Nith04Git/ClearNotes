@@ -543,6 +543,27 @@
   "address": "St. Francis D' Assissi Senior Secondary School, Ashokapuram, Aluva, Keralam 683101",
   "lat": 10.0894363,
   "lon": 76.3609534
+ },
+
+ {
+  "name": "ASMM HSS Alathur",
+  "address": "ASMM HSS Alathur, Pazhayannur Rd, Alathur, Keralam 678541",
+  "lat": 10.6482709,
+  "lon": 76.5359979
+ },
+
+ {
+  "name": "Logos International School Kozhikode",
+  "address": "Logos International School Kozhikode, Manjerikunnu, Edavarad Rd, P.O, Perambra, Keralam 673524",
+  "lat": 11.5830026,
+  "lon": 75.7318282
+ },
+
+ {
+  "name": "PHSS Perambra",
+  "address": "PHSS Perambra, Perambra-chaniyamkadavu, Vatakara rd, Perambra, Keralam 673525",
+  "lat": 11.5616925,
+  "lon": 75.7462809
  }
 
 ]

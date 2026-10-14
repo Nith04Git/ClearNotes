@@ -201,6 +201,46 @@
 </head>
 
 <body>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import firebaseConfig from "./firebaseConfig.js";
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const sectionPicker = document.getElementById("section-picker");
+  const saveSectionButton = document.getElementById("save-section");
+
+  saveSectionButton.addEventListener("click", async () => {
+    const section = sectionPicker.value;
+    if (!section) {
+      alert("Please select a section first!");
+      return;
+    }
+
+    localStorage.setItem("chosenSection", section);
+
+    const school = JSON.parse(localStorage.getItem("chosenSchool"));
+    const grade = localStorage.getItem("chosenGrade");
+    const userId = "demoUser"; // later replace with auth.currentUser.uid
+
+    try {
+      await setDoc(doc(db, "users", userId), {
+        school: school?.name || "Unknown",
+        address: school?.address || "Unknown",
+        grade: grade || "Unknown",
+        section: section,
+        chosenAt: new Date().toISOString()
+      });
+      console.log("School + grade + section saved to Firestore");
+    } catch (err) {
+      console.error("Error saving:", err);
+    }
+
+    window.location.href = "choosename.html";
+  });
+</script>
 
 <h1>Step 2 complete!</h1>
 <hr>
@@ -240,23 +280,6 @@
 <br><br>
 
 <button id="save-section" class="btn btn-primary">Save Section</button>
-
-<script>
-const saveSectionButton = document.getElementById("save-section");
-
-saveSectionButton.addEventListener("click", () => {
-    const section = sectionPicker.value;
-    if (!section) {
-        alert("Please select a section first!");
-        return;
-    }
-
-    // Save section to localStorage
-    localStorage.setItem("chosenSection", section);
-
-    window.location.href = "finishsignup.html";
-});
-</script>
 
 </body>
 </html>

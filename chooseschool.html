@@ -201,44 +201,6 @@
 </head>
 
 <body>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-  import firebaseConfig from "./firebaseConfig.js";
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const gradePicker = document.getElementById("grade-picker");
-  const saveButton = document.getElementById("save-grade");
-
-  saveButton.addEventListener("click", async () => {
-    const grade = gradePicker.value;
-    if (!grade) {
-      alert("Please select a grade first!");
-      return;
-    }
-
-    localStorage.setItem("chosenGrade", grade);
-
-    const school = JSON.parse(localStorage.getItem("chosenSchool"));
-    const userId = "demoUser"; // later replace with auth.currentUser.uid
-    try {
-      await setDoc(doc(db, "users", userId), {
-        school: school?.name || "Unknown",
-        address: school?.address || "Unknown",
-        grade: grade,
-        chosenAt: new Date().toISOString()
-      });
-      console.log("School + grade saved to Firestore");
-    } catch (err) {
-      console.error("Error saving:", err);
-    }
-
-    window.location.href = "choosesection.html";
-  });
-</script>
-
 <h1>Step 1 complete.</h1>
 <hr>
 
@@ -294,6 +256,45 @@
 <br><br>
 
 <button class="btn btn-primary" id="save-grade">Save Grade</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import firebaseConfig from "./firebaseConfig.js";
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const gradePicker = document.getElementById("grade-picker");
+  const saveButton = document.getElementById("save-grade");
+
+  saveButton.addEventListener("click", async () => {
+    const grade = gradePicker.value;
+    if (!grade) {
+      alert("Please select a grade first!");
+      return;
+    }
+
+    localStorage.setItem("chosenGrade", grade);
+
+    const school = JSON.parse(localStorage.getItem("chosenSchool"));
+    const userId = "demoUser"; // later replace with auth.currentUser.uid
+    try {
+      await setDoc(doc(db, "users", userId), {
+        school: school?.name || "Unknown",
+        address: school?.address || "Unknown",
+        grade: grade,
+        chosenAt: new Date().toISOString()
+      });
+      console.log("School + grade saved to Firestore");
+    } catch (err) {
+      console.error("Error saving:", err);
+    }
+
+    window.location.href = "choosesection.html";
+  });
+</script>
+
 
 </body>
 </html>

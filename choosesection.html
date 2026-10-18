@@ -201,6 +201,45 @@
 </head>
 
 <body>
+<h1>Step 2 complete!</h1>
+<hr>
+
+<h2>You've chosen <b>Grade <span id="chosen-grade-display"></span></b> for <i><span id="chosen-school"></span></i>.</h2>
+
+<script>
+  // Load chosen school
+  const school = JSON.parse(localStorage.getItem("chosenSchool"));
+  document.getElementById("chosen-school").textContent = school ? school.name : "No school selected!";
+
+  // Load chosen grade
+  const savedGrade = localStorage.getItem("chosenGrade");
+  document.getElementById("chosen-grade-display").textContent = savedGrade ? savedGrade : "(not selected yet)";
+</script>
+
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h1>Step 3: Choose your section.</h1>
+<p>Please pick a section from A → Z:</p>
+
+<label for="section-picker"><b>Pick a section:</b></label>
+<select id="section-picker">
+  <option value="" selected disabled>Select Section</option>
+  <script>
+    // Generate options A → Z
+    const sectionPicker = document.getElementById("section-picker");
+    for (let i = 0; i < 26; i++) {
+      const letter = String.fromCharCode(65 + i); // 65 = 'A'
+      const option = document.createElement("option");
+      option.value = letter;
+      option.textContent = letter;
+      sectionPicker.appendChild(option);
+    }
+  </script>
+</select>
+<br><br>
+
+<button id="save-section" class="btn btn-primary">Save Section</button>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -241,45 +280,6 @@
     window.location.href = "choosename.html";
   });
 </script>
-
-<h1>Step 2 complete!</h1>
-<hr>
-
-<h2>You've chosen <b>Grade <span id="chosen-grade-display"></span></b> for <i><span id="chosen-school"></span></i>.</h2>
-
-<script>
-  // Load chosen school
-  const school = JSON.parse(localStorage.getItem("chosenSchool"));
-  document.getElementById("chosen-school").textContent = school ? school.name : "No school selected!";
-
-  // Load chosen grade
-  const savedGrade = localStorage.getItem("chosenGrade");
-  document.getElementById("chosen-grade-display").textContent = savedGrade ? savedGrade : "(not selected yet)";
-</script>
-
-<hr style="border: none; height: 5px; background-color: #333;">
-
-<h1>Step 3: Choose your section.</h1>
-<p>Please pick a section from A → Z:</p>
-
-<label for="section-picker"><b>Pick a section:</b></label>
-<select id="section-picker">
-  <option value="" selected disabled>Select Section</option>
-  <script>
-    // Generate options A → Z
-    const sectionPicker = document.getElementById("section-picker");
-    for (let i = 0; i < 26; i++) {
-      const letter = String.fromCharCode(65 + i); // 65 = 'A'
-      const option = document.createElement("option");
-      option.value = letter;
-      option.textContent = letter;
-      sectionPicker.appendChild(option);
-    }
-  </script>
-</select>
-<br><br>
-
-<button id="save-section" class="btn btn-primary">Save Section</button>
 
 </body>
 </html>

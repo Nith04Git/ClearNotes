@@ -269,7 +269,7 @@
   const saveButton = document.getElementById("save-grade");
 
 console.log("Attaching listener:", saveButton);
-
+/*
   saveButton.addEventListener("click", async () => {
     const grade = gradePicker.value;
     if (!grade) {
@@ -297,6 +297,12 @@ console.log("Attaching listener:", saveButton);
     console.log("Button clicked, grade =", grade);
 
   });
+*/
+saveButton.addEventListener("click", () => {
+  console.log("Button clicked!");
+  window.location.href = "choosesection.html";
+});
+
 </script>
 
 

@@ -174,14 +174,6 @@
 </head>
 
 <body>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-  import firebaseConfig from "./firebaseConfig.js";
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-</script>
 
     <div class="container">
 
@@ -238,32 +230,21 @@
 
         const statusElement = document.getElementById("map-status");
 
-async function handleMarkerSelection(index) {
-  const selectedSchool = schoolMemoryDatabase[index];
-  if (!selectedSchool) {
-    console.error("Selected school does not exist:", index);
-    return;
-  }
+function handleMarkerSelection(index) {
+    const selectedSchool = schoolMemoryDatabase[index];
 
-  // Save locally
-  localStorage.setItem("chosenSchool", JSON.stringify(selectedSchool));
+    if (!selectedSchool) {
+        console.error("Selected school does not exist:", index);
+        return;
+    }
 
-  // Save to Firestore under the current user
-  const userId = "demoUser"; // replace with Firebase Auth user UID later
-  try {
-    await setDoc(doc(db, "users", userId), {
-      school: selectedSchool.name,
-      address: selectedSchool.address,
-      lat: selectedSchool.lat,
-      lon: selectedSchool.lon,
-      chosenAt: new Date().toISOString()
-    });
-    console.log("School saved to Firestore");
-  } catch (err) {
-    console.error("Error saving school:", err);
-  }
+    // Save locally
+    localStorage.setItem(
+        "chosenSchool",
+        JSON.stringify(selectedSchool)
+    );
 
-  window.location.href = "chooseschool.html";
+    window.location.href = "chooseschool.html";
 }
 
         function escapeHTML(value) {

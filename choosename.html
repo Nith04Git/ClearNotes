@@ -210,52 +210,88 @@
   <input type="text" id="name-input" placeholder="Your name">
   <button id="save-name" class="btn btn-primary">Save Name</button>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import firebaseConfig from "./firebaseConfig.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import firebaseConfig from "./firebaseConfig.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    const saveButton = document.getElementById("save-name");
-    const nameInput = document.getElementById("name-input");
+const saveButton = document.getElementById("save-name");
+const nameInput = document.getElementById("name-input");
 
-    saveButton.addEventListener("click", async () => {
-      const studentName = nameInput.value.trim();
-      if (!studentName) {
-        alert("Please enter your name first!");
+saveButton.addEventListener("click", async () => {
+
+    const studentName = nameInput.value.trim();
+
+    if (!studentName) {
+        alert("Please enter your name first.");
         return;
-      }
+    }
 
-      try {
-        // Sign in anonymously
+    localStorage.setItem("chosenName", studentName);
+
+    saveButton.disabled = true;
+    saveButton.textContent = "Creating Account...";
+
+    try {
+
+        // Create anonymous Firebase account
         const userCredential = await signInAnonymously(auth);
+
         const userId = userCredential.user.uid;
 
+        // Retrieve all previous signup data
         const school = JSON.parse(localStorage.getItem("chosenSchool"));
         const grade = localStorage.getItem("chosenGrade");
         const section = localStorage.getItem("chosenSection");
 
+        // Store account data
+
+if (!school || !grade || !section) {
+    alert("Some signup information is missing. Please restart signup.");
+    return;
+}
+
         await setDoc(doc(db, "users", userId), {
-          name: studentName,
-          school: school?.name || "Unknown",
-          address: school?.address || "Unknown",
-          grade: grade || "Unknown",
-          section: section || "Unknown",
-          createdAt: new Date().toISOString()
+            uid: userId,
+
+            name: studentName,
+
+            school: school?.name || "Unknown",
+            address: school?.address || "Unknown",
+
+            grade: grade || "Unknown",
+            section: section || "Unknown",
+
+            status: "active",
+            reports: 0,
+            trustScore: 100,
+
+            createdAt: new Date().toISOString()
         });
 
-        console.log("Account created, data saved:", userId);
-        alert("Signup complete! Your data has been saved.");
+        console.log("Account created successfully!: ", userId);
+        localStorage.setItem("clearNotesUID", userId);
         window.location.href = "finishsignup.html";
-      } catch (err) {
-        console.error("Error creating anonymous account:", err);
-        alert("Something went wrong. Check console for details.");
-      }
-    });
-  </script>
+
+    } catch (error) {
+
+        console.error("Account creation failed...:", error);
+
+        saveButton.disabled = false;
+        saveButton.textContent = "Save Name";
+
+        alert(
+            "Unable to create your account.\n\n" +
+            "Please check your internet connection and try again."
+        );
+    }
+});
+</script>
 </body>
 </html>

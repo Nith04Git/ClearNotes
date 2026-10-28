@@ -215,6 +215,58 @@
   <img src="Google-Logo.jpg" alt="logo" width="200" style="border-radius: var(--radius);"></button>
 </a>
 
+<hr style="border: none; height: 5px; background-color: #333;">
+
+<h1>Step 2: Choose your grade.</h1>
+
+<label for="grade-picker">
+    <b>Pick grades from 1→12:</b>
+</label>
+
+<select id="grade-picker">
+    <option value="" selected disabled>Select Grade</option>
+    <option value="1">1st Grade</option>
+    <option value="2">2nd Grade</option>
+    <option value="3">3rd Grade</option>
+    <option value="4">4th Grade</option>
+    <option value="5">5th Grade</option>
+    <option value="6">6th Grade</option>
+    <option value="7">7th Grade</option>
+    <option value="8">8th Grade</option>
+    <option value="9">9th Grade</option>
+    <option value="10">10th Grade</option>
+    <option value="11">11th Grade</option>
+    <option value="12">12th Grade</option>
+</select>
+
+<br><br>
+
+<button class="btn btn-primary" id="save-grade">
+    Save Grade
+</button>
+
+<script>
+const school = JSON.parse(localStorage.getItem("chosenSchool"));
+
+if (school) {
+    document.getElementById("chosen-school").textContent = school.name;
+    document.getElementById("school-address").textContent = school.address;
+
+    const searchLink =
+        "https://www.google.com/search?q=" +
+        encodeURIComponent(school.name);
+
+    document.getElementById("google-search-link").href = searchLink;
+} else {
+    document.getElementById("chosen-school").textContent =
+        "No school selected!";
+
+    document.getElementById("school-address").textContent = "";
+
+    document.getElementById("google-search-link").style.display =
+        "none";
+}
+</script>
 <script>
 const gradePicker = document.getElementById("grade-picker");
 const saveButton = document.getElementById("save-grade");
@@ -231,5 +283,7 @@ saveButton.addEventListener("click", () => {
 
     window.location.href = "choosesection.html";
 });
-</script></body>
+</script>
+
+</body>
 </html>

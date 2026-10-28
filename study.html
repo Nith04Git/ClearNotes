@@ -81,6 +81,8 @@
     padding: 10px 15px;
     cursor: grab;
     user-select: none; /* Prevents text highlighting while dragging */
+    touch-action: none;
+    cursor: grab;
     display: flex;
     align-items: center;
     font-weight: 600;
@@ -163,35 +165,67 @@ let offsetX = 0;
 let offsetY = 0;
 let zIndexCounter = 100;
 
-document.querySelectorAll(".window").forEach(win => {
+function startDrag(win, clientX, clientY) {
+  activeWindow = win;
+
+  offsetX = clientX - win.offsetLeft;
+  offsetY = clientY - win.offsetTop;
+
+  win.style.zIndex = ++zIndexCounter;
+
   const bar = win.querySelector(".titlebar");
+  bar.style.cursor = "grabbing";
+}
 
-  bar.addEventListener("mousedown", e => {
-    activeWindow = win;
-    offsetX = e.clientX - win.offsetLeft;
-    offsetY = e.clientY - win.offsetTop;
-
-    // bring window to front
-    win.style.zIndex = ++zIndexCounter;
-
-    bar.style.cursor = "grabbing";
-  });
-});
-
-document.addEventListener("mousemove", e => {
+function dragWindow(clientX, clientY) {
   if (!activeWindow) return;
 
-  activeWindow.style.left = (e.clientX - offsetX) + "px";
-  activeWindow.style.top = (e.clientY - offsetY) + "px";
-});
+  activeWindow.style.left = (clientX - offsetX) + "px";
+  activeWindow.style.top = (clientY - offsetY) + "px";
+}
 
-document.addEventListener("mouseup", () => {
+function stopDrag() {
   if (!activeWindow) return;
 
   const bar = activeWindow.querySelector(".titlebar");
   bar.style.cursor = "grab";
+
   activeWindow = null;
+}
+
+document.querySelectorAll(".window").forEach(win => {
+  const bar = win.querySelector(".titlebar");
+
+  // Desktop
+  bar.addEventListener("mousedown", e => {
+    startDrag(win, e.clientX, e.clientY);
+  });
+
+  // Mobile
+  bar.addEventListener("touchstart", e => {
+    const touch = e.touches[0];
+    startDrag(win, touch.clientX, touch.clientY);
+  }, { passive: false });
 });
+
+// Desktop dragging
+document.addEventListener("mousemove", e => {
+  dragWindow(e.clientX, e.clientY);
+});
+
+document.addEventListener("mouseup", stopDrag);
+
+// Mobile dragging
+document.addEventListener("touchmove", e => {
+  if (!activeWindow) return;
+
+  e.preventDefault();
+
+  const touch = e.touches[0];
+  dragWindow(touch.clientX, touch.clientY);
+}, { passive: false });
+
+document.addEventListener("touchend", stopDrag);
 </script>
 
 <br>

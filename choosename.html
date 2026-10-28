@@ -281,16 +281,15 @@ if (!school || !grade || !section) {
 
     } catch (error) {
 
-        console.error("Account creation failed...:", error);
+    console.error("Account creation failed:", error);
 
-        saveButton.disabled = false;
-        saveButton.textContent = "Save Name";
+    alert(
+        "Your account could not be synced to ClearNotes right now.\n\n" +
+        "Don't worry - you can still continue using ClearNotes and try syncing again later."
+    );
 
-        alert(
-            "Unable to create your account.\n\n" +
-            "Please check your internet connection and try again."
-        );
-    }
+    window.location.href = "index.html";
+}
 });
 </script>
 </body>

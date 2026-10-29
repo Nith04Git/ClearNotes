@@ -250,7 +250,7 @@
 <body>
 
   <h1><u>Personalized Dashboard</u></h1>
-  <h3>All you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i>.</h3>
+  <h3><i>Welcome <span id="name-display"></span>!</i> Here's all you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i>.</h3>
 
   <hr style="border: none; height: 5px; background-color: #333;">
 
@@ -300,16 +300,32 @@
     <div class="card-grid" id="syllabus-grid">
       <p id="loading-status">Loading textbooks...</p>
     </div>
+
+<hr>
+<div class="card-grid">
+<div class="card">
+<h3>Explore your syllabus further</h3>
+<a href="https://cbseacademic.nic.in/curriculum_2027.html"><button class="btn btn-secondary">Official CBSE Curriculum</button></a>
+</div>
+
+<div class="card">
+<h3>Include other courses you're a part of</h3>
+<a href="coursegallery.html"><button class="btn btn-secondary">More Courses</button></a>
+</div>
+
+    </div>
   </section>
 
   <script>
     const school = JSON.parse(localStorage.getItem("chosenSchool"));
     const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
     const section = localStorage.getItem("chosenSection");
+    const name = localStorage.getItem("chosenName");
 
     document.getElementById("school-name").textContent = school ? school.name : "Not selected";
     document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
     document.getElementById("section-display").textContent = section ? " " + section : "";
+    document.getElementById("name-display").textContent = name ? " " + name : "";
 
     const gridContainer = document.getElementById("syllabus-grid");
     const statusText = document.getElementById("loading-status");

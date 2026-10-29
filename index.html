@@ -33,11 +33,11 @@
       color: var(--text-main);
     }
 
-    /* ---------- HEADER / HERO ---------- */
     header {
       padding: 60px 20px 40px;
       text-align: center;
       background: linear-gradient(135deg, #eef4ff, #ffffff);
+      min-height: 425px;
     }
 
     header h1 {
@@ -51,6 +51,12 @@
       max-width: 600px;
       margin: 20px auto;
     }
+
+header img {
+    filter:
+        drop-shadow(0 0 10px rgba(255,255,255,0.8))
+        drop-shadow(0 0 20px rgba(255,255,255,0.6));
+}
 
     .cta-row {
       margin-top: 30px;
@@ -169,14 +175,76 @@
       background: #f0f2f6;
       color: var(--text-muted);
     }
+
+#sky-header {
+    position: relative;
+    overflow: hidden;
+}
+
+#sky-header {
+    position: relative;
+    overflow: hidden;
+}
+
+.sky-image {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+    filter: brightness(0.8) saturate(1.2);
+
+    object-fit: cover;
+    object-position: center 35%;
+
+    opacity: 0.8;
+
+mask-image: linear-gradient(
+    to bottom,
+    black 0%,
+    black 50%,
+    rgba(0,0,0,0.85) 45%,
+    rgba(0,0,0,0.6) 70%,
+    rgba(0,0,0,0.3) 92%,
+    transparent 100%
+);
+
+-webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.95) 40%,
+    rgba(0,0,0,0.8) 60%,
+    rgba(0,0,0,0.5) 80%,
+    rgba(0,0,0,0.2) 95%,
+    rgba(0,0,0,0) 100%
+);
+}
+
+#sky-header {
+    position: relative;
+    min-height: 425px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+#sky-header > *:not(.sky-image) {
+    position: relative;
+    z-index: 1;
+}
   </style>
 </head>
 
 <body>
 
-<header>
+<header id="sky-header">
+    <img id="sky-image" class="sky-image" src="sky-day.png" alt="Sky">
+
   <img src="ClearNotesLogo.png" width="400">
-  <p>Welcome to ClearNotes, the soon-to-be largest repository of academic resources in the world.</p>
+  <p style="color: white;">Welcome to ClearNotes, the soon-to-be largest repository of academic resources in the world.</p>
 
   <div class="cta-row">
     <a href="signup.html"><button class="btn btn-primary">Get Started</button></a>
@@ -312,6 +380,28 @@ JSON.parse(
     date: entry.date
   }))
 )
+</script>
+<script>
+const skyImage = document.getElementById("sky-image");
+
+const hour = new Date().getHours();
+
+let sky = "Timely_Sky_Imgs/sky-day.webp";
+
+if (hour >= 5 && hour < 7) {
+    sky = "Timely_Sky_Imgs/sky-sunrise.webp";
+}
+else if (hour >= 7 && hour < 17) {
+    sky = "Timely_Sky_Imgs/sky-day.webp";
+}
+else if (hour >= 17 && hour < 19) {
+    sky = "Timely_Sky_Imgs/sky-sunset.webp";
+}
+else {
+    sky = "Timely_Sky_Imgs/sky-night.webp";
+}
+
+skyImage.src = sky;
 </script>
 
 </body>

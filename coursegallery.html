@@ -28,7 +28,7 @@
     }
 
     body {
-      margin: 0;
+      margin: 10;
       background: linear-gradient(to bottom, #ffffff, var(--bg-main));
       color: var(--text-main);
     }
@@ -173,7 +173,7 @@
 </head>
 
 <body>
-<h3>Course Gallery</h3>
+<h1>Course Gallery</h1>
 <p>Explore various courses, streams, and extra curriculums and keep track of work related to those.</p>
 
 <section>
@@ -195,6 +195,41 @@
 
   </div>
 </section>
+
+<hr>
+
+<section id="highersecondary" style="display:none;">
+<div class="card-grid">
+    <div class="card">
+      <h3>Advanced Mathematics</h3>
+      <p>Optional track course offered by CBSE covering extra curriculum in maths.</p>
+    </div>
+
+    <div class="card">
+      <h3>Advanced Science</h3>
+      <p>Optional track course offered by CBSE covering extra curriculum in science.</p>
+    </div>
+</div>
+</section>
+
+  <script>
+    window.addEventListener("load", () => {
+      let currentGrade = localStorage.getItem("chosenGrade") 
+        ? localStorage.getItem("chosenGrade").trim() 
+        : null;
+
+      let frame = document.getElementById("highersecondary");
+
+      if (currentGrade) {
+        if (parseInt(currentGrade) > 8) {
+          frame.style.display = "block";
+        } else {
+          frame.style.display = "none";
+
+        }
+      }
+    });
+  </script>
 
 </body>
 </html>

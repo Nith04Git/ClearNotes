@@ -1,0 +1,587 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClearNotes</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="ClearNotesMiniLogo.png">
+
+  <style>
+    :root {
+      --bg-main: #fcf2bd;
+      --bg-card: #ffffff;
+      --accent: #f76307;
+      --accent-soft: #fffcab;
+      --text-main: #1e1e1e;
+      --text-muted: #666;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Bricolage Grotesque", "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 10px;
+      background: linear-gradient(to bottom, #ffffff, var(--bg-main));
+      color: var(--text-main);
+    }
+
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+
+    /* ---------- CARD GRID ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+
+.hidden-file-input {
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: 2px solid #e8e8e8;
+    background: white;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(247, 99, 7, 0.15);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+#file-name-display {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+#upload-user-info {
+    background: white;
+    padding: 15px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+  </style>
+</head>
+
+<body>
+
+<h1><u>Notes Gallery</u></h1>
+
+<p id="gallery-description">
+    Loading notes...
+</p>
+
+<hr>
+
+<div>
+    <button
+        id="personalised-btn"
+        class="btn btn-primary">
+        Personalised Notes
+    </button>
+<br><br>
+
+    <button
+        id="all-btn"
+        class="btn btn-secondary">
+        Explore All Notes
+    </button>
+
+</div>
+
+<br>
+
+<input
+    type="text"
+    id="search-box"
+    placeholder="Search notes...">
+
+<br><br>
+
+<div
+    id="notes-gallery"
+    class="card-grid">
+
+    <div class="card">
+
+        <h3>Loading...</h3>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import firebaseConfig
+from "./firebaseConfig.js";
+
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getFirestore(app);
+
+const gallery =
+    document.getElementById(
+        "notes-gallery"
+    );
+
+const searchBox =
+    document.getElementById(
+        "search-box"
+    );
+
+const personalisedButton =
+    document.getElementById(
+        "personalised-btn"
+    );
+
+const allButton =
+    document.getElementById(
+        "all-btn"
+    );
+
+const grade =
+    localStorage.getItem(
+        "chosenGrade"
+    );
+
+const section =
+    localStorage.getItem(
+        "chosenSection"
+    );
+
+let allNotes = [];
+
+let currentMode =
+    "personalised";
+
+if (!grade) {
+
+    gallery.innerHTML = `
+        <div class="card">
+
+            <h3>
+                Notes Gallery Unavailable
+            </h3>
+
+            <p>
+                Please complete signup first.
+            </p>
+
+        </div>
+    `;
+
+    throw new Error(
+        "No signup data"
+    );
+
+}
+
+document
+    .getElementById(
+        "gallery-description"
+    )
+    .textContent =
+    `Showing notes for Grade ${grade}${section || ""}`;
+
+async function loadNotes() {
+
+    gallery.innerHTML =
+        "<div class='card'><h3>Loading notes...</h3></div>";
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "notes"
+                )
+            );
+
+        allNotes = [];
+
+        snapshot.forEach(
+            documentSnapshot => {
+
+                const note =
+                    documentSnapshot.data();
+
+                allNotes.push(note);
+
+            }
+        );
+
+        renderCurrentMode();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        gallery.innerHTML = `
+            <div class="card">
+
+                <h3>
+                    Failed to load notes
+                </h3>
+
+                <p>
+                    ${error.message}
+                </p>
+
+            </div>
+        `;
+
+    }
+
+}
+
+function getDisplayedNotes() {
+
+    if (
+        currentMode === "all"
+    ) {
+        return allNotes;
+    }
+
+    return allNotes.filter(
+        note =>
+            note.grade === grade
+    );
+
+}
+
+function renderCurrentMode() {
+
+    const query =
+        searchBox.value
+        .toLowerCase();
+
+    let notes =
+        getDisplayedNotes();
+
+    notes =
+        notes.filter(note => {
+
+            return (
+                (note.title || "")
+                .toLowerCase()
+                .includes(query)
+
+                ||
+
+                (note.subject || "")
+                .toLowerCase()
+                .includes(query)
+
+                ||
+
+                (note.uploader || "")
+                .toLowerCase()
+                .includes(query)
+
+                ||
+
+                (note.description || "")
+                .toLowerCase()
+                .includes(query)
+            );
+
+        });
+
+    renderNotes(notes);
+
+}
+
+function renderNotes(notes) {
+
+    gallery.innerHTML = "";
+
+    if (
+        currentMode === "all"
+    ) {
+
+        gallery.style.display =
+            "flex";
+
+        gallery.style.overflowX =
+            "auto";
+
+        gallery.style.gap =
+            "20px";
+
+        gallery.style.flexWrap =
+            "nowrap";
+
+    }
+
+    else {
+
+        gallery.style.display =
+            "grid";
+
+        gallery.style.flexWrap =
+            "";
+
+        gallery.style.overflowX =
+            "";
+
+    }
+
+    if (
+        notes.length === 0
+    ) {
+
+        gallery.innerHTML = `
+            <div class="card">
+
+                <h3>
+                    No notes found
+                </h3>
+
+                <p>
+                    Try another search or
+                    upload the first note.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+    notes.forEach(note => {
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+        card.className =
+            "card";
+
+        if (
+            currentMode === "all"
+        ) {
+
+            card.style.minWidth =
+                "350px";
+
+        }
+
+        card.innerHTML = `
+
+            <h3>
+                ${note.title}
+            </h3>
+
+            <p>
+                ${note.description || ""}
+            </p>
+
+            <hr>
+
+            <p>
+                <b>Subject:</b>
+                ${note.subject}
+            </p>
+
+            <p>
+                <b>Uploaded by:</b>
+                ${note.uploader}
+            </p>
+
+            <p>
+                <b>Grade:</b>
+                ${note.grade}${note.section || ""}
+            </p>
+
+            <button
+                class="btn btn-primary">
+
+                Read PDF
+
+            </button>
+
+        `;
+
+        card
+            .querySelector(
+                "button"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    window.open(
+                        note.pdfURL,
+                        "_blank"
+                    );
+
+                }
+            );
+
+        gallery.appendChild(card);
+
+    });
+
+}
+
+personalisedButton
+    .addEventListener(
+        "click",
+        () => {
+
+            currentMode =
+                "personalised";
+
+            document
+                .getElementById(
+                    "gallery-description"
+                )
+                .textContent =
+                `Showing notes for Grade ${grade}${section || ""}`;
+
+            renderCurrentMode();
+
+        }
+    );
+
+allButton
+    .addEventListener(
+        "click",
+        () => {
+
+            currentMode =
+                "all";
+
+            document
+                .getElementById(
+                    "gallery-description"
+                )
+                .textContent =
+                "Showing all notes uploaded to ClearNotes";
+
+            renderCurrentMode();
+
+        }
+    );
+
+searchBox
+    .addEventListener(
+        "input",
+        renderCurrentMode
+    );
+
+loadNotes();
+
+</script>
+
+</body>

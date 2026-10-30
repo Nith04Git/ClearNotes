@@ -173,10 +173,11 @@
 </head>
 
 <body>
-<h1>Course Gallery</h1>
+<h1><u>Course Gallery</u></h1>
 <p>Explore various courses, streams, and extra curriculums and keep track of work related to those.</p>
 
 <section>
+<h3><u>High-level National Competitive Exams</u></h3>
   <div class="card-grid">
     <div class="card">
       <h3>NEET</h3>
@@ -194,20 +195,109 @@
     </div>
 
   </div>
-</section>
 
 <hr>
+
+<h3><u>SOF Olympiads</u></h3>
+<p>The annual olympiad series from the Science Olympiad Foundation, New Delhi.</p>
+<a href="https://sofworld.org/"><button class="btn btn-primary">Explore SOF</button></a>
+
+<br><br>
+
+  <div class="card-grid">
+    <div class="card" data-min-grade="	1" data-max-grade="12">
+      <h3>IMO</h3>
+      <p>International Mathematics Olympiad</p>
+<a href="https://sofworld.org/imo"><button class="btn btn-secondary">SOF IMO</button></a>
+    </div>
+
+    <div class="card" data-min-grade="1" data-max-grade="12">
+      <h3>IEO</h3>
+      <p>International English Olympiad</p>
+<a href="https://sofworld.org/ieo"><button class="btn btn-secondary">SOF IEO</button></a>
+    </div>
+
+    <div class="card" data-min-grade="1" data-max-grade="12">
+      <h3>ISO</h3>
+      <p>International Science Olympiad</p>
+<a href="https://sofworld.org/iso"><button class="btn btn-secondary">SOF ISO</button></a>
+    </div>
+
+    <div class="card" data-min-grade="1" data-max-grade="10">
+      <h3>IGKO</h3>
+      <p>International General Knowledge Olympiad</p>
+<a href="https://sofworld.org/igko"><button class="btn btn-secondary">SOF IGKO</button></a>
+    </div>
+
+    <div class="card" data-min-grade="1" data-max-grade="10">
+      <h3>ICSO</h3>
+      <p>International Computer Science Olympiad</p>
+<a href="https://sofworld.org/icso"><button class="btn btn-secondary">SOF ICSO</button></a>
+    </div>
+
+    <div class="card" data-min-grade="3" data-max-grade="10">
+      <h3>IHO</h3>
+      <p>International Hindi Olympiad</p>
+<a href="https://sofworld.org/iho"><button class="btn btn-secondary">SOF IHO</button></a>
+    </div>
+
+    <div class="card" data-min-grade="3" data-max-grade="10">
+      <h3>ISSO</h3>
+      <p>International Social Studies Olympiad</p>
+<a href="https://sofworld.org/isso"><button class="btn btn-secondary">SOF ISSO</button></a>
+    </div>
+
+    <div class="card" data-min-grade="11" data-max-grade="12">
+      <h3>ICO</h3>
+      <p>International Commerce Olympiad</p>
+<a href="https://sofworld.org/ico"><button class="btn btn-secondary">SOF ICO</button></a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+window.addEventListener("load", () => {
+    const grade = Number(
+        localStorage.getItem("chosenGrade")
+    );
+    document
+        .querySelectorAll("[data-min-grade]")
+        .forEach(card => {
+            const min = Number(
+                card.dataset.minGrade
+            );
+            const max = Number(
+                card.dataset.maxGrade
+            );
+            if(
+                grade < min ||
+                grade > max
+            ){
+                card.style.display = "none";
+            }
+        });
+});
+</script>
+
+<hr style="border: none; height: 5px; background-color: #333;">
 
 <section id="highersecondary" style="display:none;">
 <div class="card-grid">
     <div class="card">
       <h3>Advanced Mathematics</h3>
       <p>Optional track course offered by CBSE covering extra curriculum in maths.</p>
+
+      <a href="https://cbseacademic.nic.in/web_material/CurriculumMain27/SecPart1/MathsAd_SecP1_2026-27.pdf"><button class="btn btn-primary" id=
+"ninthgradecourse1"><b>Advanced Maths for Grade 9</b></button></a>
     </div>
 
     <div class="card">
       <h3>Advanced Science</h3>
       <p>Optional track course offered by CBSE covering extra curriculum in science.</p>
+
+      <a href="https://cbseacademic.nic.in/web_material/CurriculumMain27/SecPart1/ScienceAd_SecP1_2026-27.pdf"><button class="btn btn-primary" id=
+"ninthgradecourse2"><b>Advanced Science for Grade 9</b></button></a>
     </div>
 </div>
 </section>
@@ -219,10 +309,22 @@
         : null;
 
       let frame = document.getElementById("highersecondary");
+      let link1 = document.getElementById("ninthgradecourse1");
+      let link2 = document.getElementById("ninthgradecourse2");
 
       if (currentGrade) {
         if (parseInt(currentGrade) > 8) {
           frame.style.display = "block";
+         if (link1 && link2){
+          if (parseInt(currentGrade) === 9) {
+            link1.style.display = "block";
+            link2.style.display = "block";
+          }
+          else{
+            link1.style.display = "none";
+            link2.style.display = "none";
+          }
+        }
         } else {
           frame.style.display = "none";
 

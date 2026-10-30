@@ -250,8 +250,9 @@
 <body>
 
   <h1><u>Personalized Dashboard</u></h1>
-  <h3><i>Welcome <span id="name-display"></span>!</i> Here's all you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i>.</h3>
 
+
+  <h3><i>Welcome <span id="name-display"></span>!</i> Here's all you need from <span id="grade-display"></span><span id="section-display"></span> of <i><span id="school-name"></span></i>.</h3>
   <hr style="border: none; height: 5px; background-color: #333;">
 
 <h2>Your School</h2>
@@ -317,25 +318,36 @@
   </section>
 
   <script>
-    const school = JSON.parse(localStorage.getItem("chosenSchool"));
-    const grade = localStorage.getItem("chosenGrade") ? localStorage.getItem("chosenGrade").trim() : null;
-    const section = localStorage.getItem("chosenSection");
-    const name = localStorage.getItem("chosenName");
+const school = JSON.parse(localStorage.getItem("chosenSchool"));
+const grade = localStorage.getItem("chosenGrade");
+const section = localStorage.getItem("chosenSection");
+const name = localStorage.getItem("chosenName");
 
-    document.getElementById("school-name").textContent = school ? school.name : "Not selected";
+  document.getElementById("school-name").textContent = school ? school.name : "Not selected";
     document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
     document.getElementById("section-display").textContent = section ? " " + section : "";
     document.getElementById("name-display").textContent = name ? " " + name : "";
 
-    const gridContainer = document.getElementById("syllabus-grid");
-    const statusText = document.getElementById("loading-status");
-
-    // Converts grade numbers ('9') to chronological lower-case alphabets ('i')
-    function deriveGradeCharacter(gradeString) {
-      const gradeInt = parseInt(gradeString, 10);
-      if (isNaN(gradeInt) || gradeInt < 1 || gradeInt > 26) return "";
-      return String.fromCharCode(96 + gradeInt); 
-    }
+if (!school || !grade || !section) {
+    document.body.innerHTML = `
+        <div style="
+            text-align:center;
+            padding:80px 20px;
+        ">
+            <h1>Personalized Dashboard is unavailable.</h1>
+            <p>ClearNotes signup has not yet been completed.</p>
+            <p>We request that you choose your school, grade and section first; so that ClearNotes can generate your Personalized Dashboard.</p>
+            <a href="signup.html">
+                <button class="btn btn-primary">
+                    Complete Signup
+                </button>
+            </a>
+        </div>
+    `;
+    throw new Error("Dashboard unavailable: missing signup data.");
+}
+</script>
+<script>
 
     function injectExcelEngine(callback) {
       const script = document.createElement("script");

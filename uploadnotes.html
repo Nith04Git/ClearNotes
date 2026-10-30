@@ -1,14 +1,12 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ClearNotes - Upload</title>
+  <title>ClearNotes</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
-  
-  <!-- Bootstrap CSS (needed for standard btn classes if you don't define them all) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <!-- Favicon -->
   <link rel="icon" href="ClearNotesMiniLogo.png">
@@ -31,154 +29,402 @@
     }
 
     body {
-      margin: 0;
-      padding: 40px;
+      margin: 10px;
       background: linear-gradient(to bottom, #ffffff, var(--bg-main));
       color: var(--text-main);
-      min-height: 100vh;
     }
 
-    .upload-container {
-      max-width: 600px;
-      margin: 0 auto;
+    /* ---------- SECTIONS ---------- */
+    section {
+      padding: 50px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+
+    /* ---------- CARD GRID ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
       background: var(--bg-card);
-      padding: 40px;
       border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
       box-shadow: var(--shadow);
     }
 
-    h1, h2 { text-align: center; }
-    
-    .instruction {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    /* CUSTOM BUTTON STYLING */
-    .btn-primary {
-      background-color: var(--accent) !important;
-      border: none !important;
-      padding: 12px 25px;
-      border-radius: 12px;
-      font-weight: 600;
-    }
-
     .btn-secondary {
-      background-color: var(--accent-soft) !important;
-      color: var(--accent) !important;
-      border: 1px solid var(--accent) !important;
-      padding: 10px 20px;
-      border-radius: 12px;
-      display: inline-block;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    /* Hide the actual ugly file input */
-    .hidden-file-input {
-      display: none;
-    }
-
-    #file-name-display {
-      display: block;
-      margin-top: 10px;
-      font-size: 0.85rem;
+      background: var(--accent-soft);
       color: var(--accent);
-      font-style: italic;
     }
 
-    .form-group {
-      margin-bottom: 20px;
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
     }
 
-    input[type="text"], select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-    }
+.hidden-file-input {
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radius);
+    border: 2px solid #e8e8e8;
+    background: white;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(247, 99, 7, 0.15);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+#file-name-display {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+#upload-user-info {
+    background: white;
+    padding: 15px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
   </style>
 </head>
 
 <body>
 
-<div class="upload-container">
-  <h1>Your contribution matters.</h1>
-  <p class="instruction"><i>This is a testing page for uploads.</i></p>
-  <hr>
+<h1><u>Upload Notes</u></h1>
+<p>Your contribution is priceless.</p>
+<hr>
 
-  <h2>Upload a Note</h2>
+<form id="upload-form">
 
-  <form action="/uploadnotes.html" method="POST" enctype="multipart/form-data">
+  <div class="form-group">
+    <label><b>Title:</b></label>
+    <input
+      type="text"
+      id="note-title"
+      required>
+  </div>
 
-    <div class="form-group">
-      <label><b>Your Name:</b></label>
-      <input type="text" name="uploader" placeholder="Enter your name" required>
-    </div>
+<br><br>
 
-    <div class="form-group">
-      <label><b>Subject:</b></label>
-      <select name="subject" required>
-        <option value="" disabled selected>Select subject</option>
-        <option>Science</option>
-        <option>Maths</option>
-        <option>Malayalam</option>
-        <option>English</option>
-        <option>Social Science</option>
-      </select>
-    </div>
+  <div class="form-group">
+    <label><b>Subject:</b></label>
 
-    <div class="form-group">
-      <label><b>Select PDF:</b></label><br>
-      
-      <!-- STYLIZED BUTTON (The label acts as the button) -->
-      <label for="note-upload" class="btn btn-secondary">
-        Choose PDF File
-      </label>
-      
-      <!-- THE ACTUAL INPUT (Hidden) -->
-      <input type="file" id="note-upload" name="note" accept="application/pdf" class="hidden-file-input" required onchange="updateFileName()">
-      
-      <!-- Placeholder to show the user which file they picked -->
-      <span id="file-name-display">No file chosen</span>
-    </div>
+    <select id="note-subject" required>
+      <option value="" disabled selected>
+        Select subject
+      </option>
 
-    <!-- Hidden fields auto-filled from signup -->
-    <input type="hidden" name="school" id="school-field">
-    <input type="hidden" name="grade" id="grade-field">
-    <input type="hidden" name="section" id="section-field">
+      <option>Science</option>
+      <option>Maths</option>
+      <option>Malayalam</option>
+      <option>English</option>
+      <option>Social Science</option>
+    </select>
+  </div>
 
-    <div style="text-align: center; margin-top: 30px;">
-      <input type="submit" value="Upload Note" class="btn btn-primary w-100">
-    </div>
-  </form>
+<br><br>
+
+  <div class="form-group">
+    <label><b>Description:</b></label>
+
+    <textarea
+      id="note-description"
+      rows="4"
+      placeholder="Briefly describe what this note contains..."></textarea>
+  </div>
+
+<hr>
+
+<br><br>
+<div class="card-grid">
+<div class="card">
+  <div class="form-group">
+    <label><b>Select PDF:</b></label>
+
+    <label
+      for="note-upload"
+      class="btn btn-secondary">
+      Choose PDF File
+    </label>
+
+    <input
+      type="file"
+      id="note-upload"
+      accept="application/pdf"
+      class="hidden-file-input"
+      required
+      onchange="updateFileName()">
+
+    <span id="file-name-display">
+      No file chosen
+    </span>
+
+  </div>
+</div>
+
+<div class="card">
+  <div class="form-group">
+    <label><b>Uploading as:</b></label>
+
+    <p id="upload-user-info">
+      Loading profile...
+    </p>
+  </div>
+  <div style="text-align:center; margin-top:30px;">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      id="upload-button">
+
+      Upload Note
+    </button>
+  </div>
+</div>
+
+</form>
 </div>
 
 <script>
-  // Function to show the name of the file after user selects it
-  function updateFileName() {
-    const input = document.getElementById('note-upload');
-    const display = document.getElementById('file-name-display');
+function updateFileName() {
+    const input =
+        document.getElementById("note-upload");
+
+    const display =
+        document.getElementById("file-name-display");
+
     if (input.files.length > 0) {
-      display.textContent = "Selected: " + input.files[0].name;
+        display.textContent =
+            "Selected: " +
+            input.files[0].name;
     }
-  }
 
-  // Handle local storage logic
-  const school = JSON.parse(localStorage.getItem("chosenSchool"));
-  const grade = localStorage.getItem("chosenGrade");
-  const section = localStorage.getItem("chosenSection");
+}
 
-  if (!school || !grade || !section) {
-    console.log("Signup information missing.");
-    // window.location.href = "signup.html"; // Uncomment when ready
-  } else {
-    document.getElementById('school-field').value = school;
-    document.getElementById('grade-field').value = grade;
-    document.getElementById('section-field').value = section;
-  }
+const school =
+    JSON.parse(
+        localStorage.getItem("chosenSchool")
+    );
+
+const grade =
+    localStorage.getItem("chosenGrade");
+
+const section =
+    localStorage.getItem("chosenSection");
+
+const name =
+    localStorage.getItem("chosenName");
+
+if (
+    !school ||
+    !grade ||
+    !section
+) {
+
+    document.body.innerHTML = `
+        <h1>Upload Unavailable</h1>
+        <p>Please complete signup first.</p>
+        <a href="signup.html">
+            <button class="btn btn-primary">
+                Complete Signup
+            </button>
+        </a>
+    `;
+
+}
+else {
+    document.getElementById(
+        "upload-user-info"
+    ).innerHTML = `
+        <b>${name}</b><br>
+        ${school.name}<br>
+        Grade ${grade}${section}
+    `;
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+import firebaseConfig from "./firebaseConfig.js";
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const form = document.querySelector("form");
+
+form.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+    try {
+        const school =
+            JSON.parse(localStorage.getItem("chosenSchool"));
+        const grade =
+            localStorage.getItem("chosenGrade");
+        const section =
+            localStorage.getItem("chosenSection");
+        const name =
+            localStorage.getItem("chosenName");
+
+        if (
+            !school || !grade || !section || !name
+        ) {
+            alert(
+                "Please complete signup before uploading notes."
+            );
+            return;
+        }
+
+        const pdf =
+            document.getElementById("note-upload").files[0];
+
+        if (!pdf) {
+            alert("Please select a PDF.");
+            return;
+        }
+
+const title =
+    document
+        .getElementById("note-title")
+        .value
+        .trim();
+
+if (!title) {
+    alert("Please enter a title.");
+    return;
+}
+
+const subject =
+    document
+        .getElementById("note-subject")
+        .value;
+
+if (!subject) {
+    alert("Please select a subject.");
+    return;
+}
+
+const description =
+    document
+        .getElementById("note-description")
+        .value
+        .trim();
+
+        const fileRef = ref(
+            storage,
+            `notes/${Date.now()}_${pdf.name}`
+        );
+
+        alert("Uploading PDF...");
+
+        await uploadBytes(
+            fileRef,
+            pdf
+        );
+
+        const pdfURL =
+            await getDownloadURL(fileRef);
+
+        await addDoc(
+            collection(db, "notes"),
+            {
+                title: title,
+                description: description,
+                subject: subject,
+                uploader: name,
+                school: school.name,
+                grade: grade,
+                section: section,
+                pdfURL: pdfURL,
+                uploadedAt:
+                    serverTimestamp()
+            }
+        );
+
+        alert(
+            "Note uploaded successfully!"
+        );
+        window.location.href =
+            "notesgallery.html";
+    } catch (error) {
+        console.error(error);
+        alert(
+            "Upload failed.\n\n" +
+            error.message
+        );
+    }
+});
 </script>
 
 </body>

@@ -323,6 +323,12 @@ const grade = localStorage.getItem("chosenGrade");
 const section = localStorage.getItem("chosenSection");
 const name = localStorage.getItem("chosenName");
 
+const gridContainer =
+    document.getElementById("syllabus-grid");
+
+const statusText =
+    document.getElementById("loading-status");
+
   document.getElementById("school-name").textContent = school ? school.name : "Not selected";
     document.getElementById("grade-display").textContent = grade ? grade : "Not selected";
     document.getElementById("section-display").textContent = section ? " " + section : "";

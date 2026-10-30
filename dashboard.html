@@ -364,6 +364,20 @@ if (!school || !grade || !section) {
       document.head.appendChild(script);
     }
 
+function deriveGradeCharacter(gradeString) {
+    const gradeInt = parseInt(gradeString, 10);
+
+    if (
+        isNaN(gradeInt) ||
+        gradeInt < 1 ||
+        gradeInt > 26
+    ) {
+        return "";
+    }
+
+    return String.fromCharCode(96 + gradeInt);
+}
+
     async function loadSyllabusFromExcel() {
       if (!grade) {
         statusText.textContent = "Please select a grade to look up your syllabus.";
@@ -464,8 +478,11 @@ if (!school || !grade || !section) {
           if (importance.toLowerCase() === "primary") badgeColor = "#fc2c03";
           if (importance.toLowerCase() === "language") badgeColor = "#00abfa";
 
-          const coverUrl = `https://ncert.nic.in/textbook/pdf/${gradeLetter}${code}cc.jpg`;
-          const textBookUrl = `https://ncert.nic.in/textbook.php?${gradeLetter}${code}=0-${chapters}`;
+const coverUrl =
+    `https://ncert.nic.in/textbook/pdf/${gradeLetter}${code}cc.jpg`;
+
+const textBookUrl =
+    `https://ncert.nic.in/textbook.php?${gradeLetter}${code}=0-${chapters}`;
 
           card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px;">

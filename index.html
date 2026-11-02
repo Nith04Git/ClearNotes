@@ -255,6 +255,16 @@ mask-image: linear-gradient(
 </header>
 
 <section>
+<h2 id="academic-climate-header">Climate near your school</h2>
+<br>
+
+<div id="academic-climate-card" style="display:none;" class="card">
+    <h3 id="academic-climate-title"></h3>
+    <p id="academic-climate-message"></p>
+</div>
+</section>
+
+<section>
   <h2>Your Control Center</h2>
 
   <p id="desc-fallback" class="section-desc">Everything you need to organize, access, and contribute study resources in one place.</p>
@@ -389,6 +399,7 @@ JSON.parse(
   }))
 )
 </script>
+<script defer src="academic_climate_conditions.js"></script>
 <script>
 const skyImage = document.getElementById("sky-image");
 

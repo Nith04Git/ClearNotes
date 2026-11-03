@@ -19,6 +19,20 @@ window.addEventListener(
                 return;
             }
 
+const hour = new Date().getHours();
+if (hour >= 17 && hour < 21) {
+return;
+}
+
+let wordingContext;
+
+if (hour >= 21) {
+wordingContext = "tomorrow";
+}
+else{
+wordingContext = "today";
+}
+
             const latitude =
                 Number(school.lat);
 
@@ -109,7 +123,7 @@ window.addEventListener(
                     "High heat in your area.";
 
                 message =
-                    `Temperatures could reach ${maxTemp}°C near your school today. It is encouraged to carry water and stay hydrated, while avoiding wearing heavy coats or jackets.`;
+                    `Temperatures could reach ${maxTemp}°C near your school ${wordingContext}. It is encouraged to carry water and stay hydrated, while avoiding wearing heavy coats or jackets.`;
 
             }
 
@@ -121,7 +135,7 @@ window.addEventListener(
                     "Possibly, there is chance of rain in your area.";
 
                 message =
-                    `There is a ${rainChance}% chance of rain near your school today. Carrying an umbrella may be helpful.`;
+                    `There is a ${rainChance}% chance of rain near your school ${wordingContext}. Carrying an umbrella may be helpful.`;
 
             }
 
@@ -137,7 +151,7 @@ window.addEventListener(
                     "There seems to be severe thunderstorms brewing.";
 
                 message =
-                    "Thunderstorm conditions are forecast near your school today. It is suggested to validate these conditions and take necessary precautions if needed.";
+                    `Thunderstorm conditions are forecast near your school ${wordingContext}. It is suggested to validate these conditions and take necessary precautions if needed.`;
 
                 confidence += 30;
 
@@ -166,13 +180,14 @@ window.addEventListener(
                     "academic-climate-message"
                 );
 
-            const headerContent =
+            let climateSection =
                 document.getElementById(
-                    "academic-climate-header"
+                    "academic-climate-section"
                 );
 
             titleBox.textContent = title;
             messageBox.textContent = message;
+            climateSection.style.display = "block";
             card.style.display =
                 "block";
 

@@ -239,6 +239,8 @@
     </div>
 </div>
 
+<br><br>
+
 <div class="card" id="school-online-profile" style="display:none;">
 <br><br>
     <h3>School Website</h3>
@@ -746,23 +748,28 @@ out tags;
 <br><br>
 
 <h2>Environmental Factors</h2>
+<section>
 <div class="card-grid">
-<div class="card">
+<div id="academic-climate-section" style="display:none; text-align:left;" class="card">
+<h3>Climate</h3>
 
-<div id="academic-climate-section" style="display:none; text-align: left;">
-<h3 id="academic-climate-header">Climate</h3>
-<br>
+    <img
+        id="academic-climate-icon"
+        style="
+            width:40px;
+            height:40px;
+            float:right;
+            display:none;
+            margin-left:12px;
+        ">
 
-<div id="academic-climate-card" style="display:none; text-align: left;" class="card">
     <h3 id="academic-climate-title"></h3>
+
     <p id="academic-climate-message"></p>
-</div>
-</div>
 
 </div>
 
 <div class="card" id="road-quality-card" style="display:none;">
-
 <div class="card">
     <h3>Road Quality</h3>
 
@@ -770,9 +777,13 @@ out tags;
         Checking nearby roads...
     </p>
 </div>
+</div>
 
 </div>
 </div>
+
+</section>
+
 
 <script defer src="academic_climate_conditions.js"></script>
 

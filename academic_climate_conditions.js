@@ -19,6 +19,8 @@ window.addEventListener(
                 return;
             }
 
+let iconPath = "";
+
 const hour = new Date().getHours();
 if (hour >= 17 && hour < 21) {
 return;
@@ -106,18 +108,23 @@ wordingContext = "today";
             */
 
             if (rainChance >= 80) {
+iconPath =
+        "climate_icons/heavyrainy.png";
+
 
                 title =
                     "There could be heavy rainfall.";
 
                 message =
-                    `It's ${rainChance}% likely to rain near your school. It is encouraged to carry an umbrella, rain coat, bag cover, and to prioritize on protecting notebooks from water damage.`;
+                    `<It's ${rainChance}% likely to rain near your school. It is encouraged to carry an umbrella, rain coat, bag cover, and to prioritize on protecting notebooks from water damage.`;
 
             }
 
             else if (
                 maxTemp >= 38
             ) {
+    iconPath =
+        "climate_icons/heat.png";
 
                 title =
                     "High heat in your area.";
@@ -130,6 +137,8 @@ wordingContext = "today";
             else if (
                 rainChance >= 40
             ) {
+iconPath =
+        "climate_icons/rainy.png";
 
                 title =
                     "Possibly, there is chance of rain in your area.";
@@ -147,11 +156,14 @@ wordingContext = "today";
                 weatherCode >= 95
             ) {
 
+iconPath =
+    "climate_icons/thunderstorm.png";
+
                 title =
                     "There seems to be severe thunderstorms brewing.";
 
                 message =
-                    `Thunderstorm conditions are forecast near your school ${wordingContext}. It is suggested to validate these conditions and take necessary precautions if needed.`;
+                    `Thunderstorm conditions are forecast near your school ${wordingContext}. It is heavily suggested to validate these conditions and take necessary precautions if needed.`;
 
                 confidence += 30;
 
@@ -184,6 +196,21 @@ wordingContext = "today";
                 document.getElementById(
                     "academic-climate-section"
                 );
+
+const climateIcon =
+    document.getElementById(
+        "academic-climate-icon"
+    );
+
+if (iconPath) {
+
+    climateIcon.src =
+        iconPath;
+
+    climateIcon.style.display =
+        "block";
+
+}
 
             titleBox.textContent = title;
             messageBox.textContent = message;

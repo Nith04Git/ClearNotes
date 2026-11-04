@@ -116,7 +116,7 @@ iconPath =
                     "There could be heavy rainfall.";
 
                 message =
-                    `<It's ${rainChance}% likely to rain near your school. It is encouraged to carry an umbrella, rain coat, bag cover, and to prioritize on protecting notebooks from water damage.`;
+                    `It's ${rainChance}% likely to rain near your school. It is encouraged to carry an umbrella, rain coat, bag cover, and to prioritize on protecting notebooks from water damage.`;
 
             }
 

@@ -1,235 +1,595 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>ClearNotes</title>
+<meta charset="UTF-8">
+<title>ClearNotes Study Desk</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
-
-  <!-- Favicon -->
-  <link rel="icon" href="ClearNotesMiniLogo.png">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    --bg-main: #fcf2bd;
-    --bg-card: #ffffff;
-    --accent: #f76307;
-    --accent-soft: #fffcab;
-    --text-main: #1e1e1e;
-    --text-muted: #666;
-    --radius: 16px;
-    --shadow: 0 10px 30px rgba(0,0,0,0.12);
-    --win-dark: #222;
-  }
 
-  * {
-    box-sizing: border-box;
-    font-family: "Bricolage Grotesque", "Segoe UI", sans-serif;
-  }
+:root{
+    --accent:#f76307;
+    --accent-soft:#fff1a8;
+    --sidebar:#ffffff;
+    --workspace:#fff8d8;
+    --title:#1f1f1f;
+    --shadow:0 12px 30px rgba(0,0,0,.15);
+}
 
-  body {
-    margin: 10;
-    /* Use min-height to ensure gradient covers long pages */
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #ffffff, var(--bg-main));
-    color: var(--text-main);
-    overflow-x: hidden;
-  }
+*{
+    box-sizing:border-box;
+    font-family:"Bricolage Grotesque",sans-serif;
+}
 
-  /* ---------- HEADER & SHARED UI ---------- */
-  header {
-    padding: 60px 20px 40px;
-    text-align: center;
-    background: linear-gradient(135deg, #fff9e6, #ffffff);
-  }
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#fff8d8;
+}
 
-  header h1 { font-size: 3rem; margin: 0; }
+#dock{
 
-  /* Re-using button styles for your "Detox" button glitch fix */
-  .btn, .custom-button {
-    padding: 12px 22px;
-    border-radius: 12px;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    display: inline-block;
-    background: var(--accent);
-    color: white;
-  }
+    position:fixed;
 
-  .btn-secondary { background: var(--accent-soft); color: var(--accent); }
+    bottom:0;
+    left:0;
+    right:0;
 
-  /* ---------- WINDOW SYSTEM & FIXES ---------- */
-  .window {
-    position: absolute;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-    overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.1);
-    min-width: 300px;
-    /* Prevent window from starting under other elements */
-    z-index: 10; 
-  }
+    height:70px;
 
-  .titlebar {
-    background: var(--win-dark);
-    color: white;
-    padding: 10px 15px;
-    cursor: grab;
-    user-select: none; /* Prevents text highlighting while dragging */
-    touch-action: none;
-    cursor: grab;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-  }
+    background:white;
 
-  .titlebar p { margin: 0; pointer-events: none; }
+    display:flex;
 
-  .window iframe {
-    display: block;
-    border: none;
-    background: white;
-    /* Glitch fix: Ensure iframe doesn't eat mouse events during drag */
-    pointer-events: auto; 
-  }
+    align-items:center;
 
-  /* Padding for window content that isn't an iframe (e.g. Detox window) */
-  #win2 { padding-bottom: 20px; text-align: center; }
-  #win2 p { padding: 0 20px; color: var(--text-muted); }
+    justify-content:center;
 
-  /* ---------- STICKY NOTES ---------- */
-  .stickynotes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    background: rgba(0,0,0,0.05);
-    padding: 20px;
-    border-radius: var(--radius);
-    margin: 20px;
-  }
+    gap:10px;
 
-  .stickynote {
-    background-color: #87f8fa;
-    padding: 20px;
-    color: #111;
-    border-radius: 12px;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
-    transform: rotate(-1deg);
-  }
+    padding:10px;
 
-  /* ---------- FOOTER FIXES ---------- */
-  footer {
-    margin-top: 100px;
-    text-align: center;
-    padding: 40px;
-    background: rgba(0,0,0,0.03);
-    color: var(--text-muted);
-  }
+    border-top:1px solid #ddd;
+
+    box-shadow:
+        0 -5px 20px rgba(0,0,0,.08);
+
+    z-index:1000;
+}
+
+.app{
+    background:#fafafa;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.app:hover{
+    background:#fff1a8;
+}
+
+#workspace{
+
+    width:100%;
+    height:calc(100vh - 70px);
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+/* WINDOWS */
+
+.window{
+    position:absolute;
+
+    width:700px;
+    height:440px;
+
+    background:white;
+
+    border-radius:14px;
+
+    box-shadow:var(--shadow);
+
+    overflow:hidden;
+
+    resize:both;
+
+    z-index:10;
+}
+
+#dispose-zone{
+
+    position:fixed;
+
+    bottom:10px;
+    right:20px;
+
+    width:200px;
+
+    height:50px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#ffeded;
+
+    color:#d40000;
+
+    border:2px dashed #ff7070;
+
+    transition:.2s;
+
+    z-index:1500;
+
+}
+
+#dispose-zone.active{
+
+    background:#ff7070;
+
+    color:white;
+
+    transform:scale(1.05);
+
+}
+
+.titlebar{
+    height:48px;
+
+    background:#222;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 14px;
+
+    cursor:grab;
+
+    user-select:none;
+}
+
+.window iframe{
+    width:100%;
+    height:calc(100% - 48px);
+    border:none;
+}
+
+.close-btn{
+    border:none;
+    background:none;
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+}
+
+#hint{
+    position:absolute;
+    right:24px;
+    bottom:24px;
+
+    background:white;
+
+    padding:16px;
+
+    border-radius:12px;
+
+    box-shadow:var(--shadow);
+
+    color:#666;
+}
+
 </style>
+</head>
 
+<body>
 
-<TITLE>ClearNotes - Study Desk</TITLE>
-</HEAD>
+<div id="dock" style="position: absolute;">
 
-<BODY>
-<h1><u>Study Desk</u></h1>
+<h2 style="position: absolute; left: 1%;">Study Desk</h2>
 
+<div
+class="app"
+data-title="Dashboard"
+data-src="dashboard.html">
 
-
-<div class="window" id="win1">
-  <div class="titlebar"><p>📘 Study Buddy</p></div>
-<iframe
-	src="https://justusi-study-companion-2.hf.space"
-	frameborder="0"
-	width="750"
-	height="350"
-></iframe>
+Dashboard
 
 </div>
 
-<div class="window" id="win2">
-<div class="titlebar"><p>Detox</p></div>
-<p>Take a chance to wind down from distractions and <br>focus on studies, materialistically and practically.</p>
+<div
+class="app"
+data-title="Courses"
+data-src="coursegallery.html">
 
-<a href="detox.html"><button class="custom-button">Detox 🚀</button></a>
+Courses
+
+</div>
+
+<div
+class="app"
+data-title="Class Chat"
+data-src="groupchat.html">
+
+Class Chat
+
+</div>
+
+<div
+class="app"
+data-title="School Info"
+data-src="schoolinfo.html">
+
+School Info
+
+</div>
+
+<div
+class="app"
+data-title="Notes Gallery"
+data-src="notesgallery.html">
+
+Notes Gallery
+
+</div>
+
+<div
+class="app"
+data-title="Detox"
+data-src="detox.html">
+
+Detox
+
+</div>
+
+<div
+class="app"
+data-title="Study Buddy"
+data-src="https://justusi-study-companion-2.hf.space">
+
+Study Buddy
+
+</div>
+
+<div
+class="app"
+data-title="Notes"
+data-src="pickSubject.html">
+
+Notes
+
+</div>
+
+</div>
+
+<div id="workspace">
+
+<div id="hint">
+Drag windows to the dock to close them.
+</div>
+
+</div>
+
+<div id="dispose-zone">
+
+    🗑 Drop Here To Close
+
 </div>
 
 <script>
-let activeWindow = null;
-let offsetX = 0;
-let offsetY = 0;
-let zIndexCounter = 100;
 
-function startDrag(win, clientX, clientY) {
-  activeWindow = win;
+const workspace =
+    document.getElementById("workspace");
 
-  offsetX = clientX - win.offsetLeft;
-  offsetY = clientY - win.offsetTop;
+const disposeZone =
+    document.getElementById("dispose-zone");
 
-  win.style.zIndex = ++zIndexCounter;
+let highestZ = 100;
 
-  const bar = win.querySelector(".titlebar");
-  bar.style.cursor = "grabbing";
+/* -----------------------------
+   Save Workspace
+----------------------------- */
+
+function saveWorkspace() {
+
+    const windows =
+
+        [...document.querySelectorAll(".window")]
+
+        .map(win => ({
+            title: win.dataset.title,
+            src: win.dataset.src,
+            left: win.style.left,
+            top: win.style.top,
+            width: win.style.width,
+            height: win.style.height
+        }));
+
+    localStorage.setItem(
+        "studydesk_layout",
+        JSON.stringify(windows)
+    );
+
 }
 
-function dragWindow(clientX, clientY) {
-  if (!activeWindow) return;
+/* -----------------------------
+   Create Window
+----------------------------- */
 
-  activeWindow.style.left = (clientX - offsetX) + "px";
-  activeWindow.style.top = (clientY - offsetY) + "px";
+function createWindow(
+    title,
+    src,
+    restoreData = null
+) {
+
+    const win =
+        document.createElement("div");
+
+    win.className =
+        "window";
+
+    win.dataset.title =
+        title;
+
+    win.dataset.src =
+        src;
+
+    win.style.left =
+        restoreData?.left || "40px";
+
+    win.style.top =
+        restoreData?.top || "40px";
+
+    win.style.width =
+        restoreData?.width || "700px";
+
+    win.style.height =
+        restoreData?.height || "440px";
+
+    win.innerHTML = `
+        <div class="titlebar">
+
+            <span>${title}</span>
+
+            <button class="close-btn">
+                ×
+            </button>
+
+        </div>
+
+        <iframe src="${src}"></iframe>
+    `;
+
+    workspace.appendChild(win);
+
+    win.style.zIndex =
+        ++highestZ;
+
+    win.querySelector(".close-btn")
+        .addEventListener(
+            "click",
+            () => {
+
+                win.remove();
+
+                saveWorkspace();
+
+            }
+        );
+
+    makeDraggable(win);
+
+    saveWorkspace();
+
 }
 
-function stopDrag() {
-  if (!activeWindow) return;
+/* -----------------------------
+   Open Apps
+----------------------------- */
 
-  const bar = activeWindow.querySelector(".titlebar");
-  bar.style.cursor = "grab";
+document
+.querySelectorAll(".app")
+.forEach(app => {
 
-  activeWindow = null;
-}
+    app.addEventListener(
+        "click",
 
-document.querySelectorAll(".window").forEach(win => {
-  const bar = win.querySelector(".titlebar");
+        () => {
 
-  // Desktop
-  bar.addEventListener("mousedown", e => {
-    startDrag(win, e.clientX, e.clientY);
-  });
+            createWindow(
+                app.dataset.title,
+                app.dataset.src
+            );
 
-  // Mobile
-  bar.addEventListener("touchstart", e => {
-    const touch = e.touches[0];
-    startDrag(win, touch.clientX, touch.clientY);
-  }, { passive: false });
+        }
+
+    );
+
 });
 
-// Desktop dragging
-document.addEventListener("mousemove", e => {
-  dragWindow(e.clientX, e.clientY);
-});
+/* -----------------------------
+   Dispose Zone
+----------------------------- */
 
-document.addEventListener("mouseup", stopDrag);
+function updateDisposeState(
+    clientX,
+    clientY
+) {
 
-// Mobile dragging
-document.addEventListener("touchmove", e => {
-  if (!activeWindow) return;
+    if (!disposeZone)
+        return false;
 
-  e.preventDefault();
+    const rect =
+        disposeZone.getBoundingClientRect();
 
-  const touch = e.touches[0];
-  dragWindow(touch.clientX, touch.clientY);
-}, { passive: false });
+    const inside =
 
-document.addEventListener("touchend", stopDrag);
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom;
+
+    disposeZone.classList.toggle(
+        "active",
+        inside
+    );
+
+    return inside;
+
+}
+
+/* -----------------------------
+   Dragging
+----------------------------- */
+
+function makeDraggable(win) {
+
+    const titlebar =
+        win.querySelector(".titlebar");
+
+    let dragging = false;
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    titlebar.addEventListener(
+
+        "mousedown",
+
+        e => {
+
+            dragging =
+                true;
+
+            win.style.zIndex =
+                ++highestZ;
+
+            offsetX =
+                e.clientX -
+                win.offsetLeft;
+
+            offsetY =
+                e.clientY -
+                win.offsetTop;
+
+        }
+
+    );
+
+    document.addEventListener(
+
+        "mousemove",
+
+        e => {
+
+            if (!dragging)
+                return;
+
+            win.style.left =
+                (
+                    e.clientX -
+                    offsetX
+                ) + "px";
+
+            win.style.top =
+                (
+                    e.clientY -
+                    offsetY
+                ) + "px";
+
+            updateDisposeState(
+                e.clientX,
+                e.clientY
+            );
+
+        }
+
+    );
+
+    document.addEventListener(
+
+        "mouseup",
+
+        e => {
+
+            if (!dragging)
+                return;
+
+            dragging = false;
+
+            const shouldDispose =
+                updateDisposeState(
+                    e.clientX,
+                    e.clientY
+                );
+
+            disposeZone?.classList.remove(
+                "active"
+            );
+
+            if (shouldDispose) {
+
+                win.remove();
+
+                saveWorkspace();
+
+                return;
+            }
+
+            saveWorkspace();
+
+        }
+
+    );
+
+}
+
+/* -----------------------------
+   Restore Workspace
+----------------------------- */
+
+const savedLayout =
+
+    JSON.parse(
+
+        localStorage.getItem(
+            "studydesk_layout"
+        ) || "[]"
+
+    );
+
+savedLayout.forEach(
+
+    item => {
+
+        createWindow(
+            item.title,
+            item.src,
+            item
+        );
+
+    }
+
+);
+
 </script>
-
-<br>
-<hr>
-
-<h3><b>Study Buddy</b> feature by Thimmapuram Murali "AI Study Buddy"</h3>
-<h3>Credits to HuggingFace Inc.</h3>
+</body>
+</html>
